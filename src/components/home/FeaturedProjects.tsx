@@ -28,8 +28,8 @@ export default function FeaturedProjects() {
             </h2>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-slate-600">
-              Developer-verified project details, official media links and
-              guided site-visit support—updated as launch information changes.
+              Rich property galleries, concise project overviews and guided
+              site-visit support—updated as launch information changes.
             </p>
           </div>
 
@@ -88,9 +88,9 @@ export default function FeaturedProjects() {
         </div>
 
         <p className="mt-6 text-center text-xs leading-5 text-slate-400">
-          Images are for project identification and presentation. Prices,
-          specifications and availability should be verified before making a
-          property decision.
+          Project media may include artistic impressions. Prices,
+          specifications and availability are subject to verification before
+          making a property decision.
         </p>
       </div>
     </section>

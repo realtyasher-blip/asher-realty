@@ -6,8 +6,9 @@ import {
   ArrowUpRight,
   BedDouble,
   CalendarClock,
-  ExternalLink,
+  ChevronDown,
   IndianRupee,
+  Images,
   MapPin,
   PlayCircle,
 } from "lucide-react";
@@ -77,6 +78,10 @@ export default function ProjectCard({
       </div>
 
       <div className="p-6">
+        <p className="mb-6 text-sm leading-7 text-slate-600">
+          {project.description}
+        </p>
+
         <div className="space-y-4">
           <div className="flex items-start gap-3">
             <MapPin className="mt-0.5 size-5 shrink-0 text-[#c9a227]" />
@@ -135,60 +140,79 @@ export default function ProjectCard({
           )}
         </div>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-6">
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
               buttonVariants(),
-              "flex-1 rounded-full bg-[#c9a227] text-[#071a2f] hover:bg-[#e4c462]"
+              "w-full rounded-full bg-[#c9a227] text-[#071a2f] hover:bg-[#e4c462]"
             )}
           >
             Get Details
             <ArrowUpRight className="ml-2 size-4" />
           </a>
-
-          {project.mediaUrl ? (
-            <a
-              href={project.mediaUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "rounded-full border-[#071a2f]/20 text-[#071a2f] hover:bg-[#071a2f] hover:text-white"
-              )}
-            >
-              <PlayCircle className="mr-2 size-4" />
-              View Media
-            </a>
-          ) : (
-            <a
-              href={project.officialUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "rounded-full border-[#071a2f]/20 text-[#071a2f] hover:bg-[#071a2f] hover:text-white"
-              )}
-            >
-              <ExternalLink className="mr-2 size-4" />
-              Official Page
-            </a>
-          )}
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 text-xs text-slate-400">
+        <details className="group/gallery mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-[#f7f8fa]">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-semibold text-[#071a2f]">
+            <span className="inline-flex items-center gap-2">
+              <Images className="size-4 text-[#c9a227]" />
+              Photos & visual tour
+            </span>
+            <ChevronDown className="size-4 transition group-open/gallery:rotate-180" />
+          </summary>
+
+          <div className="border-t border-slate-200 p-4">
+            <div className="grid grid-cols-2 gap-3">
+              {project.gallery.map((image, galleryIndex) => (
+                <div
+                  key={image}
+                  className={`relative overflow-hidden rounded-xl bg-slate-200 ${
+                    galleryIndex === 0
+                      ? "col-span-2 aspect-[16/9]"
+                      : "aspect-square"
+                  }`}
+                >
+                  <Image
+                    src={image}
+                    alt={`${project.name} gallery view ${galleryIndex + 1}`}
+                    fill
+                    className="object-cover transition duration-500 hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {project.video ? (
+              <div className="mt-4 overflow-hidden rounded-xl bg-[#071a2f]">
+                <video
+                  controls
+                  playsInline
+                  preload="metadata"
+                  poster={project.image}
+                  className="aspect-video w-full object-cover"
+                >
+                  <source src={project.video} type="video/mp4" />
+                  Your browser does not support video playback.
+                </video>
+              </div>
+            ) : (
+              <div className="mt-4 flex items-center gap-3 rounded-xl bg-[#071a2f] px-4 py-4 text-white">
+                <PlayCircle className="size-5 shrink-0 text-[#e4c462]" />
+                <p className="text-xs leading-5 text-white/70">
+                  Browse the visual tour above. Ask us on WhatsApp for the
+                  latest walkthrough video.
+                </p>
+              </div>
+            )}
+          </div>
+        </details>
+
+        <div className="mt-5 border-t border-slate-100 pt-4 text-xs text-slate-400">
           <span>Verified {project.verifiedAt}</span>
-          <a
-            href={project.officialUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-semibold text-[#071a2f] transition hover:text-[#c9a227]"
-          >
-            Source
-            <ExternalLink className="size-3" />
-          </a>
         </div>
 
         {project.rera && (
