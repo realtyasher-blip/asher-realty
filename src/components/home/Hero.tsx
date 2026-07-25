@@ -1,148 +1,148 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   Building2,
-  CalendarCheck,
+  IndianRupee,
   MapPin,
+  Search,
   ShieldCheck,
 } from "lucide-react";
 
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
-const highlights = [
-  {
-    icon: Building2,
-    value: "Premium",
-    label: "Residential Projects",
-  },
-  {
-    icon: MapPin,
-    value: "Bengaluru",
-    label: "Focused Expertise",
-  },
-  {
-    icon: CalendarCheck,
-    value: "Free",
-    label: "Guided Site Visits",
-  },
-  {
-    icon: ShieldCheck,
-    value: "Trusted",
-    label: "Buyer Assistance",
-  },
-];
-
-const whatsappUrl =
-  "https://wa.me/919019697170?text=Hi%20Asher%20Realty%2C%20I%20am%20looking%20for%20a%20property%20in%20Bengaluru.";
+const locations = ["Whitefield", "Sarjapur Road", "North Bengaluru", "Hebbal", "Devanahalli"];
+const homeTypes = ["Apartment", "Villa", "Plot", "Investment property"];
+const budgets = ["₹50L–₹1Cr", "₹1Cr–₹2Cr", "₹2Cr–₹3Cr", "₹3Cr+"];
 
 export default function Hero() {
+  const [location, setLocation] = useState("");
+  const [homeType, setHomeType] = useState("");
+  const [budget, setBudget] = useState("");
+
+  const message = encodeURIComponent(
+    `Hi Asher Realty, help me find a ${homeType || "property"} in ${
+      location || "Bengaluru"
+    } with a budget of ${budget || "to be discussed"}.`
+  );
+
   return (
-    <section className="relative isolate min-h-screen overflow-hidden bg-[#071a2f] text-white">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "linear-gradient(90deg, rgba(7,26,47,0.98) 0%, rgba(7,26,47,0.82) 45%, rgba(7,26,47,0.35) 100%), url('/images/hero-property.jpg')",
-        }}
+    <section className="relative isolate min-h-[92vh] overflow-hidden bg-[#061727] text-white">
+      <Image
+        src="/images/hero-property-v2.png"
+        alt="Premium residential community in Bengaluru at twilight"
+        fill
+        priority
+        className="object-cover object-[68%_center]"
+        sizes="100vw"
       />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#061727] via-[#061727]/88 to-[#061727]/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#061727]/65 via-transparent to-[#061727]/20" />
+      <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] [background-size:72px_72px]" />
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(201,162,39,0.18),transparent_36%)]" />
-
-      <div className="container-shell relative flex min-h-screen items-center pt-28 pb-16">
-        <div className="max-w-4xl">
-          <motion.p
+      <div className="container-shell relative flex min-h-[92vh] items-center pb-16 pt-32">
+        <div className="w-full max-w-4xl">
+          <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-6 text-sm font-semibold uppercase tracking-[0.28em] text-[#e4c462]"
+            transition={{ duration: 0.55 }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#f0d477] backdrop-blur-md"
           >
-            Premium Bengaluru Real Estate Advisory
-          </motion.p>
+            <ShieldCheck className="size-4" />
+            Independent Bengaluru property advisory
+          </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="max-w-3xl text-6xl leading-[0.95] font-medium tracking-tight sm:text-7xl lg:text-8xl"
+            transition={{ duration: 0.7, delay: 0.08 }}
+            className="mt-7 max-w-3xl text-6xl font-medium leading-[0.92] tracking-[-0.035em] sm:text-7xl lg:text-[5.7rem]"
           >
-            Find Better.
-            <span className="mt-2 block text-[#e4c462]">
-              Invest Smarter.
+            Your next address,
+            <span className="mt-2 block bg-gradient-to-r from-[#f3da86] to-[#c9a227] bg-clip-text text-transparent">
+              chosen with clarity.
             </span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="mt-8 max-w-2xl text-base leading-8 text-white/70 sm:text-lg"
+            transition={{ duration: 0.65, delay: 0.18 }}
+            className="mt-7 max-w-2xl text-base leading-8 text-white/68 sm:text-lg"
           >
-            Explore premium apartments, villas and investment opportunities
-            across Bengaluru with personalised guidance, project comparisons
-            and site-visit assistance.
+            Discover and compare premium Bengaluru homes through one trusted
+            advisor—from first shortlist to guided site visit.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 26 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-10 flex flex-col gap-4 sm:flex-row"
+            transition={{ duration: 0.7, delay: 0.26 }}
+            className="mt-9 rounded-[1.75rem] border border-white/15 bg-white/10 p-3 shadow-[0_25px_90px_rgba(0,0,0,.28)] backdrop-blur-xl"
           >
-            <a
-              href="#projects"
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "h-14 rounded-full bg-[#c9a227] px-8 text-[#071a2f] hover:bg-[#e4c462]"
-              )}
-            >
-              Explore Projects
-              <ArrowRight className="ml-2 size-4" />
-            </a>
+            <div className="grid gap-2 lg:grid-cols-[1fr_1fr_1fr_auto]">
+              <label className="flex min-h-16 items-center gap-3 rounded-2xl bg-[#061727]/55 px-4">
+                <MapPin className="size-5 shrink-0 text-[#e4c462]" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40">Location</span>
+                  <select value={location} onChange={(event) => setLocation(event.target.value)} className="mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none">
+                    <option value="" className="text-[#071a2f]">Anywhere in Bengaluru</option>
+                    {locations.map((item) => <option key={item} value={item} className="text-[#071a2f]">{item}</option>)}
+                  </select>
+                </span>
+              </label>
 
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                buttonVariants({
-                  size: "lg",
-                  variant: "outline",
-                }),
-                "h-14 rounded-full border-white/30 bg-white/5 px-8 text-white backdrop-blur hover:bg-white hover:text-[#071a2f]"
-              )}
-            >
-              Chat on WhatsApp
-            </a>
+              <label className="flex min-h-16 items-center gap-3 rounded-2xl bg-[#061727]/55 px-4">
+                <Building2 className="size-5 shrink-0 text-[#e4c462]" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40">Property</span>
+                  <select value={homeType} onChange={(event) => setHomeType(event.target.value)} className="mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none">
+                    <option value="" className="text-[#071a2f]">Any home type</option>
+                    {homeTypes.map((item) => <option key={item} value={item} className="text-[#071a2f]">{item}</option>)}
+                  </select>
+                </span>
+              </label>
+
+              <label className="flex min-h-16 items-center gap-3 rounded-2xl bg-[#061727]/55 px-4">
+                <IndianRupee className="size-5 shrink-0 text-[#e4c462]" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40">Budget</span>
+                  <select value={budget} onChange={(event) => setBudget(event.target.value)} className="mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none">
+                    <option value="" className="text-[#071a2f]">Flexible budget</option>
+                    {budgets.map((item) => <option key={item} value={item} className="text-[#071a2f]">{item}</option>)}
+                  </select>
+                </span>
+              </label>
+
+              <a
+                href={`https://wa.me/919019697170?text=${message}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-16 items-center justify-center rounded-2xl bg-[#d5ad2d] px-7 text-sm font-bold text-[#071a2f] transition hover:bg-[#f0d477]"
+              >
+                <Search className="mr-2 size-5" />
+                Find homes
+              </a>
+            </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
-            className="mt-14 grid max-w-4xl grid-cols-2 gap-3 md:grid-cols-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.55 }}
+            className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-white/55"
           >
-            {highlights.map(({ icon: Icon, value, label }) => (
-              <div
-                key={label}
-                className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md"
-              >
-                <Icon className="mb-4 size-5 text-[#e4c462]" />
-
-                <p className="font-semibold text-white">{value}</p>
-
-                <p className="mt-1 text-xs leading-5 text-white/55">
-                  {label}
-                </p>
-              </div>
-            ))}
+            <span>Verified project information</span>
+            <span className="hidden size-1 rounded-full bg-[#e4c462] sm:block" />
+            <span>Private site-visit support</span>
+            <span className="hidden size-1 rounded-full bg-[#e4c462] sm:block" />
+            <a href="#projects" className="inline-flex items-center font-semibold text-white transition hover:text-[#e4c462]">
+              Browse latest launches <ArrowRight className="ml-2 size-3.5" />
+            </a>
           </motion.div>
         </div>
       </div>
-
-      <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#c9a227]/60 to-transparent" />
     </section>
   );
 }

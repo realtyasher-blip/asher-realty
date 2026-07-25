@@ -3,8 +3,9 @@ import FAQ from "@/components/home/FAQ";
 import FeaturedDevelopers from "@/components/home/FeaturedDevelopers";
 import FeaturedProjects from "@/components/home/FeaturedProjects";
 import Hero from "@/components/home/Hero";
+import TrustStrip from "@/components/home/TrustStrip";
+import HowItWorks from "@/components/home/HowItWorks";
 import PropertyDiscovery from "@/components/home/PropertyDiscovery";
-import Testimonials from "@/components/home/Testimonials";
 import WhyAsher from "@/components/home/WhyAsher";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
@@ -19,11 +20,12 @@ export default function Home() {
 
       <main>
         <Hero />
+        <TrustStrip />
         <FeaturedProjects />
         <PropertyDiscovery />
+        <HowItWorks />
         <WhyAsher />
         <FeaturedDevelopers />
-        <Testimonials />
         <FAQ />
         <ConsultationSection />
       </main>
