@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowUpRight,
@@ -14,7 +15,7 @@ import {
 } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
-import type { Project } from "@/data/projects";
+import { projectSlug, type Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 type ProjectCardProps = {
@@ -140,14 +141,23 @@ export default function ProjectCard({
           )}
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <Link
+            href={`/projects/${projectSlug(project.name)}`}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "rounded-full border-[#071a2f]/20 text-[#071a2f] hover:bg-[#071a2f] hover:text-white"
+            )}
+          >
+            Explore Project
+          </Link>
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
               buttonVariants(),
-              "w-full rounded-full bg-[#c9a227] text-[#071a2f] hover:bg-[#e4c462]"
+              "rounded-full bg-[#c9a227] text-[#071a2f] hover:bg-[#e4c462]"
             )}
           >
             Get Details

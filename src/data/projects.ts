@@ -17,6 +17,17 @@ export type Project = {
   verifiedAt: string;
 };
 
+export function projectSlug(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export function getProjectBySlug(slug: string) {
+  return projects.find((project) => projectSlug(project.name) === slug);
+}
+
 /**
  * Buyer-facing project facts verified against developer-owned pages or
  * developer-issued disclosures. Prices and inventory remain enquiry-led
