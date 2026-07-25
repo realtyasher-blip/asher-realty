@@ -38,6 +38,19 @@ export const metadata: Metadata = {
     siteName: "Asher Realty",
     locale: "en_IN",
     type: "website",
+    images: [
+      {
+        url: "/images/hero-property-v2.png",
+        width: 1672,
+        height: 937,
+        alt: "Asher Realty — premium Bengaluru property advisory",
+      },
+    ],
+  },
+  icons: {
+    icon: "/brand/asher-mark.png",
+    shortcut: "/brand/asher-mark.png",
+    apple: "/brand/asher-mark.png",
   },
   robots: {
     index: true,
