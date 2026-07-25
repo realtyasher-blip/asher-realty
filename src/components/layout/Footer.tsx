@@ -5,6 +5,7 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 
 const quickLinks = [
   { label: "Home", href: "/" },
@@ -32,19 +33,7 @@ export default function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link href="/" className="flex items-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-xl border border-[#c9a227]/50 bg-[#c9a227]/10 text-lg font-semibold text-[#e4c462]">
-                AR
-              </div>
-
-              <div>
-                <p className="font-[var(--font-heading)] text-xl tracking-[0.18em]">
-                  ASHER
-                </p>
-
-                <p className="mt-1 text-[10px] tracking-[0.38em] text-[#e4c462]">
-                  REALTY
-                </p>
-              </div>
+              <BrandLogo />
             </Link>
 
             <p className="mt-6 max-w-sm text-sm leading-7 text-white/55">

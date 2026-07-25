@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import BrandLogo from "@/components/brand/BrandLogo";
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -30,19 +31,7 @@ export default function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#071a2f]/90 text-white backdrop-blur-xl">
       <div className="container-shell flex h-20 items-center justify-between">
         <Link href="/" className="group flex items-center gap-3">
-          <div className="flex size-11 items-center justify-center rounded-xl border border-[#c9a227]/60 bg-[#c9a227]/10 text-lg font-semibold text-[#e4c462] transition group-hover:bg-[#c9a227]/20">
-            AR
-          </div>
-
-          <div>
-            <p className="font-[var(--font-heading)] text-xl leading-none tracking-[0.18em]">
-              ASHER
-            </p>
-
-            <p className="mt-1 text-[10px] tracking-[0.38em] text-[#e4c462]">
-              REALTY
-            </p>
-          </div>
+          <BrandLogo />
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex">
