@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #071a2f;
+
+  --navy: #071a2f;
+  --navy-light: #0d2948;
+  --gold: #c9a227;
+  --gold-light: #e4c462;
+  --surface: #f7f8fa;
+  --border-soft: #e8eaed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), serif;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.container-shell {
+  width: min(100% - 2rem, 1280px);
+  margin-inline: auto;
+}
