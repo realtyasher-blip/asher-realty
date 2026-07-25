@@ -5,22 +5,16 @@ import { motion } from "framer-motion";
 import {
   ArrowUpRight,
   BedDouble,
+  CalendarClock,
+  ExternalLink,
   IndianRupee,
   MapPin,
+  PlayCircle,
 } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
+import type { Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
-
-export type Project = {
-  name: string;
-  developer: string;
-  location: string;
-  configuration: string;
-  price: string;
-  image: string;
-  featured?: boolean;
-};
 
 type ProjectCardProps = {
   project: Project;
@@ -66,6 +60,10 @@ export default function ProjectCard({
             Featured
           </div>
         )}
+
+        <div className="absolute right-5 top-5 rounded-full border border-white/20 bg-white/90 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#071a2f] backdrop-blur-md">
+          {project.status}
+        </div>
 
         <div className="absolute right-5 bottom-5 left-5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e4c462]">
@@ -121,9 +119,23 @@ export default function ProjectCard({
               </p>
             </div>
           </div>
+
+          {project.possession && (
+            <div className="flex items-start gap-3">
+              <CalendarClock className="mt-0.5 size-5 shrink-0 text-[#c9a227]" />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                  Possession
+                </p>
+                <p className="mt-1 text-sm font-medium text-[#071a2f]">
+                  {project.possession}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <a
             href={whatsappUrl}
             target="_blank"
@@ -137,16 +149,63 @@ export default function ProjectCard({
             <ArrowUpRight className="ml-2 size-4" />
           </a>
 
+          {project.mediaUrl ? (
+            <a
+              href={project.mediaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "rounded-full border-[#071a2f]/20 text-[#071a2f] hover:bg-[#071a2f] hover:text-white"
+              )}
+            >
+              <PlayCircle className="mr-2 size-4" />
+              View Media
+            </a>
+          ) : (
+            <a
+              href={project.officialUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "rounded-full border-[#071a2f]/20 text-[#071a2f] hover:bg-[#071a2f] hover:text-white"
+              )}
+            >
+              <ExternalLink className="mr-2 size-4" />
+              Official Page
+            </a>
+          )}
+        </div>
+
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 text-xs text-slate-400">
+          <span>Verified {project.verifiedAt}</span>
           <a
+            href={project.officialUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-semibold text-[#071a2f] transition hover:text-[#c9a227]"
+          >
+            Source
+            <ExternalLink className="size-3" />
+          </a>
+        </div>
+
+        {project.rera && (
+          <p className="mt-3 break-words text-[10px] leading-5 text-slate-400">
+            RERA: {project.rera}
+          </p>
+        )}
+
+        <a
             href="tel:+919019697170"
             className={cn(
               buttonVariants({ variant: "outline" }),
-              "flex-1 rounded-full border-[#071a2f]/20 text-[#071a2f] hover:bg-[#071a2f] hover:text-white"
+              "mt-4 w-full rounded-full border-[#071a2f]/20 text-[#071a2f] hover:bg-[#071a2f] hover:text-white"
             )}
           >
-            Call Now
+            Call Asher Realty
           </a>
-        </div>
       </div>
     </motion.article>
   );

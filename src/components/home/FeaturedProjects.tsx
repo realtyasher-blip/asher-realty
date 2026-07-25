@@ -2,55 +2,10 @@
 
 import { ArrowRight } from "lucide-react";
 
-import ProjectCard, {
-  type Project,
-} from "@/components/projects/ProjectCard";
+import ProjectCard from "@/components/projects/ProjectCard";
 import { buttonVariants } from "@/components/ui/button";
+import { projects } from "@/data/projects";
 import { cn } from "@/lib/utils";
-
-const projects: Project[] = [
-  {
-    name: "SOBHA OneWorld",
-    developer: "SOBHA",
-    location: "Greater Whitefield, Bengaluru",
-    configuration: "1, 2, 3 & 4 BHK",
-    price: "Contact for latest price",
-    image: "/images/sobha-oneworld.jpg",
-    featured: true,
-  },
-  {
-    name: "Prestige Southern Star",
-    developer: "Prestige Group",
-    location: "South Bengaluru",
-    configuration: "Premium Apartments",
-    price: "Contact for latest price",
-    image: "/images/prestige-southern-star.jpg",
-  },
-  {
-    name: "Birla Trimaya",
-    developer: "Birla Estates",
-    location: "North Bengaluru",
-    configuration: "Premium Apartments",
-    price: "Contact for latest price",
-    image: "/images/birla-trimaya.jpg",
-  },
-  {
-    name: "Brigade El Dorado",
-    developer: "Brigade Group",
-    location: "North Bengaluru",
-    configuration: "Premium Apartments",
-    price: "Contact for latest price",
-    image: "/images/brigade-eldorado.jpg",
-  },
-  {
-    name: "Godrej MSR City",
-    developer: "Godrej Properties",
-    location: "North Bengaluru",
-    configuration: "Premium Apartments",
-    price: "Contact for latest price",
-    image: "/images/godrej-msr-city.jpg",
-  },
-];
 
 const generalWhatsappUrl =
   "https://wa.me/919019697170?text=Hi%20Asher%20Realty%2C%20please%20help%20me%20find%20a%20suitable%20property%20in%20Bengaluru.";
@@ -69,13 +24,12 @@ export default function FeaturedProjects() {
             </p>
 
             <h2 className="mt-4 text-5xl font-medium leading-tight text-[#071a2f] sm:text-6xl">
-              Featured Projects
+              Latest Bengaluru Launches
             </h2>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-slate-600">
-              Explore selected residential projects across Bengaluru with
-              personalised recommendations, project comparisons and guided site
-              visits.
+              Developer-verified project details, official media links and
+              guided site-visit support—updated as launch information changes.
             </p>
           </div>
 
