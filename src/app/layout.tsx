@@ -65,6 +65,27 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-M7ZLLKKFBZ');
+
+            document.addEventListener('click', function(event) {
+              var target = event.target;
+              var link = target instanceof Element ? target.closest('a') : null;
+              if (!link) return;
+
+              var href = link.getAttribute('href') || '';
+              if (href.includes('wa.me/')) {
+                gtag('event', 'whatsapp_click', { link_url: href });
+              } else if (href.startsWith('tel:')) {
+                gtag('event', 'phone_call_click', { link_url: href });
+              }
+            });
+
+            document.addEventListener('submit', function(event) {
+              if (event.target instanceof HTMLFormElement) {
+                gtag('event', 'generate_lead', {
+                  form_name: 'property_consultation'
+                });
+              }
+            }, true);
           `}
         </Script>
         {children}
