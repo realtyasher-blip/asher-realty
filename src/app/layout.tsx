@@ -56,7 +56,7 @@ export default function RootLayout({
         className={`${headingFont.variable} ${bodyFont.variable} antialiased`}
       >
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-TE1937TJRF"
+          src="https://www.googletagmanager.com/gtag/js?id=G-M7ZLLKKFBZ"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -64,7 +64,7 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-TE1937TJRF');
+            gtag('config', 'G-M7ZLLKKFBZ');
           `}
         </Script>
         {children}
