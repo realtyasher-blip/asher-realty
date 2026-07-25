@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 
@@ -16,15 +17,12 @@ const bodyFont = Montserrat({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://asherrealty.in"),
-
   title: {
     default: "Asher Realty | Premium Properties in Bengaluru",
     template: "%s | Asher Realty",
   },
-
   description:
     "Discover premium apartments, villas and investment properties across Bengaluru with personalised guidance from Asher Realty.",
-
   keywords: [
     "Asher Realty",
     "Bengaluru real estate",
@@ -33,7 +31,6 @@ export const metadata: Metadata = {
     "luxury apartments Bangalore",
     "property investment Bengaluru",
   ],
-
   openGraph: {
     title: "Asher Realty",
     description: "Find Better. Invest Smarter.",
@@ -42,7 +39,6 @@ export const metadata: Metadata = {
     locale: "en_IN",
     type: "website",
   },
-
   robots: {
     index: true,
     follow: true,
@@ -59,6 +55,18 @@ export default function RootLayout({
       <body
         className={`${headingFont.variable} ${bodyFont.variable} antialiased`}
       >
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-TE1937TJRF"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-TE1937TJRF');
+          `}
+        </Script>
         {children}
       </body>
     </html>
