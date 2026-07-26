@@ -85,20 +85,29 @@ export default function RootLayout({
               if (!link) return;
 
               var href = link.getAttribute('href') || '';
+              var label = link.getAttribute('data-analytics-label') ||
+                (link.textContent || '').trim().slice(0, 80);
               if (href.includes('wa.me/')) {
-                gtag('event', 'whatsapp_click', { link_url: href });
+                gtag('event', 'whatsapp_click', {
+                  cta_label: label,
+                  page_path: window.location.pathname
+                });
               } else if (href.startsWith('tel:')) {
-                gtag('event', 'phone_call_click', { link_url: href });
-              }
-            });
-
-            document.addEventListener('submit', function(event) {
-              if (event.target instanceof HTMLFormElement) {
-                gtag('event', 'generate_lead', {
-                  form_name: 'property_consultation'
+                gtag('event', 'phone_call_click', {
+                  cta_label: label,
+                  page_path: window.location.pathname
+                });
+              } else if (href.startsWith('/projects/')) {
+                gtag('event', 'project_view_click', {
+                  project_path: href,
+                  cta_label: label
+                });
+              } else if (href.startsWith('/compare')) {
+                gtag('event', 'comparison_opened', {
+                  comparison_path: href
                 });
               }
-            }, true);
+            });
           `}
         </Script>
         {children}

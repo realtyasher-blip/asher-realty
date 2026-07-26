@@ -2,12 +2,16 @@
 
 import { FormEvent, useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 type FormData = {
   name: string;
   phone: string;
   budget: string;
   location: string;
+  configuration: string;
+  purpose: string;
+  timeline: string;
 };
 
 const initialFormData: FormData = {
@@ -15,6 +19,9 @@ const initialFormData: FormData = {
   phone: "",
   budget: "",
   location: "",
+  configuration: "",
+  purpose: "",
+  timeline: "",
 };
 
 export default function ConsultationForm() {
@@ -45,11 +52,22 @@ I would like a personalised property consultation.
 Name: ${formData.name}
 Phone: ${formData.phone}
 Budget: ${formData.budget}
-Preferred Location: ${formData.location}`
+Preferred Location: ${formData.location}
+Preferred Configuration: ${formData.configuration}
+Buying For: ${formData.purpose}
+Purchase Timeline: ${formData.timeline}`
     );
 
     const whatsappUrl = `https://wa.me/919019697170?text=${message}`;
 
+    trackEvent("generate_lead", {
+      form_name: "property_consultation",
+      budget_band: formData.budget,
+      preferred_location: formData.location,
+      configuration: formData.configuration,
+      buying_purpose: formData.purpose,
+      purchase_timeline: formData.timeline,
+    });
     setSubmitted(true);
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   }
@@ -108,6 +126,64 @@ Preferred Location: ${formData.location}`
             placeholder="Enter your name"
             className="mt-2 h-13 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm text-[#071a2f] outline-none transition placeholder:text-slate-400 focus:border-[#c9a227] focus:bg-white"
           />
+        </div>
+
+        <div>
+          <label htmlFor="configuration" className="text-sm font-semibold text-[#071a2f]">
+            Configuration
+          </label>
+          <select
+            id="configuration"
+            name="configuration"
+            value={formData.configuration}
+            onChange={handleChange}
+            required
+            className="mt-2 h-13 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm text-[#071a2f] outline-none transition focus:border-[#c9a227] focus:bg-white"
+          >
+            <option value="">Select home size</option>
+            <option value="1 BHK">1 BHK</option>
+            <option value="2 BHK">2 BHK</option>
+            <option value="3 BHK">3 BHK</option>
+            <option value="4 BHK or larger">4 BHK or larger</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="purpose" className="text-sm font-semibold text-[#071a2f]">
+            Buying For
+          </label>
+          <select
+            id="purpose"
+            name="purpose"
+            value={formData.purpose}
+            onChange={handleChange}
+            required
+            className="mt-2 h-13 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm text-[#071a2f] outline-none transition focus:border-[#c9a227] focus:bg-white"
+          >
+            <option value="">Select purpose</option>
+            <option value="Self-use">Self-use</option>
+            <option value="Investment">Investment</option>
+          </select>
+        </div>
+
+        <div className="sm:col-span-2">
+          <label htmlFor="timeline" className="text-sm font-semibold text-[#071a2f]">
+            Purchase Timeline
+          </label>
+          <select
+            id="timeline"
+            name="timeline"
+            value={formData.timeline}
+            onChange={handleChange}
+            required
+            className="mt-2 h-13 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm text-[#071a2f] outline-none transition focus:border-[#c9a227] focus:bg-white"
+          >
+            <option value="">Select timeline</option>
+            <option value="Within 3 months">Within 3 months</option>
+            <option value="3–6 months">3–6 months</option>
+            <option value="6–12 months">6–12 months</option>
+            <option value="Exploring">Just exploring</option>
+          </select>
         </div>
 
         <div>
