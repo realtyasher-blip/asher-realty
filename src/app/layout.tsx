@@ -107,6 +107,11 @@ export default function RootLayout({
                   location_path: href,
                   cta_label: label
                 });
+              } else if (href.startsWith('/book-site-visit')) {
+                gtag('event', 'site_visit_flow_opened', {
+                  cta_label: label,
+                  page_path: window.location.pathname
+                });
               } else if (href.startsWith('/compare')) {
                 gtag('event', 'comparison_opened', {
                   comparison_path: href

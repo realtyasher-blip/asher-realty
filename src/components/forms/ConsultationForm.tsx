@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, MessageCircle } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 
 type FormData = {
@@ -26,7 +26,20 @@ const initialFormData: FormData = {
 
 export default function ConsultationForm() {
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [submitted, setSubmitted] = useState(false);
+  const [submission, setSubmission] = useState<"idle" | "saving" | "saved" | "fallback">("idle");
+  const whatsappUrl = `https://wa.me/919019697170?text=${encodeURIComponent(
+    `Hi Asher Realty,
+
+I would like a personalised property consultation.
+
+Name: ${formData.name}
+Phone: ${formData.phone}
+Budget: ${formData.budget}
+Preferred Location: ${formData.location}
+Preferred Configuration: ${formData.configuration}
+Buying For: ${formData.purpose}
+Purchase Timeline: ${formData.timeline}`
+  )}`;
 
   function handleChange(
     event:
@@ -41,24 +54,8 @@ export default function ConsultationForm() {
     }));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const message = encodeURIComponent(
-      `Hi Asher Realty,
-
-I would like a personalised property consultation.
-
-Name: ${formData.name}
-Phone: ${formData.phone}
-Budget: ${formData.budget}
-Preferred Location: ${formData.location}
-Preferred Configuration: ${formData.configuration}
-Buying For: ${formData.purpose}
-Purchase Timeline: ${formData.timeline}`
-    );
-
-    const whatsappUrl = `https://wa.me/919019697170?text=${message}`;
 
     trackEvent("generate_lead", {
       form_name: "property_consultation",
@@ -68,11 +65,23 @@ Purchase Timeline: ${formData.timeline}`
       buying_purpose: formData.purpose,
       purchase_timeline: formData.timeline,
     });
-    setSubmitted(true);
-    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    setSubmission("saving");
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          source: "property_consultation",
+        }),
+      });
+      setSubmission(response.ok ? "saved" : "fallback");
+    } catch {
+      setSubmission("fallback");
+    }
   }
 
-  if (submitted) {
+  if (submission === "saved" || submission === "fallback") {
     return (
       <div className="flex min-h-[420px] flex-col items-center justify-center rounded-[1.75rem] border border-[#c9a227]/20 bg-white p-8 text-center">
         <div className="flex size-16 items-center justify-center rounded-full bg-[#c9a227]/10">
@@ -80,21 +89,33 @@ Purchase Timeline: ${formData.timeline}`
         </div>
 
         <h3 className="mt-6 text-3xl font-medium text-[#071a2f]">
-          Thank you
+          {submission === "saved" ? "Enquiry received" : "Continue on WhatsApp"}
         </h3>
 
         <p className="mt-3 max-w-md leading-7 text-slate-600">
-          Your consultation request has been prepared in WhatsApp. Send the
-          message to connect with Asher Realty.
+          {submission === "saved"
+            ? "Your requirement is securely recorded. An Asher Realty advisor will contact you to verify suitable projects."
+            : "Secure CRM storage is being connected. Send the prepared message to reach Asher Realty immediately."}
         </p>
+
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-analytics-label="Consultation confirmation WhatsApp"
+          className="mt-7 inline-flex h-12 items-center justify-center rounded-full bg-[#25D366] px-6 text-sm font-bold text-white"
+        >
+          <MessageCircle className="mr-2 size-4" />
+          Continue on WhatsApp
+        </a>
 
         <button
           type="button"
           onClick={() => {
-            setSubmitted(false);
+            setSubmission("idle");
             setFormData(initialFormData);
           }}
-          className="mt-7 inline-flex h-12 items-center justify-center rounded-full border border-[#071a2f]/20 px-6 text-sm font-semibold text-[#071a2f] transition hover:bg-[#071a2f] hover:text-white"
+          className="mt-4 inline-flex h-12 items-center justify-center rounded-full border border-[#071a2f]/20 px-6 text-sm font-semibold text-[#071a2f] transition hover:bg-[#071a2f] hover:text-white"
         >
           Submit Another Request
         </button>
@@ -270,10 +291,11 @@ Purchase Timeline: ${formData.timeline}`
       </div>
 
       <button
+        disabled={submission === "saving"}
         type="submit"
-        className="mt-7 inline-flex h-14 w-full items-center justify-center rounded-full bg-[#c9a227] px-8 font-semibold text-[#071a2f] transition hover:bg-[#e4c462]"
+        className="mt-7 inline-flex h-14 w-full items-center justify-center rounded-full bg-[#c9a227] px-8 font-semibold text-[#071a2f] transition hover:bg-[#e4c462] disabled:opacity-60"
       >
-        Request Free Consultation
+        {submission === "saving" ? "Securing your enquiry…" : "Request Free Consultation"}
         <ArrowRight className="ml-2 size-4" />
       </button>
 
