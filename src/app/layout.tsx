@@ -102,6 +102,11 @@ export default function RootLayout({
                   project_path: href,
                   cta_label: label
                 });
+              } else if (href.startsWith('/locations/')) {
+                gtag('event', 'location_guide_opened', {
+                  location_path: href,
+                  cta_label: label
+                });
               } else if (href.startsWith('/compare')) {
                 gtag('event', 'comparison_opened', {
                   comparison_path: href

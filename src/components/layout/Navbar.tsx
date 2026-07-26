@@ -16,11 +16,11 @@ import BrandLogo from "@/components/brand/BrandLogo";
 
 const navigation = [
   { label: "Projects", href: "/projects" },
+  { label: "Locations", href: "/locations" },
   { label: "AI Match", href: "/#ai-match" },
   { label: "Compare", href: "/compare" },
   { label: "Market", href: "/#market" },
   { label: "Tools", href: "/tools" },
-  { label: "About", href: "/#about" },
 ];
 
 const whatsappUrl =

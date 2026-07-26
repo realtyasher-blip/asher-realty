@@ -1,4 +1,5 @@
 import { ArrowUpRight, BarChart3, Clock3, Newspaper, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 import { corridorSignals, marketSignals } from "@/data/market";
 import { getMarketNews } from "@/lib/marketNews";
@@ -25,6 +26,15 @@ export default async function MarketIntelligence() {
             <Clock3 className="size-4 text-[#b08a16]" />
             News refreshed daily · Updated {formatDate(news.updatedAt)}
           </div>
+        </div>
+        <div className="mt-6 flex justify-end">
+          <Link
+            href="/locations"
+            className="inline-flex items-center text-sm font-bold text-[#071a2f] transition hover:text-[#b08a16]"
+          >
+            Explore Bengaluru location intelligence
+            <ArrowUpRight className="ml-2 size-4" />
+          </Link>
         </div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
