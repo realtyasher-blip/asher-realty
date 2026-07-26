@@ -17,9 +17,9 @@ import BrandLogo from "@/components/brand/BrandLogo";
 const navigation = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "#projects" },
+  { label: "AI Match", href: "#ai-match" },
   { label: "Compare", href: "#compare" },
-  { label: "Locations", href: "#locations" },
-  { label: "Services", href: "#services" },
+  { label: "Market", href: "#market" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
