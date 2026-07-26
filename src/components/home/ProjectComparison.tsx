@@ -24,6 +24,8 @@ export default function ProjectComparison() {
 
   const rows = [
     ["Developer", first.developer, second.developer],
+    ["Project stage", first.status, second.status],
+    ["Bengaluru corridor", first.corridor, second.corridor],
     ["Location", first.location, second.location],
     ["Configuration", first.configuration, second.configuration],
     ["Indicative price", first.price, second.price],

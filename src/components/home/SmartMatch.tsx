@@ -7,11 +7,10 @@ import { ArrowRight, Bot, CheckCircle2, RotateCcw, Sparkles } from "lucide-react
 
 import { projectSlug, projects } from "@/data/projects";
 
-const locationGroups: Record<string, string[]> = {
-  East: ["Whitefield", "Hoskote", "Old Madras"],
-  North: ["Devanahalli", "Yelahanka", "Aerospace"],
-  South: ["Bannerghatta", "Akshayanagar"],
-  Flexible: [],
+const corridorMap: Record<string, string> = {
+  East: "East Bengaluru",
+  North: "North Bengaluru",
+  South: "South Bengaluru",
 };
 
 export default function SmartMatch() {
@@ -21,13 +20,17 @@ export default function SmartMatch() {
   const [showResults, setShowResults] = useState(false);
 
   const matches = useMemo(() => {
-    const terms = locationGroups[location] ?? [];
+    const preferredCorridor = corridorMap[location];
     return projects
       .map((project) => {
         let score = 58;
-        if (!terms.length || terms.some((term) => project.location.includes(term))) score += 22;
+        if (!preferredCorridor || project.corridor === preferredCorridor) score += 22;
         if (project.configuration.includes(configuration)) score += 12;
-        if (purpose === "Investment" && /North|Whitefield|Hoskote|Devanahalli/.test(project.location)) score += 8;
+        if (
+          purpose === "Investment" &&
+          ["North Bengaluru", "East Bengaluru"].includes(project.corridor)
+        )
+          score += 8;
         if (purpose === "Self-use" && project.highlights.length >= 3) score += 6;
         return { project, score: Math.min(score, 96) };
       })
