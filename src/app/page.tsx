@@ -5,6 +5,7 @@ import FeaturedProjects from "@/components/home/FeaturedProjects";
 import Hero from "@/components/home/Hero";
 import TrustStrip from "@/components/home/TrustStrip";
 import HowItWorks from "@/components/home/HowItWorks";
+import ProjectComparison from "@/components/home/ProjectComparison";
 import PropertyDiscovery from "@/components/home/PropertyDiscovery";
 import WhyAsher from "@/components/home/WhyAsher";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
@@ -22,6 +23,7 @@ export default function Home() {
         <Hero />
         <TrustStrip />
         <FeaturedProjects />
+        <ProjectComparison />
         <PropertyDiscovery />
         <HowItWorks />
         <WhyAsher />
