@@ -15,13 +15,12 @@ import { cn } from "@/lib/utils";
 import BrandLogo from "@/components/brand/BrandLogo";
 
 const navigation = [
-  { label: "Home", href: "/" },
-  { label: "Projects", href: "#projects" },
-  { label: "AI Match", href: "#ai-match" },
-  { label: "Compare", href: "#compare" },
-  { label: "Market", href: "#market" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Projects", href: "/projects" },
+  { label: "AI Match", href: "/#ai-match" },
+  { label: "Compare", href: "/compare" },
+  { label: "Market", href: "/#market" },
+  { label: "Tools", href: "/tools" },
+  { label: "About", href: "/#about" },
 ];
 
 const whatsappUrl =
@@ -35,7 +34,7 @@ export default function Navbar() {
           <BrandLogo />
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {navigation.map((item) => (
             <Link
               key={item.label}

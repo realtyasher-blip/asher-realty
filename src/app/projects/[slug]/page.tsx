@@ -4,7 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
+  ArrowRight,
   BedDouble,
+  Calculator,
   CalendarClock,
   Check,
   IndianRupee,
@@ -17,6 +19,7 @@ import {
 import BrandLogo from "@/components/brand/BrandLogo";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import { buttonVariants } from "@/components/ui/button";
+import ProjectActions from "@/components/projects/ProjectActions";
 import { getProjectBySlug, projectSlug, projects } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
@@ -63,7 +66,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <BrandLogo />
           </Link>
           <Link
-            href="/#projects"
+            href="/projects"
             className="inline-flex items-center gap-2 text-sm font-semibold text-white/75 transition hover:text-[#e4c462]"
           >
             <ArrowLeft className="size-4" />
@@ -91,6 +94,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </span>
                 <span className="rounded-full border border-[#c9a227]/40 bg-[#c9a227]/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#e4c462] backdrop-blur">
                   {project.developer}
+                </span>
+                <span className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] backdrop-blur">
+                  {project.corridor}
                 </span>
               </div>
               <h1 className="mt-6 text-5xl font-medium leading-none sm:text-7xl">
@@ -123,6 +129,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   Call 9019697170
                 </a>
               </div>
+              <ProjectActions slug={projectSlug(project.name)} name={project.name} />
             </div>
           </div>
         </section>
@@ -225,7 +232,79 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   RERA: {project.rera}
                 </p>
               )}
+              <Link
+                href="/tools"
+                className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full border border-white/15 px-5 text-sm font-semibold text-white/75 transition hover:border-[#c9a227] hover:text-[#e4c462]"
+              >
+                <Calculator className="mr-2 size-4" />
+                Estimate EMI & buying cost
+              </Link>
             </aside>
+          </div>
+
+          <div className="mt-20 border-t border-slate-200 pt-16">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#c9a227]">
+                  Similar options
+                </p>
+                <h2 className="mt-4 text-4xl font-medium text-[#071a2f] sm:text-5xl">
+                  Compare before deciding
+                </h2>
+              </div>
+              <Link
+                href={`/compare?projects=${projectSlug(project.name)},${projectSlug(
+                  projects.find(
+                    (candidate) =>
+                      candidate.name !== project.name &&
+                      candidate.corridor === project.corridor
+                  )?.name ?? projects.find((candidate) => candidate.name !== project.name)!.name
+                )}`}
+                className="inline-flex items-center text-sm font-bold text-[#071a2f] hover:text-[#b08a16]"
+              >
+                Open comparison
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
+            </div>
+
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
+              {projects
+                .filter(
+                  (candidate) =>
+                    candidate.name !== project.name &&
+                    (candidate.corridor === project.corridor ||
+                      candidate.developer === project.developer)
+                )
+                .slice(0, 3)
+                .map((candidate) => (
+                  <Link
+                    key={candidate.name}
+                    href={`/projects/${projectSlug(candidate.name)}`}
+                    className="group overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-xl"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      <Image
+                        src={candidate.image}
+                        alt={candidate.name}
+                        fill
+                        className="object-cover transition duration-700 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#b08a16]">
+                        {candidate.developer} · {candidate.status}
+                      </p>
+                      <h3 className="mt-2 text-2xl font-medium text-[#071a2f]">
+                        {candidate.name}
+                      </h3>
+                      <p className="mt-2 text-xs leading-5 text-slate-500">
+                        {candidate.location} · {candidate.configuration}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+            </div>
           </div>
         </section>
       </main>

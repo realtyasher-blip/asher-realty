@@ -9,10 +9,11 @@ import BrandLogo from "@/components/brand/BrandLogo";
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "Projects", href: "#projects" },
-  { label: "Locations", href: "#locations" },
-  { label: "Why Asher", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Projects", href: "/projects" },
+  { label: "Compare", href: "/compare" },
+  { label: "Buyer Tools", href: "/tools" },
+  { label: "Why Asher", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 const locations = [

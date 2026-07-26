@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -137,9 +138,9 @@ export default function Hero() {
             <span className="hidden size-1 rounded-full bg-[#e4c462] sm:block" />
             <span>Private site-visit support</span>
             <span className="hidden size-1 rounded-full bg-[#e4c462] sm:block" />
-            <a href="#projects" className="inline-flex items-center font-semibold text-white transition hover:text-[#e4c462]">
-              Browse latest launches <ArrowRight className="ml-2 size-3.5" />
-            </a>
+            <Link href="/projects" className="inline-flex items-center font-semibold text-white transition hover:text-[#e4c462]">
+              Browse all projects <ArrowRight className="ml-2 size-3.5" />
+            </Link>
           </motion.div>
         </div>
       </div>

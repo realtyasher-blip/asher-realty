@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   ArrowRight,
   Building2,
@@ -52,7 +53,6 @@ export default function FeaturedProjects() {
   const [stage, setStage] = useState<(typeof stages)[number]>("All active");
   const [corridor, setCorridor] = useState("All corridors");
   const [query, setQuery] = useState("");
-  const [visibleCount, setVisibleCount] = useState(9);
 
   const filteredProjects = useMemo(() => {
     const term = query.trim().toLowerCase();
@@ -82,15 +82,11 @@ export default function FeaturedProjects() {
     });
   }, [builder, corridor, query, stage]);
 
-  const visibleProjects = filteredProjects.slice(0, visibleCount);
+  const visibleProjects = filteredProjects.slice(0, 9);
   const activeBuilders = new Set(projects.map((project) => project.developer)).size;
   const underConstruction = projects.filter(
     (project) => project.status === "Under construction"
   ).length;
-
-  function resetVisibleCount() {
-    setVisibleCount(9);
-  }
 
   return (
     <section id="projects" className="overflow-hidden bg-[#f5f6f8] py-24 sm:py-28">
@@ -148,7 +144,6 @@ export default function FeaturedProjects() {
                   value={query}
                   onChange={(event) => {
                     setQuery(event.target.value);
-                    resetVisibleCount();
                   }}
                   placeholder="Search project, builder, corridor, BHK or lifestyle"
                   className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 pl-12 pr-4 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-[#c9a227]/60 focus:bg-white/10"
@@ -158,7 +153,6 @@ export default function FeaturedProjects() {
                 value={corridor}
                 onChange={(event) => {
                   setCorridor(event.target.value);
-                  resetVisibleCount();
                 }}
                 aria-label="Filter by Bengaluru corridor"
                 className="h-14 rounded-2xl border border-white/10 bg-[#0a2038] px-4 text-sm text-white outline-none focus:border-[#c9a227]/60"
@@ -181,7 +175,6 @@ export default function FeaturedProjects() {
                   type="button"
                   onClick={() => {
                     setStage(name);
-                    resetVisibleCount();
                   }}
                   className={cn(
                     "shrink-0 rounded-full border px-4 py-2 text-xs font-semibold transition",
@@ -202,7 +195,6 @@ export default function FeaturedProjects() {
                   type="button"
                   onClick={() => {
                     setBuilder(name);
-                    resetVisibleCount();
                   }}
                   className={cn(
                     "shrink-0 rounded-full border px-4 py-2 text-xs font-semibold transition",
@@ -226,18 +218,17 @@ export default function FeaturedProjects() {
               ))}
             </div>
 
-            {visibleProjects.length < filteredProjects.length && (
+            {filteredProjects.length > 9 && (
               <div className="mt-10 text-center">
-                <button
-                  type="button"
-                  onClick={() => setVisibleCount((count) => count + 9)}
+                <Link
+                  href="/projects"
                   className="inline-flex h-13 items-center justify-center rounded-full border border-[#071a2f]/15 bg-white px-7 text-sm font-semibold text-[#071a2f] shadow-sm transition hover:-translate-y-0.5 hover:border-[#c9a227] hover:shadow-lg"
                 >
-                  Show more projects
+                  Explore the full marketplace
                   <span className="ml-2 text-slate-400">
-                    ({filteredProjects.length - visibleProjects.length})
+                    ({projects.length} projects)
                   </span>
-                </button>
+                </Link>
               </div>
             )}
           </>
