@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 
-import { projectSlug, projects } from "@/data/projects";
+import { developerLogos, projectSlug, projects } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "asher-favourite-projects";
@@ -82,6 +82,8 @@ export default function ProjectMarketplace() {
           project.location,
           project.corridor,
           project.configuration,
+          project.propertyType || "",
+          project.unitSizes || "",
           project.status,
           project.description,
           ...project.highlights,
@@ -149,6 +151,32 @@ export default function ProjectMarketplace() {
   return (
     <section className="bg-[#f4f5f7] pb-24 pt-10">
       <div className="container-shell">
+        <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {[
+            { value: projects.length, label: "Curated Bengaluru projects" },
+            {
+              value: new Set(projects.map((project) => project.developer)).size,
+              label: "Grade-A builders",
+            },
+            {
+              value: projects.filter((project) => project.status === "New launch").length,
+              label: "New-launch options",
+            },
+            {
+              value: projects.filter((project) => project.possession).length,
+              label: "Possession dates tracked",
+            },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_10px_35px_rgba(7,26,47,.05)]"
+            >
+              <p className="text-3xl font-medium text-[#071a2f]">{stat.value}</p>
+              <p className="mt-1 text-xs leading-5 text-slate-400">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
         <div className="sticky top-20 z-30 rounded-[1.75rem] border border-slate-200 bg-white/95 p-4 shadow-[0_20px_60px_rgba(7,26,47,.09)] backdrop-blur-xl sm:p-5">
           <div className="grid gap-3 lg:grid-cols-[1.6fr_repeat(3,1fr)]">
             <label className="relative">
@@ -346,9 +374,38 @@ export default function ProjectMarketplace() {
                   </div>
 
                   <div className="flex flex-col p-6">
+                    <div className="mb-5 flex items-center justify-between gap-4">
+                      <div className="relative h-8 w-28">
+                        <Image
+                          src={developerLogos[project.developer]}
+                          alt={`${project.developer} logo`}
+                          fill
+                          className="object-contain object-left"
+                          sizes="112px"
+                          unoptimized={developerLogos[project.developer]?.endsWith(".svg")}
+                        />
+                      </div>
+                      <span className="rounded-full bg-[#f5f6f8] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                        Checked {project.verifiedAt}
+                      </span>
+                    </div>
                     <p className="line-clamp-3 text-sm leading-7 text-slate-600">
                       {project.description}
                     </p>
+                    {(project.propertyType || project.unitSizes) && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {project.propertyType && (
+                          <span className="rounded-full bg-[#fff7dc] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#7a5b08]">
+                            {project.propertyType}
+                          </span>
+                        )}
+                        {project.unitSizes && (
+                          <span className="rounded-full bg-slate-100 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                            {project.unitSizes}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
                       {[
                         { icon: MapPin, value: project.location },

@@ -26,6 +26,18 @@ const developers = [
     name: "Assetz Property Group",
     logo: "/logos/assetz.png",
   },
+  {
+    name: "Sumadhura Group",
+    logo: "/logos/sumadhura.svg",
+  },
+  {
+    name: "Lodha",
+    logo: "/logos/lodha.svg",
+  },
+  {
+    name: "Bhartiya Urban",
+    logo: "/logos/bhartiya.jpg",
+  },
 ];
 
 const whatsappUrl =
@@ -62,7 +74,7 @@ export default function FeaturedDevelopers() {
           </a>
         </div>
 
-        <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+        <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
           {developers.map((developer) => (
             <div
               key={developer.name}
@@ -74,7 +86,8 @@ export default function FeaturedDevelopers() {
                   alt={`${developer.name} logo`}
                   fill
                   className="object-contain grayscale opacity-65 transition duration-300 group-hover:grayscale-0 group-hover:opacity-100"
-                  sizes="(max-width: 768px) 50vw, 16vw"
+                  sizes="(max-width: 768px) 50vw, 20vw"
+                  unoptimized={developer.logo.endsWith(".svg")}
                 />
               </div>
             </div>

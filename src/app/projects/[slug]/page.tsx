@@ -5,22 +5,32 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
+  BadgeCheck,
   BedDouble,
+  Building2,
   Calculator,
   CalendarClock,
   Check,
   IndianRupee,
   MapPin,
+  MapPinned,
   MessageCircle,
   Phone,
+  Route,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 
 import BrandLogo from "@/components/brand/BrandLogo";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import { buttonVariants } from "@/components/ui/button";
 import ProjectActions from "@/components/projects/ProjectActions";
-import { getProjectBySlug, projectSlug, projects } from "@/data/projects";
+import {
+  developerLogos,
+  getProjectBySlug,
+  projectSlug,
+  projects,
+} from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 type ProjectPageProps = {
@@ -57,6 +67,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const whatsappUrl = `https://wa.me/919019697170?text=${encodeURIComponent(
     `Hi Asher Realty, I am interested in ${project.name}. Please share the latest price, availability, floor plans and site-visit slots.`
   )}`;
+  const amenities = project.amenities ?? project.highlights;
+  const nearby = project.nearby ?? [
+    project.location,
+    project.corridor,
+    "Detailed drive-time check available before your visit",
+  ];
+  const buyerNotes = project.buyerNotes ?? [
+    `Compare ${project.name} with similar ${project.corridor} options before choosing a tower or phase.`,
+    "Ask for an all-inclusive cost sheet, tower-specific availability and RERA-linked possession schedule.",
+  ];
+  const developerLogo = developerLogos[project.developer];
 
   return (
     <>
@@ -81,13 +102,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             src={project.image}
             alt={`${project.name} exterior`}
             fill
-            priority
+            preload
             className="object-cover"
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#071a2f] via-[#071a2f]/80 to-[#071a2f]/20" />
           <div className="container-shell relative flex min-h-[72vh] items-end pb-16 pt-32">
             <div className="max-w-4xl">
+              {developerLogo && (
+                <div className="relative mb-6 h-14 w-40 rounded-xl border border-white/20 bg-white/95 p-3 shadow-xl">
+                  <Image
+                    src={developerLogo}
+                    alt={`${project.developer} official logo`}
+                    fill
+                    className="object-contain p-3"
+                    sizes="160px"
+                    unoptimized={developerLogo.endsWith(".svg")}
+                  />
+                </div>
+              )}
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] backdrop-blur">
                   {project.status}
@@ -158,6 +191,59 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             ))}
           </div>
 
+          <div className="mt-10 grid gap-4 lg:grid-cols-3">
+            <article className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_12px_45px_rgba(7,26,47,0.06)]">
+              <Building2 className="size-7 text-[#c9a227]" />
+              <p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+                Project snapshot
+              </p>
+              <div className="mt-5 space-y-4">
+                {[
+                  ["Property type", project.propertyType || "Premium residential community"],
+                  ["Unit sizes", project.unitSizes || "Request current area schedule"],
+                  ["Development", project.area || "Confirm current phase"],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex items-start justify-between gap-5 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+                    <span className="text-sm text-slate-400">{label}</span>
+                    <span className="max-w-[60%] text-right text-sm font-semibold leading-6 text-[#071a2f]">
+                      {value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="rounded-[1.75rem] border border-[#c9a227]/25 bg-[#fffaf0] p-6">
+              <Sparkles className="size-7 text-[#b08a16]" />
+              <p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-[#9a7613]">
+                Asher buyer lens
+              </p>
+              <div className="mt-5 space-y-4">
+                {buyerNotes.map((note) => (
+                  <div key={note} className="flex gap-3">
+                    <Check className="mt-1 size-4 shrink-0 text-[#b08a16]" />
+                    <p className="text-sm leading-6 text-[#5e4a15]">{note}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="rounded-[1.75rem] border border-slate-200 bg-[#071a2f] p-6 text-white">
+              <BadgeCheck className="size-7 text-[#e4c462]" />
+              <p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-[#e4c462]">
+                Verification desk
+              </p>
+              <p className="mt-5 text-sm leading-7 text-white/65">
+                We reconfirm the selected tower, inventory, floor plan, payment
+                schedule and all-inclusive cost before arranging your visit.
+              </p>
+              <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-white/40">Last editorial check</p>
+                <p className="mt-1 font-semibold">{project.verifiedAt}</p>
+              </div>
+            </article>
+          </div>
+
           <div className="mt-16 grid gap-12 lg:grid-cols-[1.25fr_0.75fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#c9a227]">
@@ -186,16 +272,78 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 ))}
               </div>
               {project.video && (
-                <video
-                  controls
-                  playsInline
-                  preload="metadata"
-                  poster={project.image}
-                  className="mt-4 aspect-video w-full rounded-[1.5rem] bg-[#071a2f] object-cover"
-                >
-                  <source src={project.video} type="video/mp4" />
-                </video>
+                <div className="mt-10">
+                  <div className="mb-5 flex items-center gap-3">
+                    <span className="flex size-10 items-center justify-center rounded-full bg-[#071a2f] text-[#e4c462]">
+                      <ArrowRight className="size-4" />
+                    </span>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#b08a16]">
+                        Official project film
+                      </p>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Stream only when you choose to play
+                      </p>
+                    </div>
+                  </div>
+                  <video
+                    controls
+                    playsInline
+                    preload="metadata"
+                    poster={project.image}
+                    className="aspect-video w-full rounded-[1.5rem] bg-[#071a2f] object-cover"
+                  >
+                    <source src={project.video} type="video/mp4" />
+                  </video>
+                </div>
               )}
+
+              <section className="mt-16">
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#c9a227]">
+                  Lifestyle programme
+                </p>
+                <h2 className="mt-4 text-4xl font-medium text-[#071a2f]">
+                  Amenities buyers ask about
+                </h2>
+                <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                  {amenities.map((amenity) => (
+                    <div
+                      key={amenity}
+                      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4"
+                    >
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#fff7dc]">
+                        <Check className="size-4 text-[#b08a16]" />
+                      </span>
+                      <span className="text-sm font-semibold text-[#071a2f]">
+                        {amenity}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="mt-16 overflow-hidden rounded-[2rem] border border-slate-200 bg-white">
+                <div className="border-b border-slate-100 bg-[#f7f8fa] p-7">
+                  <Route className="size-7 text-[#c9a227]" />
+                  <p className="mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#b08a16]">
+                    Location context
+                  </p>
+                  <h2 className="mt-3 text-4xl font-medium text-[#071a2f]">
+                    What sits around the address
+                  </h2>
+                </div>
+                <div className="grid gap-0 sm:grid-cols-2">
+                  {nearby.map((place) => (
+                    <div
+                      key={place}
+                      className="flex gap-3 border-b border-slate-100 p-5 sm:border-r"
+                    >
+                      <MapPinned className="mt-0.5 size-5 shrink-0 text-[#b08a16]" />
+                      <span className="text-sm leading-6 text-slate-600">{place}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
             </div>
 
             <aside className="h-fit rounded-[2rem] bg-[#071a2f] p-7 text-white lg:sticky lg:top-28">
@@ -238,6 +386,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               >
                 <Calculator className="mr-2 size-4" />
                 Estimate EMI & buying cost
+              </Link>
+              <Link
+                href="/book-site-visit"
+                className="mt-3 inline-flex h-12 w-full items-center justify-center rounded-full border border-white/15 px-5 text-sm font-semibold text-white/75 transition hover:border-[#c9a227] hover:text-[#e4c462]"
+              >
+                <MapPin className="mr-2 size-4" />
+                Plan a guided site visit
               </Link>
             </aside>
           </div>

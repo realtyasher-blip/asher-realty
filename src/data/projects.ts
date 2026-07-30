@@ -10,11 +10,16 @@ export type Project = {
   location: string;
   corridor: "East Bengaluru" | "North Bengaluru" | "South Bengaluru" | "Central Bengaluru";
   configuration: string;
+  propertyType?: string;
+  unitSizes?: string;
   price: string;
   image: string;
   gallery: string[];
   description: string;
   highlights: string[];
+  amenities?: string[];
+  nearby?: string[];
+  buyerNotes?: string[];
   video?: string;
   status: ProjectStatus;
   area?: string;
@@ -23,6 +28,18 @@ export type Project = {
   featured?: boolean;
   verifiedAt: string;
   sourceUrl: string;
+};
+
+export const developerLogos: Record<string, string> = {
+  SOBHA: "/logos/sobha.png",
+  "Prestige Group": "/logos/prestige.png",
+  "Birla Estates": "/logos/birla.png",
+  "Assetz Property Group": "/logos/assetz.png",
+  "Sumadhura Group": "/logos/sumadhura.svg",
+  "Brigade Group": "/logos/brigade.png",
+  Lodha: "/logos/lodha.svg",
+  "Godrej Properties": "/logos/godrej-official.webp",
+  "Bhartiya Urban": "/logos/bhartiya.jpg",
 };
 
 export function projectSlug(name: string) {
@@ -36,7 +53,7 @@ export function getProjectBySlug(slug: string) {
   return projects.find((project) => projectSlug(project.name) === slug);
 }
 
-const verifiedAt = "26 Jul 2026";
+const verifiedAt = "30 Jul 2026";
 
 /**
  * Public buyer catalogue assembled from developer-owned pages and disclosures.
@@ -173,6 +190,104 @@ export const projects: Project[] = [
     status: "Under construction",
     verifiedAt,
     sourceUrl: "https://www.sobha.com/bengaluru/sobha-townpark/",
+  },
+  {
+    name: "SOBHA Magnus",
+    developer: "SOBHA",
+    location: "Kalena Agrahara, Bannerghatta Main Road",
+    corridor: "South Bengaluru",
+    configuration: "3 & 4 Bed Residences",
+    propertyType: "Eco-luxe apartments",
+    unitSizes: "1,856–2,578 sq ft",
+    price: "₹3.4 Cr onwards*",
+    image: "/projects/sobha-magnus/day.webp",
+    gallery: [
+      "/projects/sobha-magnus/day.webp",
+      "/projects/sobha-magnus/club.webp",
+      "/projects/sobha-magnus/pool.webp",
+    ],
+    video: "/projects/sobha-magnus/film.mp4",
+    description:
+      "A 5.85-acre biophilic community on Bannerghatta Main Road with 294 large-format homes, climate-responsive planning and a two-storey clubhouse designed for multi-generational living.",
+    highlights: [
+      "Biophilic, climate-responsive design",
+      "294 residences in a 5.85-acre community",
+      "More than 20 lifestyle amenities",
+    ],
+    amenities: [
+      "Two-storey clubhouse",
+      "Swimming pool",
+      "Multi-sport court",
+      "Amphitheatre",
+      "Children’s play park",
+      "Pet park",
+      "Senior citizens’ corner",
+      "Nature pavilion",
+    ],
+    nearby: [
+      "Bannerghatta Main Road",
+      "Kalena Agrahara",
+      "South Bengaluru employment corridor",
+    ],
+    buyerNotes: [
+      "A strong shortlist for buyers prioritising larger homes and South Bengaluru access.",
+      "Ask for the tower-specific view, floor rise, all-inclusive cost and May 2030 delivery schedule.",
+    ],
+    status: "Under construction",
+    area: "5.85 acres · 294 homes",
+    possession: "May 2030",
+    rera: "PRM/KA/RERA/1251/310/PR/131025/008160",
+    featured: true,
+    verifiedAt,
+    sourceUrl: "https://www.sobha.com/bengaluru/sobha-magnus/",
+  },
+  {
+    name: "SOBHA Galera",
+    developer: "SOBHA",
+    location: "Kannamangala, Whitefield–Hoskote Road",
+    corridor: "East Bengaluru",
+    configuration: "4 Bed Duplex & Triplex Row Houses",
+    propertyType: "Spanish-themed row houses",
+    unitSizes: "3,009–4,340 sq ft",
+    price: "₹5.25 Cr onwards*",
+    image: "/projects/sobha-galera/hero.webp",
+    gallery: [
+      "/projects/sobha-galera/hero.webp",
+      "/projects/sobha-galera/avenue.webp",
+      "/projects/sobha-galera/living.webp",
+    ],
+    description:
+      "An intimate 40-home row-house enclave inspired by Spanish architecture, with terracotta roofs, private courtyards and tree-lined avenues near the Whitefield–Hoskote growth corridor.",
+    highlights: [
+      "Only 40 duplex and triplex row houses",
+      "Private courtyard-led family layouts",
+      "Whitefield–Hoskote Road connectivity",
+    ],
+    amenities: [
+      "The Club",
+      "Fountain Belleza",
+      "Leisure trail",
+      "Activity lawn",
+      "Children’s play area",
+      "Pergolas",
+      "Tree-lined avenues",
+      "Two-car parking per home",
+    ],
+    nearby: [
+      "Whitefield–Hoskote Road",
+      "Kannamangala",
+      "East Bengaluru technology corridor",
+    ],
+    buyerNotes: [
+      "Best suited to buyers comparing villas and low-density row-house communities.",
+      "Limited inventory can change quickly; confirm the exact duplex or triplex home before visiting.",
+    ],
+    status: "Ready / active",
+    area: "4.08 acres · 40 row houses",
+    possession: "December 2026",
+    rera: "PRM/KA/RERA/1251/446/PR/050123/005601",
+    verifiedAt,
+    sourceUrl: "https://www.sobha.com/bengaluru/sobha-galera-near-kannamangala/",
   },
   {
     name: "Prestige Southern Star",
@@ -371,6 +486,148 @@ export const projects: Project[] = [
     sourceUrl: "https://sumadhuragroup.com/residential/bangalore/sumadhura-epitome",
   },
   {
+    name: "Sumadhura Pramoda",
+    developer: "Sumadhura Group",
+    location: "Kenchenahalli, Rajarajeshwari Nagar",
+    corridor: "South Bengaluru",
+    configuration: "2, 2.5 & 3 BHK",
+    propertyType: "Premium apartments",
+    unitSizes: "1,390–2,055 sq ft",
+    price: "Contact for developer-approved price",
+    image: "/projects/sumadhura-pramoda/pool.png",
+    gallery: [
+      "/projects/sumadhura-pramoda/pool.png",
+      "/projects/sumadhura-pramoda/aerial.png",
+      "/projects/sumadhura-pramoda/balcony.png",
+    ],
+    description:
+      "A three-tower, 297-home community facing Bengaluru University’s protected 1,200-acre green campus, with long balconies, a Carnatic-inspired clubhouse and metro access in South-West Bengaluru.",
+    highlights: [
+      "Views towards 1,200 acres of university greens",
+      "22-foot balconies and outward-facing towers",
+      "Jnanabharathi Metro approximately 1 km away",
+    ],
+    amenities: [
+      "20,000 sq ft clubhouse",
+      "Swimming and splash pools",
+      "Tennis and badminton courts",
+      "Jogging and cycling tracks",
+      "Yoga and fitness studios",
+      "Ten curated gardens",
+      "Pet park",
+      "Children’s play zones",
+    ],
+    nearby: [
+      "Jnanabharathi Metro · 5 min",
+      "Bengaluru University · 2 min",
+      "Gopalan Mall · 5 min",
+      "NICE Ring Road · 10 min",
+      "RV College of Engineering · 15 min",
+      "Fortis Hospital Nagarbhavi · 15 min",
+    ],
+    buyerNotes: [
+      "A differentiated South-West Bengaluru option for buyers who value green outlooks and metro access.",
+      "Compare balcony orientation, university-facing views and the exact 2/2.5/3 BHK carpet-area schedule.",
+    ],
+    status: "Under construction",
+    area: "3.5 acres · 297 homes",
+    possession: "December 2028",
+    rera: "PRM/KA/RERA/1251/310/PR/250325/007625",
+    featured: true,
+    verifiedAt,
+    sourceUrl: "https://sumadhuragroup.com/residential/bangalore/sumadhura-pramoda",
+  },
+  {
+    name: "Sumadhura Sarang",
+    developer: "Sumadhura Group",
+    location: "Doddabanahalli, Whitefield",
+    corridor: "East Bengaluru",
+    configuration: "3 & 4 BHK",
+    propertyType: "Biophilic apartments",
+    unitSizes: "1,740–2,580 sq ft",
+    price: "Contact for developer-approved price",
+    image: "/projects/sumadhura-sarang/hero.png",
+    gallery: [
+      "/projects/sumadhura-sarang/hero.png",
+      "/projects/sumadhura-sarang/view.png",
+      "/projects/sumadhura-sarang/club.png",
+    ],
+    description:
+      "A low-density biophilic community beside the Atal Bihari Vajpayee Botanical Garden, planned for 270-degree openness, no shared walls and panoramic views from large homes.",
+    highlights: [
+      "No common walls between homes",
+      "33,000 sq ft clubhouse with 60+ amenities",
+      "78% open green within 4.65 acres",
+    ],
+    amenities: [
+      "Swimming pool",
+      "Cricket pitch",
+      "Tennis and basketball courts",
+      "Skating rink",
+      "Amphitheatre",
+      "Barbecue deck",
+      "Butterfly garden",
+      "Pet park",
+    ],
+    nearby: [
+      "Atal Bihari Vajpayee Botanical Garden · 1 min",
+      "Cipla · 3 min",
+      "ITPB · 15 min",
+      "Park Square Mall · 9 min",
+      "Whitefield employment hub",
+    ],
+    buyerNotes: [
+      "Shortlist this for privacy, airflow and a lower-density Whitefield lifestyle.",
+      "The project has phase-specific RERA and possession dates; match the quoted home to the correct phase.",
+    ],
+    status: "Under construction",
+    area: "4.65 acres · 78% open green",
+    possession: "Phase 1 Dec 2026 · Phase 2 Jun 2027",
+    rera: "Phase 1: 006075 · Phase 2: 007481",
+    verifiedAt,
+    sourceUrl: "https://sumadhuragroup.com/residential/bangalore/sumadhura-sarang",
+  },
+  {
+    name: "Sumadhura Solea",
+    developer: "Sumadhura Group",
+    location: "Behind Manyata Tech Park, Thanisandra",
+    corridor: "North Bengaluru",
+    configuration: "3 & 4 BHK",
+    propertyType: "Mediterranean-inspired apartments",
+    price: "Contact for developer-approved price",
+    image: "/projects/sumadhura-solea/hero.png",
+    gallery: ["/projects/sumadhura-solea/hero.png"],
+    description:
+      "A Mediterranean-inspired North Bengaluru enclave behind Manyata Tech Park, pairing warm facades and coastal design cues with large family residences and a commute-efficient address.",
+    highlights: [
+      "Behind Manyata Tech Park",
+      "Mediterranean-inspired architecture",
+      "Large 3 and 4 BHK family homes",
+    ],
+    amenities: [
+      "Clubhouse",
+      "Landscaped courts",
+      "Swimming pool",
+      "Fitness spaces",
+      "Children’s recreation",
+      "Community gathering zones",
+    ],
+    nearby: [
+      "Manyata Tech Park",
+      "Thanisandra Main Road",
+      "Hebbal and airport corridor",
+    ],
+    buyerNotes: [
+      "A practical North Bengaluru shortlist for households working around Manyata and Hebbal.",
+      "This is a newly disclosed project; request the current cost sheet, area schedule and tower launch status.",
+    ],
+    status: "New launch",
+    possession: "December 2029",
+    rera: "PRM/KA/RERA/1251/446/PR/100326/008517",
+    verifiedAt,
+    sourceUrl: "https://sumadhuragroup.com/projects",
+  },
+  {
     name: "Brigade Sanctuary",
     developer: "Brigade Group",
     location: "Whitefield–Sarjapur Road",
@@ -553,6 +810,99 @@ export const projects: Project[] = [
     rera: "PRM/KA/RERA/1251/446/PR/300924/007105",
     verifiedAt,
     sourceUrl: "https://www.godrejproperties.com/the-1-percent-plan/projects/godrej-lakeside-orchard/",
+  },
+  {
+    name: "Godrej Woods",
+    developer: "Godrej Properties",
+    location: "Kogilu, Thanisandra–Yelahanka",
+    corridor: "North Bengaluru",
+    configuration: "2 & 3 BHK",
+    propertyType: "Forest-inspired apartments",
+    price: "Contact for developer-approved price",
+    image: "/projects/godrej-woods/hero.webp",
+    gallery: [
+      "/projects/godrej-woods/hero.webp",
+      "/projects/godrej-woods/greens.webp",
+      "/projects/godrej-woods/amenity.webp",
+    ],
+    description:
+      "A forest-inspired community in Kogilu with 18,000 sq ft of central greens, expansive balconies, landscaped gardens and a large clubhouse in the Thanisandra–Yelahanka corridor.",
+    highlights: [
+      "18,000 sq ft of central greens",
+      "Expansive balcony-led residences",
+      "Thanisandra, Yelahanka and airport access",
+    ],
+    amenities: [
+      "Grand clubhouse",
+      "Swimming pool",
+      "Landscaped gardens",
+      "Jogging tracks",
+      "Sports courts",
+      "Yoga spaces",
+      "Indoor games",
+      "Children’s play areas",
+    ],
+    nearby: [
+      "Thanisandra",
+      "Yelahanka",
+      "Manyata Tech Park",
+      "Kempegowda International Airport corridor",
+    ],
+    buyerNotes: [
+      "A recent North Bengaluru launch for buyers comparing nature-led developments near Manyata and Yelahanka.",
+      "Confirm the payment plan eligibility, apartment stack and all-inclusive cost before reservation.",
+    ],
+    status: "New launch",
+    rera: "PRM/KA/RERA/1251/472/PR/121125/008248",
+    featured: true,
+    verifiedAt,
+    sourceUrl: "https://www.godrejproperties.com/landing-page/bangalore/residential/godrej-woods/",
+  },
+  {
+    name: "Godrej Woodscapes",
+    developer: "Godrej Properties",
+    location: "Budigere Cross, near Whitefield",
+    corridor: "East Bengaluru",
+    configuration: "4 BHK",
+    propertyType: "Premium green residences",
+    price: "₹4.10 Cr onwards*",
+    image: "/projects/godrej-woodscapes/hero.jpg",
+    gallery: [
+      "/projects/godrej-woodscapes/hero.jpg",
+      "/projects/godrej-woodscapes/overview.webp",
+    ],
+    description:
+      "A green-led residential community at Budigere Cross in the Whitefield technology corridor, combining large four-bedroom homes, woodland landscaping and an extensive wellness and recreation programme.",
+    highlights: [
+      "Whitefield–Budigere Cross location",
+      "Woodland and water-led landscape zones",
+      "Large four-bedroom residences",
+    ],
+    amenities: [
+      "Temperature-controlled pool",
+      "Gym and fit-play arena",
+      "Futsal court",
+      "Party lawn",
+      "Barbecue deck",
+      "Health café",
+      "Water play court",
+      "Woodland grove",
+    ],
+    nearby: [
+      "Whitefield · approximately 12 km",
+      "Old Madras Road",
+      "ITPL and EPIP Zone",
+      "Budigere Cross growth corridor",
+    ],
+    buyerNotes: [
+      "Consider this when comparing large-format East Bengaluru homes with stronger green-space positioning.",
+      "Two RERA registrations apply; map the selected tower and possession to the correct phase.",
+    ],
+    status: "Under construction",
+    possession: "January 2029",
+    rera: "PRM/KA/RERA/1251/446/PR/170524/006882 · 006888",
+    verifiedAt,
+    sourceUrl: "https://www.godrejproperties.com/bengaluru/residential/godrej-woodscapes",
   },
   {
     name: "Bhartiya Garden Estate",

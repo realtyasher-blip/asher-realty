@@ -71,6 +71,8 @@ export default function FeaturedProjects() {
           project.location,
           project.corridor,
           project.configuration,
+          project.propertyType || "",
+          project.unitSizes || "",
           project.status,
           ...project.highlights,
         ]
