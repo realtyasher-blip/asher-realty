@@ -39,6 +39,7 @@ function formatDate(value?: string | null) {
   return new Intl.DateTimeFormat("en-IN", {
     dateStyle: "medium",
     timeStyle: value.includes("T") ? "short" : undefined,
+    timeZone: "Asia/Kolkata",
   }).format(new Date(value));
 }
 
