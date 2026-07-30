@@ -36,11 +36,27 @@ const statusStyles: Record<LeadStatus, string> = {
 
 function formatDate(value?: string | null) {
   if (!value) return "Not set";
-  return new Intl.DateTimeFormat("en-IN", {
-    dateStyle: "medium",
-    timeStyle: value.includes("T") ? "short" : undefined,
-    timeZone: "Asia/Kolkata",
-  }).format(new Date(value));
+  const source = new Date(value);
+  const india = new Date(source.getTime() + 5.5 * 60 * 60 * 1000);
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const date = `${india.getUTCDate()} ${months[india.getUTCMonth()]} ${india.getUTCFullYear()}`;
+  if (!value.includes("T")) return date;
+  const hours = india.getUTCHours();
+  const minutes = String(india.getUTCMinutes()).padStart(2, "0");
+  return `${date}, ${hours % 12 || 12}:${minutes} ${hours >= 12 ? "pm" : "am"}`;
 }
 
 function sourceLabel(source: string) {
