@@ -264,11 +264,17 @@ export default function CrmDashboard() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <a
+              href="/api/crm/export"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-[#071a2f] px-5 text-xs font-bold text-white transition hover:bg-[#17324e]"
+            >
+              <Download className="mr-2 size-4" /> Download Excel
+            </a>
             <button
               onClick={exportLeads}
               className="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 px-5 text-xs font-bold transition hover:border-[#c9a227]"
             >
-              <Download className="mr-2 size-4" /> Export CSV
+              <Download className="mr-2 size-4" /> Download CSV
             </button>
             <button
               onClick={() => void load()}
