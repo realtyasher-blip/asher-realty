@@ -11,7 +11,7 @@ function formatDate(value: string) {
 export default async function MarketIntelligence() {
   const news = await getMarketNews();
   return (
-    <section id="market" className="overflow-hidden bg-[#f5f6f8] py-24 sm:py-28">
+    <section id="market" className="content-auto-section overflow-hidden bg-[#f5f6f8] py-24 sm:py-28">
       <div className="container-shell">
         <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">

@@ -51,6 +51,48 @@ textarea {
   color: var(--navy);
 }
 
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-reveal {
+  animation: hero-reveal 0.55s ease-out both;
+}
+
+.hero-delay-1 {
+  animation-delay: 80ms;
+}
+
+.hero-delay-2 {
+  animation-delay: 160ms;
+}
+
+.hero-delay-3 {
+  animation-delay: 240ms;
+}
+
+.hero-delay-4 {
+  animation-delay: 320ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal {
+    animation: none;
+  }
+}
+
+.content-auto-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
 .container-shell {
   width: min(100% - 2rem, 1280px);
   margin-inline: auto;

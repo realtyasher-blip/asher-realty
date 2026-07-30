@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 import {
   BadgeCheck,
   CalendarCheck,
@@ -30,15 +27,11 @@ export default function ConsultationSection() {
   return (
     <section
       id="contact"
-      className="overflow-hidden bg-[#f7f8fa] py-24 sm:py-28"
+      className="content-auto-section overflow-hidden bg-[#f7f8fa] py-24 sm:py-28"
     >
       <div className="container-shell">
         <div className="grid overflow-hidden rounded-[2rem] bg-[#071a2f] shadow-[0_30px_100px_rgba(7,26,47,0.18)] lg:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.65 }}
+          <div
             className="relative min-h-[520px]"
           >
             <Image
@@ -85,13 +78,9 @@ export default function ConsultationSection() {
                 Call 9019697170
               </a>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.65 }}
+          <div
             className="flex items-center bg-white p-6 sm:p-10 lg:p-12"
           >
             <div className="w-full">
@@ -112,7 +101,7 @@ export default function ConsultationSection() {
                 <ConsultationForm />
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

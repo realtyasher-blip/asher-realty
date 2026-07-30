@@ -38,7 +38,7 @@ export default function ProjectComparison() {
   );
 
   return (
-    <section id="compare" className="overflow-hidden bg-white py-24 sm:py-28">
+    <section id="compare" className="content-auto-section overflow-hidden bg-white py-24 sm:py-28">
       <div className="container-shell">
         <div className="grid gap-10 lg:grid-cols-[0.65fr_1.35fr] lg:items-end">
           <div>

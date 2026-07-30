@@ -160,7 +160,7 @@ export default function SmartMatch() {
   ];
 
   return (
-    <section id="ai-match" className="overflow-hidden bg-[#071a2f] py-24 text-white sm:py-28">
+    <section id="ai-match" className="content-auto-section overflow-hidden bg-[#071a2f] py-24 text-white sm:py-28">
       <div className="container-shell">
         <div className="grid gap-12 lg:grid-cols-[0.68fr_1.32fr] lg:items-start">
           <div className="lg:sticky lg:top-28">

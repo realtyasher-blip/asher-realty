@@ -1,17 +1,11 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   ArrowUpRight,
   BedDouble,
   CalendarClock,
-  ChevronDown,
   IndianRupee,
-  Images,
   MapPin,
-  PlayCircle,
 } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -27,7 +21,6 @@ const phoneNumber = "919019697170";
 
 export default function ProjectCard({
   project,
-  index,
 }: ProjectCardProps) {
   const whatsappMessage = encodeURIComponent(
     `Hi Asher Realty, I am interested in ${project.name}. Please share the latest price, availability and project details.`
@@ -36,14 +29,7 @@ export default function ProjectCard({
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${whatsappMessage}`;
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 35 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.08,
-      }}
+    <article
       className="group overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(7,26,47,0.08)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_28px_80px_rgba(7,26,47,0.14)]"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
@@ -165,62 +151,6 @@ export default function ProjectCard({
           </a>
         </div>
 
-        <details className="group/gallery mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-[#f7f8fa]">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-semibold text-[#071a2f]">
-            <span className="inline-flex items-center gap-2">
-              <Images className="size-4 text-[#c9a227]" />
-              Photos & visual tour
-            </span>
-            <ChevronDown className="size-4 transition group-open/gallery:rotate-180" />
-          </summary>
-
-          <div className="border-t border-slate-200 p-4">
-            <div className="grid grid-cols-2 gap-3">
-              {project.gallery.map((image, galleryIndex) => (
-                <div
-                  key={image}
-                  className={`relative overflow-hidden rounded-xl bg-slate-200 ${
-                    galleryIndex === 0
-                      ? "col-span-2 aspect-[16/9]"
-                      : "aspect-square"
-                  }`}
-                >
-                  <Image
-                    src={image}
-                    alt={`${project.name} gallery view ${galleryIndex + 1}`}
-                    fill
-                    className="object-cover transition duration-500 hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {project.video ? (
-              <div className="mt-4 overflow-hidden rounded-xl bg-[#071a2f]">
-                <video
-                  controls
-                  playsInline
-                  preload="metadata"
-                  poster={project.image}
-                  className="aspect-video w-full object-cover"
-                >
-                  <source src={project.video} type="video/mp4" />
-                  Your browser does not support video playback.
-                </video>
-              </div>
-            ) : (
-              <div className="mt-4 flex items-center gap-3 rounded-xl bg-[#071a2f] px-4 py-4 text-white">
-                <PlayCircle className="size-5 shrink-0 text-[#e4c462]" />
-                <p className="text-xs leading-5 text-white/70">
-                  Browse the visual tour above. Ask us on WhatsApp for the
-                  latest walkthrough video.
-                </p>
-              </div>
-            )}
-          </div>
-        </details>
-
         <div className="mt-5 border-t border-slate-100 pt-4 text-xs text-slate-400">
           <span>Verified {project.verifiedAt}</span>
         </div>
@@ -241,6 +171,6 @@ export default function ProjectCard({
             Call Asher Realty
           </a>
       </div>
-    </motion.article>
+    </article>
   );
 }

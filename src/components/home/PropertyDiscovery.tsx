@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import {
   ArrowUpRight,
   Building2,
@@ -69,7 +66,7 @@ export default function PropertyDiscovery() {
   return (
     <section
       id="locations"
-      className="overflow-hidden bg-white py-24 sm:py-28"
+      className="content-auto-section overflow-hidden bg-white py-24 sm:py-28"
     >
       <div className="container-shell">
         <div className="mx-auto max-w-3xl text-center">
@@ -89,11 +86,7 @@ export default function PropertyDiscovery() {
         </div>
 
         <div className="mt-16 grid gap-8 xl:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.65 }}
+          <div
             className="rounded-[2rem] bg-[#071a2f] p-6 text-white shadow-[0_24px_80px_rgba(7,26,47,0.16)] sm:p-8 lg:p-10"
           >
             <div className="flex items-center justify-between gap-4">
@@ -142,13 +135,9 @@ export default function PropertyDiscovery() {
                 </a>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.65 }}
+          <div
             className="rounded-[2rem] border border-slate-200 bg-[#f7f8fa] p-6 shadow-[0_24px_80px_rgba(7,26,47,0.08)] sm:p-8 lg:p-10"
           >
             <div className="flex items-center gap-3">
@@ -197,7 +186,7 @@ export default function PropertyDiscovery() {
                 </a>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-6 rounded-[2rem] border border-[#c9a227]/20 bg-[#f7f8fa] px-7 py-8 text-center sm:px-10 lg:flex-row lg:text-left">

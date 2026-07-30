@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   AlertCircle,
   BarChart3,
@@ -56,15 +56,23 @@ function csvCell(value: unknown) {
   return `"${String(value ?? "").replaceAll('"', '""')}"`;
 }
 
-export default function CrmDashboard() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
+type CrmDashboardProps = {
+  initialLeads: Lead[];
+  initialError?: string;
+};
+
+export default function CrmDashboard({
+  initialLeads,
+  initialError = "",
+}: CrmDashboardProps) {
+  const [leads, setLeads] = useState<Lead[]>(initialLeads);
+  const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All");
   const [selected, setSelected] = useState<Lead | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError);
 
   async function load() {
     setLoading(true);
@@ -91,11 +99,6 @@ export default function CrmDashboard() {
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => void load());
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   const now = Date.now();
 

@@ -6,8 +6,10 @@ import CrmLogin from "@/components/crm/CrmLogin";
 import {
   crmConfigured,
   crmSessionCookie,
+  listLeads,
   verifySessionToken,
 } from "@/lib/crm/server";
+import type { Lead } from "@/lib/crm/types";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +21,17 @@ export const metadata: Metadata = {
 export default async function CrmPage() {
   const token = (await cookies()).get(crmSessionCookie.name)?.value;
   const authorised = verifySessionToken(token);
-  return authorised ? <CrmDashboard /> : <CrmLogin configured={crmConfigured()} />;
-}
+  if (!authorised) return <CrmLogin configured={crmConfigured()} />;
 
+  let initialLeads: Lead[] = [];
+  let initialError = "";
+  try {
+    initialLeads = await listLeads();
+  } catch {
+    initialError = "Unable to load leads.";
+  }
+
+  return (
+    <CrmDashboard initialLeads={initialLeads} initialError={initialError} />
+  );
+}

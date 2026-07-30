@@ -25,7 +25,14 @@ export default function PwaRegistration() {
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+      const registerWorker = () => {
+        navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+      };
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(registerWorker, { timeout: 4000 });
+      } else {
+        globalThis.setTimeout(registerWorker, 2500);
+      }
     }
 
     if (isStandalone() || localStorage.getItem(DISMISSED_KEY)) return;

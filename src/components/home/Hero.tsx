@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   Building2,
@@ -44,44 +43,24 @@ export default function Hero() {
 
       <div className="container-shell relative flex min-h-[92vh] items-center pb-16 pt-32">
         <div className="w-full max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55 }}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#f0d477] backdrop-blur-md"
-          >
+          <div className="hero-reveal inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#f0d477] backdrop-blur-md">
             <ShieldCheck className="size-4" />
             Independent Bengaluru property advisory
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.08 }}
-            className="mt-7 max-w-3xl text-6xl font-medium leading-[0.92] tracking-[-0.035em] sm:text-7xl lg:text-[5.7rem]"
-          >
+          <h1 className="hero-reveal hero-delay-1 mt-7 max-w-3xl text-6xl font-medium leading-[0.92] tracking-[-0.035em] sm:text-7xl lg:text-[5.7rem]">
             Your next address,
             <span className="mt-2 block bg-gradient-to-r from-[#f3da86] to-[#c9a227] bg-clip-text text-transparent">
               chosen with clarity.
             </span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.18 }}
-            className="mt-7 max-w-2xl text-base leading-8 text-white/68 sm:text-lg"
-          >
+          <p className="hero-reveal hero-delay-2 mt-7 max-w-2xl text-base leading-8 text-white/68 sm:text-lg">
             Discover and compare premium Bengaluru homes through one trusted
             advisor—from first shortlist to guided site visit.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 26 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.26 }}
-            className="mt-9 rounded-[1.75rem] border border-white/15 bg-white/10 p-3 shadow-[0_25px_90px_rgba(0,0,0,.28)] backdrop-blur-xl"
-          >
+          <div className="hero-reveal hero-delay-3 mt-9 rounded-[1.75rem] border border-white/15 bg-white/10 p-3 shadow-[0_25px_90px_rgba(0,0,0,.28)] backdrop-blur-xl">
             <div className="grid gap-2 lg:grid-cols-[1fr_1fr_1fr_auto]">
               <label className="flex min-h-16 items-center gap-3 rounded-2xl bg-[#061727]/55 px-4">
                 <MapPin className="size-5 shrink-0 text-[#e4c462]" />
@@ -126,14 +105,9 @@ export default function Hero() {
                 Find homes
               </a>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.55 }}
-            className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-white/55"
-          >
+          <div className="hero-reveal hero-delay-4 mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-white/55">
             <span>Verified project information</span>
             <span className="hidden size-1 rounded-full bg-[#e4c462] sm:block" />
             <span>Private site-visit support</span>
@@ -141,7 +115,7 @@ export default function Hero() {
             <Link href="/projects" className="inline-flex items-center font-semibold text-white transition hover:text-[#e4c462]">
               Browse all projects <ArrowRight className="ml-2 size-3.5" />
             </Link>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 const developers = [
@@ -36,7 +33,7 @@ const whatsappUrl =
 
 export default function FeaturedDevelopers() {
   return (
-    <section className="overflow-hidden bg-white py-24 sm:py-28">
+    <section className="content-auto-section overflow-hidden bg-white py-24 sm:py-28">
       <div className="container-shell">
         <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
@@ -66,16 +63,9 @@ export default function FeaturedDevelopers() {
         </div>
 
         <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-          {developers.map((developer, index) => (
-            <motion.div
+          {developers.map((developer) => (
+            <div
               key={developer.name}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.06,
-              }}
               className="group flex min-h-36 items-center justify-center rounded-[1.5rem] border border-slate-200 bg-[#f7f8fa] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#c9a227]/40 hover:bg-white hover:shadow-lg"
             >
               <div className="relative h-16 w-full">
@@ -87,7 +77,7 @@ export default function FeaturedDevelopers() {
                   sizes="(max-width: 768px) 50vw, 16vw"
                 />
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 

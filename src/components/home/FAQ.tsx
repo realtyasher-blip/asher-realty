@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { ChevronDown, MessageCircle } from "lucide-react";
 
 const faqs = [
@@ -41,15 +40,10 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="overflow-hidden bg-[#f7f8fa] py-24 sm:py-28">
+    <section className="content-auto-section overflow-hidden bg-[#f7f8fa] py-24 sm:py-28">
       <div className="container-shell">
         <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.65 }}
-          >
+          <div>
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#c9a227]">
               Frequently Asked Questions
             </p>
@@ -72,15 +66,9 @@ export default function FAQ() {
               <MessageCircle className="mr-2 size-4" />
               Ask on WhatsApp
             </a>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.65 }}
-            className="space-y-4"
-          >
+          <div className="space-y-4">
             {faqs.map((faq, index) => {
               const isOpen = openIndex === index;
 
@@ -124,7 +112,7 @@ export default function FAQ() {
                 </article>
               );
             })}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

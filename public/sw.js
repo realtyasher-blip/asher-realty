@@ -1,13 +1,6 @@
-const CACHE_NAME = "asher-realty-app-v1";
+const CACHE_NAME = "asher-realty-app-v2";
 const APP_SHELL = [
-  "/",
-  "/projects",
-  "/locations",
-  "/compare",
-  "/tools",
-  "/book-site-visit",
   "/brand/asher-mark.png",
-  "/brand/asher-logo-horizontal.png",
   "/brand/app-icon-192.png",
   "/brand/app-icon-512.png",
 ];

@@ -89,7 +89,7 @@ export default function FeaturedProjects() {
   ).length;
 
   return (
-    <section id="projects" className="overflow-hidden bg-[#f5f6f8] py-24 sm:py-28">
+    <section id="projects" className="content-auto-section overflow-hidden bg-[#f5f6f8] py-24 sm:py-28">
       <div className="container-shell">
         <div className="overflow-hidden rounded-[2.25rem] bg-[#071a2f] text-white shadow-[0_30px_90px_rgba(7,26,47,0.18)]">
           <div className="grid gap-px bg-white/10 lg:grid-cols-[1.4fr_0.6fr]">
