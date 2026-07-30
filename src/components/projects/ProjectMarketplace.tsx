@@ -59,6 +59,9 @@ export default function ProjectMarketplace() {
       try {
         setFavourites(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
         setRecent(JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"));
+        setFavouritesOnly(
+          new URLSearchParams(window.location.search).get("saved") === "1"
+        );
       } catch {
         setFavourites([]);
         setRecent([]);

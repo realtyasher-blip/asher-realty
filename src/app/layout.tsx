@@ -1,6 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
+
+import MobileAppNav from "@/components/app/MobileAppNav";
+import PwaRegistration from "@/components/app/PwaRegistration";
+
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -17,6 +21,8 @@ const bodyFont = Montserrat({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://asherrealty.in"),
+  applicationName: "Asher Realty",
+  manifest: "/manifest.webmanifest",
   title: {
     default: "Asher Realty | Premium Properties in Bengaluru",
     template: "%s | Asher Realty",
@@ -50,12 +56,27 @@ export const metadata: Metadata = {
   icons: {
     icon: "/brand/asher-mark.png",
     shortcut: "/brand/asher-mark.png",
-    apple: "/brand/asher-mark.png",
+    apple: "/brand/app-icon-192.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Asher Realty",
+  },
+  formatDetection: {
+    telephone: false,
   },
   robots: {
     index: true,
     follow: true,
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#071a2f",
 };
 
 export default function RootLayout({
@@ -121,6 +142,8 @@ export default function RootLayout({
           `}
         </Script>
         {children}
+        <PwaRegistration />
+        <MobileAppNav />
       </body>
     </html>
   );
