@@ -2,9 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+  AlertCircle,
+  BarChart3,
   CalendarClock,
   CheckCircle2,
+  ChevronRight,
+  Clock3,
+  Download,
   LogOut,
+  MapPin,
   MessageCircle,
   Phone,
   RefreshCw,
@@ -14,12 +20,40 @@ import {
 
 import { leadStatuses, type Lead, type LeadStatus } from "@/lib/crm/types";
 
+const completedStatuses: LeadStatus[] = ["Booked", "Not interested"];
+
+const statusStyles: Record<LeadStatus, string> = {
+  New: "bg-blue-50 text-blue-700",
+  Contacted: "bg-violet-50 text-violet-700",
+  Qualified: "bg-cyan-50 text-cyan-700",
+  "Site visit scheduled": "bg-amber-50 text-amber-700",
+  "Site visit completed": "bg-orange-50 text-orange-700",
+  Negotiation: "bg-fuchsia-50 text-fuchsia-700",
+  Booked: "bg-emerald-50 text-emerald-700",
+  "Follow up later": "bg-slate-100 text-slate-700",
+  "Not interested": "bg-rose-50 text-rose-700",
+};
+
 function formatDate(value?: string | null) {
   if (!value) return "Not set";
   return new Intl.DateTimeFormat("en-IN", {
     dateStyle: "medium",
     timeStyle: value.includes("T") ? "short" : undefined,
   }).format(new Date(value));
+}
+
+function sourceLabel(source: string) {
+  return source
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function cleanPhone(phone: string) {
+  return phone.replace(/\D/g, "").slice(-10);
+}
+
+function csvCell(value: unknown) {
+  return `"${String(value ?? "").replaceAll('"', '""')}"`;
 }
 
 export default function CrmDashboard() {
@@ -29,20 +63,33 @@ export default function CrmDashboard() {
   const [filter, setFilter] = useState("All");
   const [selected, setSelected] = useState<Lead | null>(null);
   const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   async function load() {
     setLoading(true);
-    const response = await fetch("/api/crm/leads", { cache: "no-store" });
-    if (response.status === 401) {
-      window.location.reload();
-      return;
+    setError("");
+    try {
+      const response = await fetch("/api/crm/leads", { cache: "no-store" });
+      if (response.status === 401) {
+        window.location.reload();
+        return;
+      }
+      const data = (await response.json()) as { leads?: Lead[]; error?: string };
+      if (!response.ok) throw new Error(data.error || "Unable to load leads.");
+      setLeads(data.leads || []);
+      setSelected((current) =>
+        current
+          ? data.leads?.find((lead) => lead.id === current.id) || null
+          : null
+      );
+    } catch (loadError) {
+      setError(
+        loadError instanceof Error ? loadError.message : "Unable to load leads."
+      );
+    } finally {
+      setLoading(false);
     }
-    const data = (await response.json()) as { leads?: Lead[] };
-    setLeads(data.leads || []);
-    setSelected((current) =>
-      current ? data.leads?.find((lead) => lead.id === current.id) || null : null
-    );
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -50,42 +97,152 @@ export default function CrmDashboard() {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
+  const now = Date.now();
+
+  const dueFollowUps = useMemo(
+    () =>
+      leads
+        .filter(
+          (lead) =>
+            lead.follow_up_at &&
+            new Date(lead.follow_up_at).getTime() <= now &&
+            !completedStatuses.includes(lead.status)
+        )
+        .sort(
+          (a, b) =>
+            new Date(a.follow_up_at || 0).getTime() -
+            new Date(b.follow_up_at || 0).getTime()
+        ),
+    [leads, now]
+  );
+
   const filtered = useMemo(() => {
     const term = query.toLowerCase().trim();
-    return leads.filter(
-      (lead) =>
-        (filter === "All" || lead.status === filter) &&
-        (!term ||
-          [lead.name, lead.phone, lead.project, lead.location, lead.source]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase()
-            .includes(term))
-    );
-  }, [filter, leads, query]);
+    return leads.filter((lead) => {
+      const matchesFilter =
+        filter === "All" ||
+        (filter === "Follow-ups due"
+          ? Boolean(
+              lead.follow_up_at &&
+                new Date(lead.follow_up_at).getTime() <= now &&
+                !completedStatuses.includes(lead.status)
+            )
+          : lead.status === filter);
+      const matchesQuery =
+        !term ||
+        [
+          lead.name,
+          lead.phone,
+          lead.project,
+          lead.location,
+          lead.source,
+          lead.budget,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(term);
+      return matchesFilter && matchesQuery;
+    });
+  }, [filter, leads, now, query]);
 
   const stats = {
     total: leads.length,
     new: leads.filter((lead) => lead.status === "New").length,
-    visits: leads.filter((lead) => lead.status.includes("Site visit")).length,
+    due: dueFollowUps.length,
     booked: leads.filter((lead) => lead.status === "Booked").length,
   };
+
+  const sources = useMemo(() => {
+    const counts = leads.reduce<Record<string, number>>((result, lead) => {
+      result[lead.source] = (result[lead.source] || 0) + 1;
+      return result;
+    }, {});
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4);
+  }, [leads]);
 
   async function save() {
     if (!selected) return;
     setSaving(true);
-    const response = await fetch("/api/crm/leads", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: selected.id,
-        status: selected.status,
-        follow_up_at: selected.follow_up_at || null,
-        notes: selected.notes || "",
-      }),
-    });
-    if (response.ok) await load();
-    setSaving(false);
+    setError("");
+    setMessage("");
+    try {
+      const response = await fetch("/api/crm/leads", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: selected.id,
+          status: selected.status,
+          follow_up_at: selected.follow_up_at || null,
+          notes: selected.notes || "",
+        }),
+      });
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(data.error || "Unable to save changes.");
+      setMessage("Lead updated successfully.");
+      await load();
+    } catch (saveError) {
+      setError(
+        saveError instanceof Error ? saveError.message : "Unable to save changes."
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function exportLeads() {
+    const columns = [
+      "Created",
+      "Name",
+      "Phone",
+      "Email",
+      "Source",
+      "Project",
+      "Location",
+      "Configuration",
+      "Budget",
+      "Purpose",
+      "Timeline",
+      "Visit date",
+      "Visit time",
+      "Status",
+      "Follow-up",
+      "Notes",
+    ];
+    const rows = leads.map((lead) =>
+      [
+        lead.created_at,
+        lead.name,
+        lead.phone,
+        lead.email,
+        lead.source,
+        lead.project,
+        lead.location,
+        lead.configuration,
+        lead.budget,
+        lead.purpose,
+        lead.timeline,
+        lead.preferred_visit_date,
+        lead.preferred_visit_time,
+        lead.status,
+        lead.follow_up_at,
+        lead.notes,
+      ]
+        .map(csvCell)
+        .join(",")
+    );
+    const blob = new Blob(
+      [`\uFEFF${columns.map(csvCell).join(",")}\n${rows.join("\n")}`],
+      { type: "text/csv;charset=utf-8" }
+    );
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `asher-realty-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
   }
 
   async function logout() {
@@ -96,16 +253,35 @@ export default function CrmDashboard() {
   return (
     <main className="min-h-screen bg-[#f4f5f7] text-[#071a2f]">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-[1500px] items-center justify-between px-5 py-5 sm:px-8">
+        <div className="mx-auto flex max-w-[1500px] flex-col gap-4 px-5 py-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[.18em] text-[#b08a16]">Asher Realty</p>
-            <h1 className="mt-1 text-3xl font-medium">Lead operations</h1>
+            <p className="text-xs font-bold uppercase tracking-[.18em] text-[#b08a16]">
+              Asher Realty operations
+            </p>
+            <h1 className="mt-1 text-3xl font-medium">Sales cockpit</h1>
+            <p className="mt-1 text-xs text-slate-400">
+              Leads, site visits and follow-ups in one workspace
+            </p>
           </div>
-          <div className="flex gap-2">
-            <button onClick={() => void load()} className="flex size-11 items-center justify-center rounded-full border border-slate-200" aria-label="Refresh leads">
-              <RefreshCw className="size-4" />
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={exportLeads}
+              className="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 px-5 text-xs font-bold transition hover:border-[#c9a227]"
+            >
+              <Download className="mr-2 size-4" /> Export CSV
             </button>
-            <button onClick={logout} className="flex size-11 items-center justify-center rounded-full border border-slate-200" aria-label="Sign out">
+            <button
+              onClick={() => void load()}
+              className="flex size-11 items-center justify-center rounded-full border border-slate-200"
+              aria-label="Refresh leads"
+            >
+              <RefreshCw className={`size-4 ${loading ? "animate-spin" : ""}`} />
+            </button>
+            <button
+              onClick={logout}
+              className="flex size-11 items-center justify-center rounded-full border border-slate-200"
+              aria-label="Sign out"
+            >
               <LogOut className="size-4" />
             </button>
           </div>
@@ -113,19 +289,124 @@ export default function CrmDashboard() {
       </header>
 
       <div className="mx-auto max-w-[1500px] px-5 py-7 sm:px-8">
+        {error && (
+          <div className="mb-5 flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+            <AlertCircle className="size-5 shrink-0" />
+            {error}
+          </div>
+        )}
+
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {[
-            { icon: Users, label: "Total leads", value: stats.total },
-            { icon: MessageCircle, label: "New", value: stats.new },
-            { icon: CalendarClock, label: "Visit pipeline", value: stats.visits },
-            { icon: CheckCircle2, label: "Booked", value: stats.booked },
-          ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5">
-              <Icon className="size-5 text-[#b08a16]" />
+            {
+              icon: Users,
+              label: "Total leads",
+              value: stats.total,
+              detail: "All website enquiries",
+            },
+            {
+              icon: MessageCircle,
+              label: "New",
+              value: stats.new,
+              detail: "Waiting for first contact",
+            },
+            {
+              icon: Clock3,
+              label: "Follow-ups due",
+              value: stats.due,
+              detail: "Action required now",
+            },
+            {
+              icon: CheckCircle2,
+              label: "Booked",
+              value: stats.booked,
+              detail: "Converted opportunities",
+            },
+          ].map(({ icon: Icon, label, value, detail }) => (
+            <div
+              key={label}
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <Icon className="size-5 text-[#b08a16]" />
+                <span className="text-[10px] font-bold uppercase tracking-[.12em] text-slate-300">
+                  Live
+                </span>
+              </div>
               <p className="mt-4 text-3xl font-bold">{value}</p>
-              <p className="mt-1 text-xs text-slate-400">{label}</p>
+              <p className="mt-1 text-xs font-semibold">{label}</p>
+              <p className="mt-1 text-[11px] text-slate-400">{detail}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-5 grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
+          <section className="rounded-2xl border border-slate-200 bg-[#071a2f] p-5 text-white">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[.15em] text-[#e4c462]">
+                  Priority queue
+                </p>
+                <h2 className="mt-2 text-2xl font-medium">Follow-ups requiring attention</h2>
+              </div>
+              <CalendarClock className="size-6 text-[#e4c462]" />
+            </div>
+            {dueFollowUps.length === 0 ? (
+              <p className="mt-5 text-sm text-white/55">
+                You are all caught up. Schedule the next follow-up from any lead.
+              </p>
+            ) : (
+              <div className="mt-5 grid gap-2 sm:grid-cols-2">
+                {dueFollowUps.slice(0, 4).map((lead) => (
+                  <button
+                    key={lead.id}
+                    onClick={() => setSelected(lead)}
+                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 text-left transition hover:bg-white/10"
+                  >
+                    <span>
+                      <span className="block text-sm font-bold">{lead.name}</span>
+                      <span className="mt-1 block text-[11px] text-white/50">
+                        Due {formatDate(lead.follow_up_at)}
+                      </span>
+                    </span>
+                    <ChevronRight className="size-4 text-[#e4c462]" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="rounded-2xl border border-slate-200 bg-white p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[.15em] text-[#b08a16]">
+                  Lead sources
+                </p>
+                <h2 className="mt-2 text-xl font-medium">Acquisition mix</h2>
+              </div>
+              <BarChart3 className="size-5 text-[#b08a16]" />
+            </div>
+            <div className="mt-4 space-y-3">
+              {sources.length === 0 ? (
+                <p className="text-xs text-slate-400">Lead-source data will appear here.</p>
+              ) : (
+                sources.map(([source, count]) => (
+                  <div key={source}>
+                    <div className="flex justify-between text-xs">
+                      <span className="font-semibold">{sourceLabel(source)}</span>
+                      <span className="text-slate-400">{count}</span>
+                    </div>
+                    <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-[#c9a227]"
+                        style={{ width: `${Math.max(8, (count / stats.total) * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
         </div>
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_.75fr]">
@@ -133,61 +414,126 @@ export default function CrmDashboard() {
             <div className="grid gap-3 border-b border-slate-100 p-4 sm:grid-cols-[1fr_220px]">
               <label className="relative">
                 <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, phone, project or area" className="h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] pl-11 pr-4 text-sm outline-none focus:border-[#c9a227]" />
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search name, phone, project or area"
+                  className="h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] pl-11 pr-4 text-sm outline-none focus:border-[#c9a227]"
+                />
               </label>
-              <select value={filter} onChange={(e) => setFilter(e.target.value)} className="h-11 rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm outline-none">
+              <select
+                value={filter}
+                onChange={(event) => setFilter(event.target.value)}
+                className="h-11 rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm outline-none"
+              >
                 <option>All</option>
-                {leadStatuses.map((status) => <option key={status}>{status}</option>)}
+                <option>Follow-ups due</option>
+                {leadStatuses.map((status) => (
+                  <option key={status}>{status}</option>
+                ))}
               </select>
+            </div>
+
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3 text-[11px] text-slate-400">
+              <span>{filtered.length} matching leads</span>
+              <span>Newest first</span>
             </div>
 
             {loading ? (
               <p className="p-10 text-center text-sm text-slate-400">Loading leads…</p>
             ) : filtered.length === 0 ? (
-              <p className="p-10 text-center text-sm text-slate-400">No matching leads yet.</p>
+              <p className="p-10 text-center text-sm text-slate-400">
+                No matching leads yet.
+              </p>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="max-h-[720px] divide-y divide-slate-100 overflow-y-auto">
                 {filtered.map((lead) => (
                   <button
                     key={lead.id}
-                    onClick={() => setSelected(lead)}
-                    className={`grid w-full gap-3 p-5 text-left transition hover:bg-[#f7f8fa] sm:grid-cols-[1fr_1fr_160px] ${
+                    onClick={() => {
+                      setSelected(lead);
+                      setMessage("");
+                    }}
+                    className={`grid w-full gap-3 p-5 text-left transition hover:bg-[#f7f8fa] sm:grid-cols-[1.1fr_1fr_170px] ${
                       selected?.id === lead.id ? "bg-[#fff9e5]" : ""
                     }`}
                   >
                     <span>
                       <span className="block font-bold">{lead.name}</span>
-                      <span className="mt-1 block text-xs text-slate-400">{lead.phone} · {lead.source}</span>
+                      <span className="mt-1 block text-xs text-slate-400">
+                        {lead.phone} · {sourceLabel(lead.source)}
+                      </span>
                     </span>
                     <span>
-                      <span className="block text-sm font-semibold">{lead.project || lead.location || "General enquiry"}</span>
-                      <span className="mt-1 block text-xs text-slate-400">{lead.budget || "Budget not shared"}</span>
+                      <span className="block text-sm font-semibold">
+                        {lead.project || lead.location || "General enquiry"}
+                      </span>
+                      <span className="mt-1 flex items-center gap-1 text-xs text-slate-400">
+                        {lead.location && <MapPin className="size-3" />}
+                        {lead.location || lead.budget || "Requirement review pending"}
+                      </span>
                     </span>
-                    <span className="w-fit rounded-full bg-slate-100 px-3 py-1.5 text-[10px] font-bold">{lead.status}</span>
+                    <span>
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1.5 text-[10px] font-bold ${statusStyles[lead.status]}`}
+                      >
+                        {lead.status}
+                      </span>
+                      <span className="mt-2 block text-[10px] text-slate-400">
+                        {formatDate(lead.created_at)}
+                      </span>
+                    </span>
                   </button>
                 ))}
               </div>
             )}
           </section>
 
-          <aside className="rounded-[1.5rem] border border-slate-200 bg-white p-6">
+          <aside className="self-start rounded-[1.5rem] border border-slate-200 bg-white p-6 xl:sticky xl:top-6">
             {!selected ? (
-              <div className="flex min-h-[420px] items-center justify-center text-center text-sm leading-7 text-slate-400">
-                Select a lead to view requirements, plan follow-up and update status.
+              <div className="flex min-h-[480px] items-center justify-center text-center text-sm leading-7 text-slate-400">
+                Select a lead to view requirements, plan the next follow-up and
+                update the sales stage.
               </div>
             ) : (
               <>
-                <p className="text-xs font-bold uppercase tracking-[.15em] text-[#b08a16]">Lead details</p>
-                <h2 className="mt-3 text-3xl font-medium">{selected.name}</h2>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[.15em] text-[#b08a16]">
+                      Lead details
+                    </p>
+                    <h2 className="mt-3 text-3xl font-medium">{selected.name}</h2>
+                    <p className="mt-1 text-xs text-slate-400">
+                      Added {formatDate(selected.created_at)}
+                    </p>
+                  </div>
+                  <span
+                    className={`rounded-full px-3 py-1.5 text-[10px] font-bold ${statusStyles[selected.status]}`}
+                  >
+                    {selected.status}
+                  </span>
+                </div>
+
                 <div className="mt-5 flex gap-2">
-                  <a href={`tel:${selected.phone}`} className="flex h-11 flex-1 items-center justify-center rounded-full bg-[#071a2f] text-sm font-bold text-white">
+                  <a
+                    href={`tel:${selected.phone}`}
+                    className="flex h-11 flex-1 items-center justify-center rounded-full bg-[#071a2f] text-sm font-bold text-white"
+                  >
                     <Phone className="mr-2 size-4" /> Call
                   </a>
-                  <a href={`https://wa.me/91${selected.phone.replace(/\D/g, "").slice(-10)}`} target="_blank" rel="noopener noreferrer" className="flex h-11 flex-1 items-center justify-center rounded-full bg-[#25D366] text-sm font-bold text-white">
+                  <a
+                    href={`https://wa.me/91${cleanPhone(selected.phone)}?text=${encodeURIComponent(
+                      `Hi ${selected.name}, this is Asher Realty regarding your property enquiry${selected.project ? ` for ${selected.project}` : ""}.`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-11 flex-1 items-center justify-center rounded-full bg-[#25D366] text-sm font-bold text-white"
+                  >
                     <MessageCircle className="mr-2 size-4" /> WhatsApp
                   </a>
                 </div>
-                <dl className="mt-6 grid grid-cols-2 gap-4 text-xs">
+
+                <dl className="mt-6 grid grid-cols-2 gap-4 rounded-2xl bg-[#f7f8fa] p-4 text-xs">
                   {[
                     ["Project", selected.project],
                     ["Location", selected.location],
@@ -197,7 +543,8 @@ export default function CrmDashboard() {
                     ["Timeline", selected.timeline],
                     ["Visit date", selected.preferred_visit_date],
                     ["Visit time", selected.preferred_visit_time],
-                    ["Created", formatDate(selected.created_at)],
+                    ["Transport", selected.transport],
+                    ["Source", sourceLabel(selected.source)],
                   ].map(([label, value]) => (
                     <div key={label || ""}>
                       <dt className="text-slate-400">{label}</dt>
@@ -205,35 +552,64 @@ export default function CrmDashboard() {
                     </div>
                   ))}
                 </dl>
+
                 <label className="mt-6 block text-xs font-bold">
-                  Status
+                  Sales stage
                   <select
                     value={selected.status}
-                    onChange={(e) => setSelected({ ...selected, status: e.target.value as LeadStatus })}
+                    onChange={(event) =>
+                      setSelected({
+                        ...selected,
+                        status: event.target.value as LeadStatus,
+                      })
+                    }
                     className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-3 text-sm"
                   >
-                    {leadStatuses.map((status) => <option key={status}>{status}</option>)}
+                    {leadStatuses.map((status) => (
+                      <option key={status}>{status}</option>
+                    ))}
                   </select>
                 </label>
+
                 <label className="mt-4 block text-xs font-bold">
-                  Follow-up date and time
+                  Next follow-up
                   <input
                     type="datetime-local"
                     value={selected.follow_up_at?.slice(0, 16) || ""}
-                    onChange={(e) => setSelected({ ...selected, follow_up_at: e.target.value || null })}
+                    onChange={(event) =>
+                      setSelected({
+                        ...selected,
+                        follow_up_at: event.target.value || null,
+                      })
+                    }
                     className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-3 text-sm"
                   />
                 </label>
+
                 <label className="mt-4 block text-xs font-bold">
-                  Notes
+                  Conversation notes
                   <textarea
                     rows={5}
                     value={selected.notes || ""}
-                    onChange={(e) => setSelected({ ...selected, notes: e.target.value })}
+                    onChange={(event) =>
+                      setSelected({ ...selected, notes: event.target.value })
+                    }
+                    placeholder="Add requirements, objections, visit feedback and next steps…"
                     className="mt-2 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] p-3 text-sm outline-none focus:border-[#c9a227]"
                   />
                 </label>
-                <button onClick={save} disabled={saving} className="mt-5 h-12 w-full rounded-full bg-[#c9a227] text-sm font-bold disabled:opacity-60">
+
+                {message && (
+                  <p className="mt-4 rounded-xl bg-emerald-50 p-3 text-center text-xs font-semibold text-emerald-700">
+                    {message}
+                  </p>
+                )}
+
+                <button
+                  onClick={save}
+                  disabled={saving}
+                  className="mt-5 h-12 w-full rounded-full bg-[#c9a227] text-sm font-bold transition hover:bg-[#e4c462] disabled:opacity-60"
+                >
                   {saving ? "Saving…" : "Save lead updates"}
                 </button>
               </>
@@ -244,4 +620,3 @@ export default function CrmDashboard() {
     </main>
   );
 }
-
