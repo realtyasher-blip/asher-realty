@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2, Heart, Share2 } from "lucide-react";
+import { CheckCircle2, GitCompareArrows, Heart, Share2 } from "lucide-react";
 
-const FAVOURITES_KEY = "asher-favourite-projects";
-const RECENT_KEY = "asher-recent-projects";
+import {
+  COMPARISON_KEY,
+  FAVOURITES_KEY,
+  RECENT_KEY,
+  readBuyerWorkspace,
+  toggleBuyerWorkspaceItem,
+  writeBuyerWorkspaceList,
+} from "@/lib/buyerWorkspace";
 
 export default function ProjectActions({
   slug,
@@ -14,43 +20,33 @@ export default function ProjectActions({
   name: string;
 }) {
   const [saved, setSaved] = useState(false);
+  const [compared, setCompared] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      try {
-        const favourites: string[] = JSON.parse(
-          localStorage.getItem(FAVOURITES_KEY) || "[]"
-        );
-        setSaved(favourites.includes(slug));
-        const recent: string[] = JSON.parse(
-          localStorage.getItem(RECENT_KEY) || "[]"
-        );
-        const nextRecent = [slug, ...recent.filter((item) => item !== slug)].slice(
-          0,
-          6
-        );
-        localStorage.setItem(RECENT_KEY, JSON.stringify(nextRecent));
-      } catch {
-        // Storage can be unavailable in privacy-restricted browsers.
-      }
+      const workspace = readBuyerWorkspace();
+      setSaved(workspace.favourites.includes(slug));
+      setCompared(workspace.comparison.includes(slug));
+      const nextRecent = [
+        slug,
+        ...workspace.recent.filter((item) => item !== slug),
+      ].slice(0, 6);
+      writeBuyerWorkspaceList(RECENT_KEY, nextRecent);
     });
     return () => window.clearTimeout(timer);
   }, [slug]);
 
   function toggleSaved() {
-    try {
-      const favourites: string[] = JSON.parse(
-        localStorage.getItem(FAVOURITES_KEY) || "[]"
-      );
-      const next = favourites.includes(slug)
-        ? favourites.filter((item) => item !== slug)
-        : [...favourites, slug];
-      localStorage.setItem(FAVOURITES_KEY, JSON.stringify(next));
-      setSaved(next.includes(slug));
-    } catch {
-      setSaved((current) => !current);
-    }
+    const next = toggleBuyerWorkspaceItem(FAVOURITES_KEY, slug);
+    setSaved(next.includes(slug));
+  }
+
+  function toggleCompared() {
+    const next = toggleBuyerWorkspaceItem(COMPARISON_KEY, slug, {
+      maxItems: 2,
+    });
+    setCompared(next.includes(slug));
   }
 
   async function shareProject() {
@@ -76,6 +72,19 @@ export default function ProjectActions({
 
   return (
     <div className="mt-4 flex flex-wrap gap-3">
+      <button
+        type="button"
+        onClick={toggleCompared}
+        aria-pressed={compared}
+        className={`inline-flex h-11 items-center justify-center rounded-full border px-5 text-sm font-semibold backdrop-blur transition ${
+          compared
+            ? "border-[#c9a227]/60 bg-[#c9a227] text-[#071a2f]"
+            : "border-white/20 bg-white/10 text-white hover:bg-white hover:text-[#071a2f]"
+        }`}
+      >
+        <GitCompareArrows className="mr-2 size-4" />
+        {compared ? "Added to compare" : "Compare"}
+      </button>
       <button
         type="button"
         onClick={toggleSaved}

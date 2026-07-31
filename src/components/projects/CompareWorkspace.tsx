@@ -18,8 +18,10 @@ import {
 } from "lucide-react";
 
 import { projectSlug, projects, type Project } from "@/data/projects";
-
-const COMPARISON_KEY = "asher-last-comparison";
+import {
+  COMPARISON_KEY,
+  writeBuyerWorkspaceList,
+} from "@/lib/buyerWorkspace";
 
 type CompareWorkspaceProps = {
   initialFirst?: string;
@@ -161,7 +163,7 @@ export default function CompareWorkspace({
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const slugs = [projectSlug(first.name), projectSlug(second.name)];
-      localStorage.setItem(COMPARISON_KEY, JSON.stringify(slugs));
+      writeBuyerWorkspaceList(COMPARISON_KEY, slugs);
       const url = new URL(window.location.href);
       url.searchParams.set("projects", slugs.join(","));
       window.history.replaceState({}, "", url);

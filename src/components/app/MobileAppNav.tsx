@@ -1,25 +1,54 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Building2,
-  CalendarCheck,
   GitCompareArrows,
+  Heart,
   Home,
   Sparkles,
 } from "lucide-react";
+
+import {
+  BUYER_WORKSPACE_EVENT,
+  readBuyerWorkspace,
+  type BuyerWorkspaceSnapshot,
+} from "@/lib/buyerWorkspace";
 
 const items = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/projects", icon: Building2 },
   { label: "AI Match", href: "/#ai-match", icon: Sparkles, primary: true },
   { label: "Compare", href: "/compare", icon: GitCompareArrows },
-  { label: "Visit", href: "/book-site-visit", icon: CalendarCheck },
+  { label: "Saved", href: "/my-search", icon: Heart },
 ];
+
+const emptyWorkspace: BuyerWorkspaceSnapshot = {
+  favourites: [],
+  comparison: [],
+  recent: [],
+};
 
 export default function MobileAppNav() {
   const pathname = usePathname();
+  const [workspace, setWorkspace] =
+    useState<BuyerWorkspaceSnapshot>(emptyWorkspace);
+
+  useEffect(() => {
+    const syncWorkspace = () => setWorkspace(readBuyerWorkspace());
+    const timer = window.setTimeout(syncWorkspace, 0);
+
+    window.addEventListener(BUYER_WORKSPACE_EVENT, syncWorkspace);
+    window.addEventListener("storage", syncWorkspace);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener(BUYER_WORKSPACE_EVENT, syncWorkspace);
+      window.removeEventListener("storage", syncWorkspace);
+    };
+  }, []);
 
   if (pathname.startsWith("/crm")) return null;
 
@@ -30,6 +59,12 @@ export default function MobileAppNav() {
     >
       <div className="mx-auto grid max-w-lg grid-cols-5 px-2">
         {items.map(({ label, href, icon: Icon, primary }) => {
+          const badge =
+            label === "Compare"
+              ? workspace.comparison.length
+              : label === "Saved"
+                ? workspace.favourites.length
+                : 0;
           const active =
             label === "Home"
               ? pathname === "/"
@@ -51,7 +86,7 @@ export default function MobileAppNav() {
               }`}
             >
               <span
-                className={`flex size-8 items-center justify-center rounded-xl transition ${
+                className={`relative flex size-8 items-center justify-center rounded-xl transition ${
                   primary
                     ? "size-12 rounded-full border-4 border-[#041421] bg-[#c9a227] text-[#071a2f] shadow-[0_10px_30px_rgba(201,162,39,.28)]"
                     : active
@@ -60,6 +95,11 @@ export default function MobileAppNav() {
                 }`}
               >
                 <Icon className={primary ? "size-5" : "size-[19px]"} />
+                {badge > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex min-w-4 items-center justify-center rounded-full bg-[#c9a227] px-1 text-[9px] font-extrabold leading-4 text-[#071a2f] ring-2 ring-[#041421]">
+                    {badge > 9 ? "9+" : badge}
+                  </span>
+                )}
               </span>
               {label}
             </Link>

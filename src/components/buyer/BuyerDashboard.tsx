@@ -19,11 +19,14 @@ import {
 } from "lucide-react";
 
 import { projectSlug, projects, type Project } from "@/data/projects";
+import {
+  COMPARISON_KEY,
+  FAVOURITES_KEY,
+  RECENT_KEY,
+  writeBuyerWorkspaceList,
+} from "@/lib/buyerWorkspace";
 
-const FAVOURITES_KEY = "asher-favourite-projects";
-const RECENT_KEY = "asher-recent-projects";
 const PREFERENCES_KEY = "asher-buyer-preferences";
-const COMPARISON_KEY = "asher-last-comparison";
 
 type Preferences = {
   corridor: string;
@@ -219,7 +222,7 @@ export default function BuyerDashboard() {
   function removeSaved(slug: string) {
     const next = savedSlugs.filter((item) => item !== slug);
     setSavedSlugs(next);
-    localStorage.setItem(FAVOURITES_KEY, JSON.stringify(next));
+    writeBuyerWorkspaceList(FAVOURITES_KEY, next);
   }
 
   function resetSearch() {

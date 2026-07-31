@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Phone, Sparkles } from "lucide-react";
+import { Menu, Phone, Search, Sparkles } from "lucide-react";
 
+import { OPEN_SEARCH_EVENT } from "@/components/app/UniversalSearch";
 import BrandLogo from "@/components/brand/BrandLogo";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -24,6 +25,10 @@ const navigation = [
 ];
 
 export default function Navbar() {
+  function openSearch() {
+    window.dispatchEvent(new CustomEvent(OPEN_SEARCH_EVENT));
+  }
+
   return (
     <header className="fixed inset-x-0 top-3 z-50 text-white">
       <div className="container-shell">
@@ -45,6 +50,18 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-2 xl:flex">
+            <button
+              type="button"
+              onClick={openSearch}
+              aria-label="Search projects, locations, guides and tools"
+              className="flex h-11 items-center gap-2 rounded-full border border-white/10 px-3.5 text-xs font-semibold text-white/60 transition hover:border-[#c9a227]/40 hover:text-white"
+            >
+              <Search className="size-4 text-[#e4c462]" />
+              Search
+              <kbd className="rounded-md border border-white/10 bg-white/[0.06] px-1.5 py-0.5 text-[9px] text-white/35">
+                ⌘K
+              </kbd>
+            </button>
             <a
               href="tel:+919019697170"
               aria-label="Call Asher Realty"
@@ -92,6 +109,14 @@ export default function Navbar() {
                 </SheetHeader>
 
                 <nav className="mt-10 flex flex-col gap-6 px-1">
+                  <button
+                    type="button"
+                    onClick={openSearch}
+                    className="flex h-12 w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-left text-sm font-semibold text-white/75 transition hover:border-[#c9a227]/40 hover:text-white"
+                  >
+                    <Search className="size-5 text-[#e4c462]" />
+                    Search the entire platform
+                  </button>
                   {navigation.map((item) => (
                     <Link
                       key={item.label}

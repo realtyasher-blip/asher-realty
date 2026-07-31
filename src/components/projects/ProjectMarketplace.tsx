@@ -22,10 +22,15 @@ import {
 } from "lucide-react";
 
 import { developerLogos, projectSlug, projects } from "@/data/projects";
+import {
+  BUYER_WORKSPACE_EVENT,
+  COMPARISON_KEY,
+  FAVOURITES_KEY,
+  readBuyerWorkspace,
+  toggleBuyerWorkspaceItem,
+  writeBuyerWorkspaceList,
+} from "@/lib/buyerWorkspace";
 import { cn } from "@/lib/utils";
-
-const STORAGE_KEY = "asher-favourite-projects";
-const RECENT_KEY = "asher-recent-projects";
 
 const builders = ["All", ...Array.from(new Set(projects.map((project) => project.developer)))];
 const corridors = ["All corridors", ...Array.from(new Set(projects.map((project) => project.corridor)))];
@@ -78,6 +83,8 @@ export default function ProjectMarketplace() {
   const [recentOnly, setRecentOnly] = useState(false);
   const [favourites, setFavourites] = useState<string[]>([]);
   const [recent, setRecent] = useState<string[]>([]);
+  const [comparison, setComparison] = useState<string[]>([]);
+  const [comparisonNotice, setComparisonNotice] = useState("");
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -115,17 +122,24 @@ export default function ProjectMarketplace() {
         setPrice(requestedPrice);
       }
 
-      try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        const viewed = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
-        setFavourites(Array.isArray(saved) ? saved : []);
-        setRecent(Array.isArray(viewed) ? viewed : []);
-      } catch {
-        setFavourites([]);
-        setRecent([]);
-      }
+      const workspace = readBuyerWorkspace();
+      setFavourites(workspace.favourites);
+      setRecent(workspace.recent);
+      setComparison(workspace.comparison);
     });
-    return () => window.clearTimeout(timer);
+
+    const syncWorkspace = () => {
+      const workspace = readBuyerWorkspace();
+      setFavourites(workspace.favourites);
+      setRecent(workspace.recent);
+      setComparison(workspace.comparison);
+    };
+    window.addEventListener(BUYER_WORKSPACE_EVENT, syncWorkspace);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener(BUYER_WORKSPACE_EVENT, syncWorkspace);
+    };
   }, []);
 
   const filtered = useMemo(() => {
@@ -202,7 +216,8 @@ export default function ProjectMarketplace() {
   ]);
 
   useEffect(() => {
-    setVisibleCount(9);
+    const timer = window.setTimeout(() => setVisibleCount(9), 0);
+    return () => window.clearTimeout(timer);
   }, [
     builder,
     configuration,
@@ -221,9 +236,25 @@ export default function ProjectMarketplace() {
       const next = current.includes(slug)
         ? current.filter((item) => item !== slug)
         : [...current, slug];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      writeBuyerWorkspaceList(FAVOURITES_KEY, next);
       return next;
     });
+  }
+
+  function toggleComparison(slug: string, name: string) {
+    const wasCompared = comparison.includes(slug);
+    const next = toggleBuyerWorkspaceItem(COMPARISON_KEY, slug, {
+      maxItems: 2,
+    });
+    setComparison(next);
+    setComparisonNotice(
+      wasCompared
+        ? `${name} removed from comparison.`
+        : next.length === 2
+          ? `${name} added. Your comparison is ready.`
+          : `${name} added. Choose one more project.`
+    );
+    window.setTimeout(() => setComparisonNotice(""), 2400);
   }
 
   function resetFilters() {
@@ -584,6 +615,7 @@ export default function ProjectMarketplace() {
             {filtered.slice(0, visibleCount).map((project) => {
               const slug = projectSlug(project.name);
               const isSaved = favourites.includes(slug);
+              const isCompared = comparison.includes(slug);
               return (
                 <article
                   key={project.name}
@@ -705,13 +737,20 @@ export default function ProjectMarketplace() {
                         Enquire
                       </a>
                     </div>
-                    <Link
-                      href={`/compare?projects=${slug}`}
-                      className="mt-4 inline-flex items-center justify-center text-xs font-semibold text-slate-400 transition hover:text-[#071a2f]"
+                    <button
+                      type="button"
+                      onClick={() => toggleComparison(slug, project.name)}
+                      aria-pressed={isCompared}
+                      className={cn(
+                        "mt-4 inline-flex items-center justify-center rounded-full py-2 text-xs font-semibold transition",
+                        isCompared
+                          ? "bg-[#c9a227]/12 text-[#7a5b08]"
+                          : "text-slate-400 hover:bg-slate-50 hover:text-[#071a2f]"
+                      )}
                     >
                       <GitCompareArrows className="mr-2 size-4 text-[#b08a16]" />
-                      Add to comparison
-                    </Link>
+                      {isCompared ? "Added to comparison" : "Add to comparison"}
+                    </button>
                   </div>
                 </article>
               );
@@ -749,6 +788,16 @@ export default function ProjectMarketplace() {
                 ({filtered.length - visibleCount} remaining)
               </span>
             </button>
+          </div>
+        )}
+
+        {comparisonNotice && (
+          <div
+            role="status"
+            className="fixed bottom-24 right-4 z-[80] max-w-sm rounded-2xl border border-[#c9a227]/25 bg-[#071a2f] px-5 py-4 text-sm font-semibold text-white shadow-[0_18px_55px_rgba(0,0,0,.28)] lg:bottom-24 lg:right-7"
+          >
+            <span className="text-[#e4c462]">Compare:</span>{" "}
+            {comparisonNotice}
           </div>
         )}
       </div>

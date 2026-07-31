@@ -4,6 +4,8 @@ import { Cormorant_Garamond, Montserrat } from "next/font/google";
 
 import MobileAppNav from "@/components/app/MobileAppNav";
 import PwaRegistration from "@/components/app/PwaRegistration";
+import BuyerWorkspaceDock from "@/components/app/BuyerWorkspaceDock";
+import UniversalSearch from "@/components/app/UniversalSearch";
 import PropertyCopilot from "@/components/ai/PropertyCopilot";
 
 import "./globals.css";
@@ -152,6 +154,8 @@ export default function RootLayout({
           `}
         </Script>
         {children}
+        <UniversalSearch />
+        <BuyerWorkspaceDock />
         <PropertyCopilot />
         <PwaRegistration />
         <MobileAppNav />
