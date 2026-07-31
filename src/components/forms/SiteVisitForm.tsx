@@ -19,6 +19,7 @@ type VisitForm = {
   preferred_visit_time: string;
   transport: string;
   website: string;
+  ai_call_consent: boolean;
 };
 
 const initial: VisitForm = {
@@ -34,6 +35,7 @@ const initial: VisitForm = {
   preferred_visit_time: "",
   transport: "I will reach the project",
   website: "",
+  ai_call_consent: false,
 };
 
 export default function SiteVisitForm() {
@@ -194,6 +196,24 @@ Transport: ${form.transport}`
           className="hidden"
         />
       </div>
+      <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-[#f7f8fa] p-4 text-left">
+        <input
+          type="checkbox"
+          checked={form.ai_call_consent}
+          onChange={(e) =>
+            setForm((current) => ({
+              ...current,
+              ai_call_consent: e.target.checked,
+            }))
+          }
+          className="mt-0.5 size-4 accent-[#c9a227]"
+        />
+        <span className="text-[11px] leading-5 text-slate-500">
+          I agree to receive a site-visit coordination call from Asher Realty,
+          including from its clearly identified virtual assistant. This is
+          optional and can be withdrawn at any time.
+        </span>
+      </label>
       <button
         disabled={state === "saving"}
         type="submit"
@@ -209,4 +229,3 @@ Transport: ${form.transport}`
     </form>
   );
 }
-

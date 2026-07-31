@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import {
   AlertCircle,
   BarChart3,
+  Bot,
   CalendarClock,
   CheckCircle2,
   ChevronRight,
@@ -19,6 +20,12 @@ import {
 } from "lucide-react";
 
 import { leadStatuses, type Lead, type LeadStatus } from "@/lib/crm/types";
+import {
+  callingSummary,
+  mergeCallingProfile,
+  parseCallingProfile,
+  stripCallingData,
+} from "@/lib/crm/calling";
 
 const completedStatuses: LeadStatus[] = ["Booked", "Not interested"];
 
@@ -76,11 +83,13 @@ function csvCell(value: unknown) {
 type CrmDashboardProps = {
   initialLeads: Lead[];
   initialError?: string;
+  initialNow: number;
 };
 
 export default function CrmDashboard({
   initialLeads,
   initialError = "",
+  initialNow,
 }: CrmDashboardProps) {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [loading, setLoading] = useState(false);
@@ -90,6 +99,7 @@ export default function CrmDashboard({
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState(initialError);
+  const [now, setNow] = useState(initialNow);
 
   async function load() {
     setLoading(true);
@@ -103,6 +113,7 @@ export default function CrmDashboard({
       const data = (await response.json()) as { leads?: Lead[]; error?: string };
       if (!response.ok) throw new Error(data.error || "Unable to load leads.");
       setLeads(data.leads || []);
+      setNow(Date.now());
       setSelected((current) =>
         current
           ? data.leads?.find((lead) => lead.id === current.id) || null
@@ -116,8 +127,6 @@ export default function CrmDashboard({
       setLoading(false);
     }
   }
-
-  const now = Date.now();
 
   const dueFollowUps = useMemo(
     () =>
@@ -229,10 +238,17 @@ export default function CrmDashboard({
       "Visit time",
       "Status",
       "Follow-up",
+      "Calling permission",
+      "Prospect class",
+      "Lead score",
+      "Call outcome",
+      "Last call",
+      "Call summary",
       "Notes",
     ];
-    const rows = leads.map((lead) =>
-      [
+    const rows = leads.map((lead) => {
+      const { profile, latest } = callingSummary(lead);
+      return [
         lead.created_at,
         lead.name,
         lead.phone,
@@ -248,11 +264,17 @@ export default function CrmDashboard({
         lead.preferred_visit_time,
         lead.status,
         lead.follow_up_at,
-        lead.notes,
+        profile.consentStatus,
+        latest?.classification,
+        latest?.score,
+        latest?.outcome,
+        latest?.recordedAt,
+        latest?.summary,
+        stripCallingData(lead.notes),
       ]
         .map(csvCell)
-        .join(",")
-    );
+        .join(",");
+    });
     const blob = new Blob(
       [`\uFEFF${columns.map(csvCell).join(",")}\n${rows.join("\n")}`],
       { type: "text/csv;charset=utf-8" }
@@ -284,6 +306,12 @@ export default function CrmDashboard({
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <a
+              href="/crm/calling"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-[#c9a227]/30 bg-[#fff9e5] px-5 text-xs font-bold text-[#071a2f] transition hover:bg-[#c9a227]"
+            >
+              <Bot className="mr-2 size-4" /> AI Calling
+            </a>
             <a
               href="/api/crm/export"
               className="inline-flex h-11 items-center justify-center rounded-full bg-[#071a2f] px-5 text-xs font-bold text-white transition hover:bg-[#17324e]"
@@ -616,9 +644,15 @@ export default function CrmDashboard({
                   Conversation notes
                   <textarea
                     rows={5}
-                    value={selected.notes || ""}
+                    value={stripCallingData(selected.notes)}
                     onChange={(event) =>
-                      setSelected({ ...selected, notes: event.target.value })
+                      setSelected({
+                        ...selected,
+                        notes: mergeCallingProfile(
+                          event.target.value,
+                          parseCallingProfile(selected.notes)
+                        ),
+                      })
                     }
                     placeholder="Add requirements, objections, visit feedback and next steps…"
                     className="mt-2 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] p-3 text-sm outline-none focus:border-[#c9a227]"

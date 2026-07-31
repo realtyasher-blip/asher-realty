@@ -3,6 +3,7 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 import type { Lead, LeadInput, LeadStatus } from "@/lib/crm/types";
+import { mergeCallingProfile, parseCallingProfile } from "@/lib/crm/calling";
 
 const SESSION_COOKIE = "asher_crm_session";
 const SESSION_SECONDS = 60 * 60 * 12;
@@ -57,10 +58,21 @@ async function supabaseRequest<T>(
 }
 
 export async function createLead(input: LeadInput) {
+  const { ai_call_consent, ...leadInput } = input;
+  const profile = parseCallingProfile("");
+  if (ai_call_consent) {
+    profile.consentStatus = "Inbound enquiry permission";
+    profile.consentSource = "Website consent checkbox";
+    profile.consentRecordedAt = new Date().toISOString();
+  }
   const rows = await supabaseRequest<Lead[]>("leads", {
     method: "POST",
     headers: { Prefer: "return=representation" },
-    body: JSON.stringify({ ...input, status: "New" }),
+    body: JSON.stringify({
+      ...leadInput,
+      status: "New",
+      notes: mergeCallingProfile("", profile),
+    }),
   });
   return rows[0];
 }
@@ -77,6 +89,8 @@ export async function updateLead(
     status?: LeadStatus;
     follow_up_at?: string | null;
     notes?: string | null;
+    preferred_visit_date?: string | null;
+    preferred_visit_time?: string | null;
   }
 ) {
   const rows = await supabaseRequest<Lead[]>(
@@ -120,4 +134,3 @@ export const crmSessionCookie = {
   name: SESSION_COOKIE,
   maxAge: SESSION_SECONDS,
 };
-

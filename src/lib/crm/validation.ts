@@ -28,6 +28,6 @@ export function parseLeadInput(value: unknown): LeadInput | null {
     preferred_visit_date: text(data.preferred_visit_date, 10) || null,
     preferred_visit_time: text(data.preferred_visit_time, 60) || null,
     transport: text(data.transport, 80) || null,
+    ai_call_consent: data.ai_call_consent === true,
   };
 }
-

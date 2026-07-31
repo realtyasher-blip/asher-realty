@@ -12,6 +12,7 @@ type FormData = {
   configuration: string;
   purpose: string;
   timeline: string;
+  ai_call_consent: boolean;
 };
 
 const initialFormData: FormData = {
@@ -22,6 +23,7 @@ const initialFormData: FormData = {
   configuration: "",
   purpose: "",
   timeline: "",
+  ai_call_consent: false,
 };
 
 export default function ConsultationForm() {
@@ -79,6 +81,13 @@ Purchase Timeline: ${formData.timeline}`
     } catch {
       setSubmission("fallback");
     }
+  }
+
+  function handleConsent(event: React.ChangeEvent<HTMLInputElement>) {
+    setFormData((current) => ({
+      ...current,
+      ai_call_consent: event.target.checked,
+    }));
   }
 
   if (submission === "saved" || submission === "fallback") {
@@ -290,6 +299,20 @@ Purchase Timeline: ${formData.timeline}`
         </div>
       </div>
 
+      <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-[#f7f8fa] p-4 text-left">
+        <input
+          type="checkbox"
+          checked={formData.ai_call_consent}
+          onChange={handleConsent}
+          className="mt-0.5 size-4 accent-[#c9a227]"
+        />
+        <span className="text-[11px] leading-5 text-slate-500">
+          I agree to receive a property-assistance call from Asher Realty,
+          including from its clearly identified virtual assistant. This is
+          optional and I can withdraw permission at any time.
+        </span>
+      </label>
+
       <button
         disabled={submission === "saving"}
         type="submit"
@@ -300,8 +323,8 @@ Purchase Timeline: ${formData.timeline}`
       </button>
 
       <p className="mt-4 text-center text-xs leading-5 text-slate-400">
-        By submitting, you agree to be contacted regarding your property
-        requirement.
+        By submitting, you agree to be contacted regarding this enquiry. AI
+        calling is used only when the optional permission above is selected.
       </p>
     </form>
   );

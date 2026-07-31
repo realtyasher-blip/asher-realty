@@ -32,6 +32,12 @@ export default async function CrmPage() {
   }
 
   return (
-    <CrmDashboard initialLeads={initialLeads} initialError={initialError} />
+    <CrmDashboard
+      initialLeads={initialLeads}
+      initialError={initialError}
+      // The request timestamp is intentionally captured once on the server.
+      // eslint-disable-next-line react-hooks/purity
+      initialNow={Date.now()}
+    />
   );
 }

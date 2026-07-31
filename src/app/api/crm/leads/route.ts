@@ -40,7 +40,7 @@ export async function PATCH(request: NextRequest) {
       ? (body.status as LeadStatus)
       : undefined;
   const notes =
-    typeof body.notes === "string" ? body.notes.trim().slice(0, 3000) : undefined;
+    typeof body.notes === "string" ? body.notes.trim().slice(0, 20000) : undefined;
   const followUp =
     body.follow_up_at === null
       ? null
@@ -59,4 +59,3 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "Unable to save changes." }, { status: 503 });
   }
 }
-

@@ -8,6 +8,7 @@ import {
   verifySessionToken,
 } from "@/lib/crm/server";
 import type { Lead } from "@/lib/crm/types";
+import { callingSummary, stripCallingData } from "@/lib/crm/calling";
 
 export const runtime = "nodejs";
 
@@ -142,27 +143,62 @@ function workbookRows(leads: Lead[]) {
     "Visit Time",
     "Status",
     "Follow-up",
+    "Calling Permission",
+    "Permission Source",
+    "Do Not Call",
+    "Call Attempts",
+    "Last Call",
+    "Call Outcome",
+    "Prospect Class",
+    "Lead Score",
+    "Interest",
+    "Call Language",
+    "AI Disclosed",
+    "Budget Confirmed",
+    "Call Summary",
+    "Primary Objection",
+    "Recording URL",
+    "Transcript",
     "Notes",
   ];
 
-  const rows = leads.map((lead) => [
-    lead.created_at,
-    lead.name,
-    lead.phone,
-    lead.email,
-    lead.source,
-    lead.project,
-    lead.location,
-    lead.configuration,
-    lead.budget,
-    lead.purpose,
-    lead.timeline,
-    lead.preferred_visit_date,
-    lead.preferred_visit_time,
-    lead.status,
-    lead.follow_up_at,
-    lead.notes,
-  ]);
+  const rows = leads.map((lead) => {
+    const { profile, latest } = callingSummary(lead);
+    return [
+      lead.created_at,
+      lead.name,
+      lead.phone,
+      lead.email,
+      lead.source,
+      lead.project,
+      lead.location,
+      lead.configuration,
+      lead.budget,
+      lead.purpose,
+      lead.timeline,
+      lead.preferred_visit_date,
+      lead.preferred_visit_time,
+      lead.status,
+      lead.follow_up_at,
+      profile.consentStatus,
+      profile.consentSource,
+      profile.doNotCall ? "Yes" : "No",
+      profile.attempts.length,
+      latest?.recordedAt,
+      latest?.outcome,
+      latest?.classification,
+      latest?.score,
+      latest?.interest,
+      latest?.language,
+      latest ? (latest.disclosedAi ? "Yes" : "No") : "",
+      latest ? (latest.budgetConfirmed ? "Yes" : "No") : "",
+      latest?.summary,
+      latest?.objection,
+      latest?.recordingUrl,
+      latest?.transcript,
+      stripCallingData(lead.notes),
+    ];
+  });
 
   const allRows = [headers, ...rows];
   return allRows
@@ -247,10 +283,10 @@ function createWorkbook(leads: Lead[]) {
   <cols>
     <col min="1" max="1" width="22" customWidth="1"/>
     <col min="2" max="4" width="20" customWidth="1"/>
-    <col min="5" max="16" width="22" customWidth="1"/>
+    <col min="5" max="32" width="22" customWidth="1"/>
   </cols>
   <sheetData>${rows}</sheetData>
-  <autoFilter ref="A1:P${Math.max(1, leads.length + 1)}"/>
+  <autoFilter ref="A1:AF${Math.max(1, leads.length + 1)}"/>
 </worksheet>`,
     },
   ];
