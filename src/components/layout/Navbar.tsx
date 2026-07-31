@@ -17,10 +17,10 @@ import BrandLogo from "@/components/brand/BrandLogo";
 const navigation = [
   { label: "Projects", href: "/projects" },
   { label: "Locations", href: "/locations" },
+  { label: "Intelligence", href: "/intelligence" },
   { label: "AI Match", href: "/#ai-match" },
   { label: "Compare", href: "/compare" },
   { label: "My Search", href: "/my-search" },
-  { label: "Tools", href: "/tools" },
 ];
 
 export default function Navbar() {
@@ -31,7 +31,7 @@ export default function Navbar() {
           <BrandLogo />
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-5 lg:flex">
           {navigation.map((item) => (
             <Link
               key={item.label}
@@ -52,16 +52,16 @@ export default function Navbar() {
             9019697170
           </a>
 
-          <Link
-            href="/book-site-visit"
-            data-analytics-label="Navbar site visit"
+          <a
+            href="tel:+919019697170"
+            data-analytics-label="Navbar free buyer call"
             className={cn(
               buttonVariants(),
               "rounded-full bg-[#c9a227] px-6 text-[#071a2f] hover:bg-[#e4c462]"
             )}
           >
-            Book Site Visit
-          </Link>
+            Free Buyer Call
+          </a>
         </div>
 
         <div className="lg:hidden">
@@ -108,16 +108,16 @@ export default function Navbar() {
                   9019697170
                 </a>
 
-                <Link
-                  href="/book-site-visit"
-                  data-analytics-label="Mobile menu site visit"
+                <a
+                  href="tel:+919019697170"
+                  data-analytics-label="Mobile menu buyer call"
                   className={cn(
                     buttonVariants(),
                     "mt-4 w-full rounded-full bg-[#c9a227] text-[#071a2f] hover:bg-[#e4c462]"
                   )}
                 >
-                  Book Site Visit
-                </Link>
+                  Call a Buyer Advisor
+                </a>
               </nav>
             </SheetContent>
           </Sheet>

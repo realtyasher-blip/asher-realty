@@ -14,6 +14,8 @@ import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import LocalBusinessSchema from "@/components/seo/LocalBusinessSchema";
+import DecisionIntelligence from "@/components/home/DecisionIntelligence";
+import AdvisorAdvantage from "@/components/home/AdvisorAdvantage";
 
 export const revalidate = 86400;
 
@@ -27,8 +29,10 @@ export default function Home() {
         <Hero />
         <TrustStrip />
         <SmartMatch />
+        <DecisionIntelligence />
         <FeaturedProjects />
         <ProjectComparison />
+        <AdvisorAdvantage />
         <MarketIntelligence />
         <PropertyDiscovery />
         <HowItWorks />

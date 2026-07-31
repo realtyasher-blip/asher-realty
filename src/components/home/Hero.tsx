@@ -139,12 +139,11 @@ export default function Hero() {
             </Link>
             <span className="hidden size-1 rounded-full bg-[#e4c462] sm:block" />
             <a
-              href="https://wa.me/919019697170?text=Hi%20Asher%20Realty%2C%20I%20would%20like%20help%20finding%20a%20home%20in%20Bengaluru."
-              target="_blank"
-              rel="noopener noreferrer"
+              href="tel:+919019697170"
+              data-analytics-label="Hero buyer advisor call"
               className="font-semibold text-white transition hover:text-[#e4c462]"
             >
-              Ask an advisor
+              Free 15-minute buyer call
             </a>
           </div>
         </div>

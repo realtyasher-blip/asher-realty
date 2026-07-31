@@ -11,15 +11,15 @@ import ConsultationForm from "@/components/forms/ConsultationForm";
 const points = [
   {
     icon: BadgeCheck,
-    text: "Personalised project shortlist",
+    text: "Market-wide shortlist across leading builders",
   },
   {
     icon: CalendarCheck,
-    text: "Guided site-visit coordination",
+    text: "One guided itinerary for your best matches",
   },
   {
     icon: MessageCircle,
-    text: "Direct WhatsApp support",
+    text: "Price, phase and inventory verification plan",
   },
 ];
 
@@ -46,16 +46,17 @@ export default function ConsultationSection() {
 
             <div className="absolute right-0 bottom-0 left-0 p-7 text-white sm:p-10">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#e4c462]">
-                Property Consultation
+                Free 15-minute buyer strategy call
               </p>
 
               <h2 className="mt-4 max-w-xl text-4xl font-medium leading-tight sm:text-5xl">
-                Let&apos;s find the right property for you.
+                Speak to an advisor before you speak to every builder.
               </h2>
 
               <p className="mt-5 max-w-xl leading-7 text-white/70">
                 Share your budget, preferred location and property goals. We
-                will help you identify and compare suitable Bengaluru projects.
+                will turn the market into a focused shortlist and a clear set
+                of questions for every site visit.
               </p>
 
               <div className="mt-7 space-y-4">

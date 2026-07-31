@@ -4,6 +4,7 @@ import { Cormorant_Garamond, Montserrat } from "next/font/google";
 
 import MobileAppNav from "@/components/app/MobileAppNav";
 import PwaRegistration from "@/components/app/PwaRegistration";
+import PropertyCopilot from "@/components/ai/PropertyCopilot";
 
 import "./globals.css";
 
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s | Asher Realty",
   },
   description:
-    "Discover premium apartments, villas and investment properties across Bengaluru with personalised guidance from Asher Realty.",
+    "Search, compare and understand premium Bengaluru properties with AI-assisted matching, buyer intelligence and personalised guidance from Asher Realty.",
   keywords: [
     "Asher Realty",
     "Bengaluru real estate",
@@ -36,6 +37,9 @@ export const metadata: Metadata = {
     "premium properties Bengaluru",
     "luxury apartments Bangalore",
     "property investment Bengaluru",
+    "Bangalore property comparison",
+    "Bengaluru property advisor",
+    "AI property search Bangalore",
   ],
   openGraph: {
     title: "Asher Realty",
@@ -142,6 +146,7 @@ export default function RootLayout({
           `}
         </Script>
         {children}
+        <PropertyCopilot />
         <PwaRegistration />
         <MobileAppNav />
       </body>
