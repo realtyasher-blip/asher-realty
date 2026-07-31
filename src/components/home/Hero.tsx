@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -13,19 +13,42 @@ import {
 } from "lucide-react";
 
 const locations = ["Whitefield", "Sarjapur Road", "North Bengaluru", "Hebbal", "Devanahalli"];
-const homeTypes = ["Apartment", "Villa", "Plot", "Investment property"];
+const homeTypes = ["Apartment", "Villa", "Row House", "Investment property"];
 const budgets = ["₹50L–₹1Cr", "₹1Cr–₹2Cr", "₹2Cr–₹3Cr", "₹3Cr+"];
+
+const locationCorridors: Record<string, string> = {
+  Whitefield: "East Bengaluru",
+  "Sarjapur Road": "East Bengaluru",
+  "North Bengaluru": "North Bengaluru",
+  Hebbal: "North Bengaluru",
+  Devanahalli: "North Bengaluru",
+};
+
+const budgetBands: Record<string, string> = {
+  "₹50L–₹1Cr": "Up to ₹2 Cr",
+  "₹1Cr–₹2Cr": "Up to ₹2 Cr",
+  "₹2Cr–₹3Cr": "₹2–3 Cr",
+  "₹3Cr+": "₹3 Cr+",
+};
 
 export default function Hero() {
   const [location, setLocation] = useState("");
   const [homeType, setHomeType] = useState("");
   const [budget, setBudget] = useState("");
 
-  const message = encodeURIComponent(
-    `Hi Asher Realty, help me find a ${homeType || "property"} in ${
-      location || "Bengaluru"
-    } with a budget of ${budget || "to be discussed"}.`
-  );
+  const resultsUrl = useMemo(() => {
+    const params = new URLSearchParams();
+
+    if (location) {
+      params.set("q", location);
+      params.set("corridor", locationCorridors[location]);
+    }
+    if (homeType) params.set("type", homeType);
+    if (budget) params.set("price", budgetBands[budget]);
+
+    const search = params.toString();
+    return search ? `/projects?${search}` : "/projects";
+  }, [budget, homeType, location]);
 
   return (
     <section className="relative isolate min-h-[92vh] overflow-hidden bg-[#061727] text-white">
@@ -95,15 +118,14 @@ export default function Hero() {
                 </span>
               </label>
 
-              <a
-                href={`https://wa.me/919019697170?text=${message}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href={resultsUrl}
+                data-analytics-label="Hero property search"
                 className="inline-flex min-h-16 items-center justify-center rounded-2xl bg-[#d5ad2d] px-7 text-sm font-bold text-[#071a2f] transition hover:bg-[#f0d477]"
               >
                 <Search className="mr-2 size-5" />
-                Find homes
-              </a>
+                Show matches
+              </Link>
             </div>
           </div>
 
@@ -115,6 +137,15 @@ export default function Hero() {
             <Link href="/projects" className="inline-flex items-center font-semibold text-white transition hover:text-[#e4c462]">
               Browse all projects <ArrowRight className="ml-2 size-3.5" />
             </Link>
+            <span className="hidden size-1 rounded-full bg-[#e4c462] sm:block" />
+            <a
+              href="https://wa.me/919019697170?text=Hi%20Asher%20Realty%2C%20I%20would%20like%20help%20finding%20a%20home%20in%20Bengaluru."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-white transition hover:text-[#e4c462]"
+            >
+              Ask an advisor
+            </a>
           </div>
         </div>
       </div>

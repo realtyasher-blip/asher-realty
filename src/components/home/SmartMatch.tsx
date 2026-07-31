@@ -227,7 +227,7 @@ export default function SmartMatch() {
                       Your best matches
                     </p>
                     <p className="mt-1 text-sm text-white/48">
-                      Ranked and explained from 23 active projects
+                      Ranked and explained from {projects.length} active projects
                     </p>
                   </div>
                   <button

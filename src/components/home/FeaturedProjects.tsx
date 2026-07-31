@@ -84,7 +84,7 @@ export default function FeaturedProjects() {
     });
   }, [builder, corridor, query, stage]);
 
-  const visibleProjects = filteredProjects.slice(0, 9);
+  const visibleProjects = filteredProjects.slice(0, 6);
   const activeBuilders = new Set(projects.map((project) => project.developer)).size;
   const underConstruction = projects.filter(
     (project) => project.status === "Under construction"
@@ -220,7 +220,7 @@ export default function FeaturedProjects() {
               ))}
             </div>
 
-            {filteredProjects.length > 9 && (
+            {filteredProjects.length > 6 && (
               <div className="mt-10 text-center">
                 <Link
                   href="/projects"
