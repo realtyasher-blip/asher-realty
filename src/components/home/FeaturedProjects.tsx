@@ -18,15 +18,7 @@ import { cn } from "@/lib/utils";
 
 const builders = [
   "All builders",
-  "SOBHA",
-  "Prestige Group",
-  "Assetz Property Group",
-  "Sumadhura Group",
-  "Brigade Group",
-  "Lodha",
-  "Godrej Properties",
-  "Bhartiya Urban",
-  "Birla Estates",
+  ...Array.from(new Set(projects.map((project) => project.developer))),
 ];
 
 const stages: Array<"All active" | ProjectStatus> = [

@@ -47,6 +47,11 @@ const developers = [
     logo: "/logos/bhartiya-official.jpg",
     logoClassName: "max-h-[4.75rem] max-w-[58%] rounded-lg",
   },
+  {
+    name: "Embassy Developments",
+    logo: "/logos/embassy-developments-official.svg",
+    logoClassName: "max-h-12 max-w-[82%]",
+  },
 ];
 
 const whatsappUrl =
