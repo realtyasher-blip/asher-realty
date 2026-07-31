@@ -6,6 +6,7 @@ import {
   Bot,
   CalendarCheck,
   Clock3,
+  Copy,
   Download,
   FileSpreadsheet,
   Headphones,
@@ -22,6 +23,7 @@ import {
 
 import {
   callOutcomes,
+  assessLead,
   callingSummary,
   consentOptions,
   interestLevels,
@@ -39,6 +41,7 @@ type CallingWorkspaceProps = {
 };
 
 type FormState = CallAssessmentInput;
+type ViewFilter = "All" | "Eligible" | "Hot" | "Follow-up" | "Unreached" | "Suppressed";
 
 const emptyForm: FormState = {
   consentStatus: "Not verified",
@@ -96,6 +99,71 @@ function formForLead(lead: Lead): FormState {
   };
 }
 
+function leadPriority(lead: Lead, queued: boolean) {
+  const { profile, latest, eligible } = callingSummary(lead);
+  if (profile.doNotCall || profile.consentStatus === "Withdrawn") return -100;
+  let priority = queued ? 200 : 0;
+  if (latest?.classification === "Hot") priority += 100;
+  else if (latest?.classification === "Warm") priority += 70;
+  else if (latest?.classification === "Unreached") priority += 35;
+  else if (!latest) priority += 45;
+  if (eligible) priority += 30;
+  if (lead.follow_up_at) priority += 15;
+  return priority + (latest?.score || 0);
+}
+
+function nextBestAction(lead: Lead) {
+  const { profile, latest, eligible } = callingSummary(lead);
+  if (profile.doNotCall || profile.consentStatus === "Withdrawn") {
+    return "Keep this contact suppressed. Do not call or add it to a future campaign.";
+  }
+  if (!eligible) return "Verify the permission source before any automated call is attempted.";
+  if (!latest) return "Make a short first-response call, confirm requirements and offer two relevant project options.";
+  if (latest.siteVisitDate) return "Confirm the visit slot, send the map and assign a human advisor before the visit.";
+  if (latest.classification === "Hot") return "Human advisor handoff within 5 minutes. Close on a site-visit date, not another information exchange.";
+  if (latest.classification === "Warm") return "Send a two-project comparison, then schedule a specific follow-up time.";
+  if (latest.classification === "Unreached") return "Retry once in a different approved time window; stop after the configured attempt limit.";
+  if (latest.classification === "Not a prospect") return "No sales follow-up. Retain only the minimum record needed for suppression and reporting.";
+  return "Move to a low-frequency nurture flow with useful Bengaluru buyer information.";
+}
+
+function openerForLead(lead: Lead, language: string) {
+  const project = lead.project ? ` about ${lead.project}` : " about homes in Bengaluru";
+  return `Hi ${lead.name}, I’m Aira, Asher Realty’s virtual property assistant. You recently contacted us${project}. Is now a convenient time for a brief 60-second update? Continue in ${language}.`;
+}
+
+function handoffGuidance(form: FormState, score?: ReturnType<typeof assessLead> | null) {
+  const sensitiveTopic = /legal|rera|loan|finance|discount|negotiat|complaint|refund|agreement/i.test(
+    `${form.objection} ${form.summary}`
+  );
+  if (form.outcome === "Do not call" || form.consentStatus === "Withdrawn") {
+    return {
+      urgent: false,
+      title: "Suppress immediately",
+      text: "No sales handoff. Record the opt-out and prevent future campaign selection.",
+    };
+  }
+  if (score?.classification === "Hot") {
+    return {
+      urgent: true,
+      title: "Live human handoff",
+      text: "Connect an advisor within 5 minutes and close on a specific site-visit slot.",
+    };
+  }
+  if (sensitiveTopic) {
+    return {
+      urgent: true,
+      title: "Specialist handoff",
+      text: "Move this conversation to a human advisor for pricing, legal, finance or complaint handling.",
+    };
+  }
+  return {
+    urgent: false,
+    title: "Assistant can continue",
+    text: "Complete qualification, confirm the next action and send a concise WhatsApp recap.",
+  };
+}
+
 export default function CallingWorkspace({
   initialLeads,
   initialError = "",
@@ -105,6 +173,9 @@ export default function CallingWorkspace({
   const [query, setQuery] = useState("");
   const [project, setProject] = useState("All projects");
   const [mode, setMode] = useState<"Inbound follow-up" | "Consent-verified outreach">("Inbound follow-up");
+  const [campaignLanguage, setCampaignLanguage] = useState("English");
+  const [campaignGoal, setCampaignGoal] = useState("Qualify and book a site visit");
+  const [viewFilter, setViewFilter] = useState<ViewFilter>("All");
   const [queueIds, setQueueIds] = useState<string[]>([]);
   const [selected, setSelected] = useState<Lead | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -112,6 +183,7 @@ export default function CallingWorkspace({
   const [uploading, setUploading] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState(initialError);
+  const [copied, setCopied] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
 
   const projectOptions = useMemo(
@@ -125,6 +197,14 @@ export default function CallingWorkspace({
     const term = query.trim().toLowerCase();
     return leads.filter((lead) => {
       const projectMatch = project === "All projects" || lead.project === project;
+      const { profile, latest, eligible } = callingSummary(lead);
+      const viewMatch =
+        viewFilter === "All" ||
+        (viewFilter === "Eligible" && eligible) ||
+        (viewFilter === "Hot" && latest?.classification === "Hot") ||
+        (viewFilter === "Follow-up" && Boolean(lead.follow_up_at)) ||
+        (viewFilter === "Unreached" && latest?.classification === "Unreached") ||
+        (viewFilter === "Suppressed" && (profile.doNotCall || profile.consentStatus === "Withdrawn"));
       const searchMatch =
         !term ||
         [lead.name, lead.phone, lead.project, lead.location, lead.budget, lead.source]
@@ -132,9 +212,9 @@ export default function CallingWorkspace({
           .join(" ")
           .toLowerCase()
           .includes(term);
-      return projectMatch && searchMatch;
-    });
-  }, [leads, project, query]);
+      return projectMatch && viewMatch && searchMatch;
+    }).sort((a, b) => leadPriority(b, queueIds.includes(b.id)) - leadPriority(a, queueIds.includes(a.id)));
+  }, [leads, project, query, queueIds, viewFilter]);
 
   const eligible = filtered.filter((lead) => {
     const { eligible: consented, profile } = callingSummary(lead);
@@ -145,22 +225,45 @@ export default function CallingWorkspace({
     let hot = 0;
     let visits = 0;
     let suppressed = 0;
-    let assessed = 0;
+    let attempts = 0;
+    let answered = 0;
     for (const lead of leads) {
       const { profile, latest } = callingSummary(lead);
-      if (latest) assessed += 1;
+      attempts += profile.attempts.length;
+      answered += profile.attempts.filter((attempt) =>
+        ["Answered", "Call back requested", "Not interested", "Do not call"].includes(attempt.outcome)
+      ).length;
       if (latest?.classification === "Hot") hot += 1;
       if (latest?.siteVisitDate || lead.status === "Site visit scheduled") visits += 1;
       if (profile.doNotCall || profile.consentStatus === "Withdrawn") suppressed += 1;
     }
-    return { hot, visits, suppressed, assessed };
+    return {
+      hot,
+      visits,
+      suppressed,
+      attempts,
+      answerRate: attempts ? Math.round((answered / attempts) * 100) : 0,
+      visitRate: answered ? Math.round((visits / answered) * 100) : 0,
+    };
   }, [leads]);
+
+  const selectedCalling = selected ? callingSummary(selected) : null;
+  const scorePreview = selected ? assessLead(selected, form) : null;
+  const opener = selected ? openerForLead(selected, campaignLanguage) : "";
+  const handoff = handoffGuidance(form, scorePreview);
 
   function openLead(lead: Lead) {
     setSelected(lead);
     setForm(formForLead(lead));
     setNotice("");
     setError("");
+    setCopied(false);
+  }
+
+  async function copyOpener() {
+    if (!opener) return;
+    await navigator.clipboard.writeText(opener);
+    setCopied(true);
   }
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -314,14 +417,15 @@ export default function CallingWorkspace({
           </div>
         )}
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
           {[
-            { icon: Headphones, label: "Assessed leads", value: stats.assessed, detail: "Responses captured" },
+            { icon: Headphones, label: "Call attempts", value: stats.attempts, detail: "Recorded interactions" },
+            { icon: PhoneCall, label: "Answer rate", value: `${stats.answerRate}%`, detail: "Connected conversations" },
             { icon: Sparkles, label: "Hot prospects", value: stats.hot, detail: "High intent or visit-ready" },
-            { icon: CalendarCheck, label: "Visits scheduled", value: stats.visits, detail: "From all CRM activity" },
+            { icon: CalendarCheck, label: "Visit conversion", value: `${stats.visitRate}%`, detail: `${stats.visits} visits scheduled` },
             { icon: ShieldCheck, label: "Suppressed", value: stats.suppressed, detail: "DNC or permission withdrawn" },
           ].map(({ icon: Icon, label, value, detail }) => (
-            <article key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <article key={label} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
               <div className="flex items-center justify-between"><Icon className="size-5 text-[#b08a16]" /><span className="text-[9px] font-bold uppercase tracking-[.14em] text-slate-300">Live CRM</span></div>
               <p className="mt-4 text-3xl font-bold">{value}</p>
               <p className="mt-1 text-xs font-bold">{label}</p>
@@ -331,7 +435,20 @@ export default function CallingWorkspace({
         </div>
 
         <section className="mt-5 overflow-hidden rounded-[1.75rem] bg-[#071a2f] text-white shadow-[0_20px_60px_rgba(7,26,47,.14)]">
-          <div className="grid gap-6 p-6 lg:grid-cols-[1fr_1fr_auto] lg:items-end lg:p-8">
+          <div className="border-b border-white/10 px-6 py-5 lg:px-8">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#e4c462]">Campaign preflight</p>
+                <h2 className="mt-2 text-2xl font-medium">Prepare the assistant before building the queue</h2>
+              </div>
+              <div className="flex flex-wrap gap-2 text-[10px] font-bold">
+                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-emerald-200">Identity disclosure on</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-white/55">10 AM–7 PM IST</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-white/55">Max 2 attempts</span>
+              </div>
+            </div>
+          </div>
+          <div className="grid gap-5 p-6 md:grid-cols-2 xl:grid-cols-[.85fr_1fr_.7fr_1fr_auto] xl:items-end lg:p-8">
             <label className="text-xs font-bold text-white/70">
               Calling workflow
               <select value={mode} onChange={(event) => setMode(event.target.value as typeof mode)} className="mt-2 h-12 w-full rounded-xl border border-white/10 bg-white/10 px-4 text-sm text-white outline-none">
@@ -346,8 +463,31 @@ export default function CallingWorkspace({
                 {projectOptions.map((name) => <option className="text-[#071a2f]" key={name}>{name}</option>)}
               </select>
             </label>
+            <label className="text-xs font-bold text-white/70">
+              Conversation language
+              <select value={campaignLanguage} onChange={(event) => setCampaignLanguage(event.target.value)} className="mt-2 h-12 w-full rounded-xl border border-white/10 bg-white/10 px-4 text-sm text-white outline-none">
+                {['English', 'Kannada', 'Hindi', 'Tamil', 'Telugu'].map((language) => <option className="text-[#071a2f]" key={language}>{language}</option>)}
+              </select>
+            </label>
+            <label className="text-xs font-bold text-white/70">
+              Primary objective
+              <select value={campaignGoal} onChange={(event) => setCampaignGoal(event.target.value)} className="mt-2 h-12 w-full rounded-xl border border-white/10 bg-white/10 px-4 text-sm text-white outline-none">
+                <option className="text-[#071a2f]">Qualify and book a site visit</option>
+                <option className="text-[#071a2f]">Confirm project interest</option>
+                <option className="text-[#071a2f]">Reconnect and schedule follow-up</option>
+              </select>
+            </label>
             <button onClick={buildQueue} className="inline-flex h-12 items-center justify-center rounded-full bg-[#c9a227] px-7 text-xs font-bold text-[#071a2f] hover:bg-[#e4c462]">
               <UserCheck className="mr-2 size-4" /> Review {eligible.length} eligible
+            </button>
+          </div>
+          <div className="flex flex-col gap-4 border-t border-white/10 bg-white/[.035] px-6 py-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+            <div>
+              <p className="text-xs font-bold">{queueIds.length ? `${queueIds.length} leads ready for final review` : "Build a permission-verified queue"}</p>
+              <p className="mt-1 text-[11px] text-white/45">{campaignGoal} · {campaignLanguage} · human handoff for hot prospects or buyer requests</p>
+            </div>
+            <button disabled className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-xs font-bold text-white/35">
+              <PhoneCall className="mr-2 size-4" /> {providerConfigured ? "Activation review required" : "Connect provider to start"}
             </button>
           </div>
           <div className="grid border-t border-white/10 sm:grid-cols-3">
@@ -365,6 +505,28 @@ export default function CallingWorkspace({
                 <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name, phone, project, location or budget" className="h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] pl-11 pr-4 text-sm outline-none focus:border-[#c9a227]" />
               </label>
               <span className="inline-flex h-11 items-center rounded-xl bg-[#f7f8fa] px-4 text-xs font-bold text-slate-500"><Users className="mr-2 size-4" /> {filtered.length} leads · {queueIds.length} queued</span>
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto border-b border-slate-100 px-4 py-3">
+              {(["All", "Eligible", "Hot", "Follow-up", "Unreached", "Suppressed"] as ViewFilter[]).map((filter) => (
+                <button
+                  key={filter}
+                  type="button"
+                  onClick={() => setViewFilter(filter)}
+                  className={`shrink-0 rounded-full px-4 py-2 text-[10px] font-bold transition ${
+                    viewFilter === filter
+                      ? "bg-[#071a2f] text-white"
+                      : "border border-slate-200 bg-white text-slate-500 hover:border-[#c9a227]/50 hover:text-[#071a2f]"
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between gap-3 border-b border-slate-100 bg-[#f9fafb] px-5 py-3 text-[10px] text-slate-400">
+              <span>Highest-priority leads appear first</span>
+              <span>Queued → Hot → Warm → New</span>
             </div>
 
             {filtered.length === 0 ? (
@@ -407,6 +569,32 @@ export default function CallingWorkspace({
                   <a href={`tel:${selected.phone}`} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#071a2f] text-white" aria-label="Call manually"><Phone className="size-4" /></a>
                 </div>
 
+                <div className="mt-5 rounded-2xl bg-[#071a2f] p-4 text-white">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[9px] font-bold uppercase tracking-[.16em] text-[#e4c462]">Next best action</p>
+                    {selectedCalling?.latest && (
+                      <span className={`rounded-full border px-2.5 py-1 text-[9px] font-bold ${classStyles[selectedCalling.latest.classification]}`}>
+                        {selectedCalling.latest.classification} · {selectedCalling.latest.score}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-3 text-xs leading-6 text-white/70">{nextBestAction(selected)}</p>
+                </div>
+
+                <details open className="mt-4 rounded-2xl border border-[#c9a227]/25 bg-[#fffaf0] p-4">
+                  <summary className="cursor-pointer text-xs font-bold text-[#071a2f]">Aira conversation opener</summary>
+                  <div className="mt-4 rounded-xl border border-[#c9a227]/15 bg-white p-4">
+                    <p className="text-sm leading-7 text-slate-600">{opener}</p>
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                      <p className="text-[10px] text-slate-400">Goal: {campaignGoal}</p>
+                      <button type="button" onClick={() => void copyOpener()} className="inline-flex h-9 items-center rounded-full bg-[#071a2f] px-4 text-[10px] font-bold text-white">
+                        <Copy className="mr-2 size-3.5" /> {copied ? "Copied" : "Copy opener"}
+                      </button>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-[10px] leading-5 text-slate-500">Ask one question at a time. Pause after the buyer answers. Never invent inventory, offers or final pricing.</p>
+                </details>
+
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <label className="text-xs font-bold">Permission status<select value={form.consentStatus} onChange={(e) => update("consentStatus", e.target.value as ConsentStatus)} className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-3 text-xs">{consentOptions.map((item) => <option key={item}>{item}</option>)}</select></label>
                   <label className="text-xs font-bold">Permission source<input value={form.consentSource} onChange={(e) => update("consentSource", e.target.value)} placeholder="Form, CRM note, campaign" className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-3 text-xs" /></label>
@@ -436,7 +624,51 @@ export default function CallingWorkspace({
                   <label className="mt-3 block text-xs font-bold">Recording URL<input type="url" value={form.recordingUrl} onChange={(e) => update("recordingUrl", e.target.value)} placeholder="Added automatically after provider connection" className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs" /></label>
                 </details>
 
-                <button onClick={() => void saveAssessment()} disabled={saving} className="mt-5 h-12 w-full rounded-full bg-[#c9a227] text-sm font-bold transition hover:bg-[#e4c462] disabled:opacity-60">{saving ? "Scoring and saving…" : "Save response and classify"}</button>
+                {!form.disclosedAi && form.outcome === "Answered" && (
+                  <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs leading-5 text-rose-700">
+                    Identity disclosure is missing. The assistant must identify itself as a virtual assistant at the start of an answered call.
+                  </div>
+                )}
+
+                {scorePreview && (
+                  <div className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-[#f7f8fa] p-4">
+                    <div>
+                      <p className="text-[9px] font-bold uppercase tracking-[.14em] text-slate-400">Predicted classification</p>
+                      <span className={`mt-2 inline-flex rounded-full border px-3 py-1.5 text-[10px] font-bold ${classStyles[scorePreview.classification]}`}>
+                        {scorePreview.classification}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-3xl font-bold text-[#071a2f]">{scorePreview.score}</p>
+                      <p className="text-[9px] font-bold uppercase tracking-[.12em] text-slate-400">Intent score</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className={`mt-4 rounded-2xl border p-4 ${handoff.urgent ? "border-rose-200 bg-rose-50" : "border-emerald-200 bg-emerald-50"}`}>
+                  <p className={`text-xs font-bold ${handoff.urgent ? "text-rose-700" : "text-emerald-700"}`}>{handoff.title}</p>
+                  <p className="mt-1 text-[11px] leading-5 text-slate-600">{handoff.text}</p>
+                </div>
+
+                {selectedCalling && selectedCalling.profile.attempts.length > 0 && (
+                  <details className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+                    <summary className="cursor-pointer text-xs font-bold">Call history · {selectedCalling.profile.attempts.length} interaction{selectedCalling.profile.attempts.length === 1 ? "" : "s"}</summary>
+                    <div className="mt-4 space-y-3">
+                      {[...selectedCalling.profile.attempts].reverse().slice(0, 5).map((attempt) => (
+                        <article key={attempt.id} className="rounded-xl bg-[#f7f8fa] p-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <p className="text-[11px] font-bold">{attempt.outcome}</p>
+                            <span className={`rounded-full border px-2 py-1 text-[9px] font-bold ${classStyles[attempt.classification]}`}>{attempt.classification} · {attempt.score}</span>
+                          </div>
+                          <p className="mt-1 text-[10px] text-slate-400">{displayDate(attempt.recordedAt)}</p>
+                          {(attempt.summary || attempt.objection) && <p className="mt-2 text-[11px] leading-5 text-slate-600">{attempt.summary || `Objection: ${attempt.objection}`}</p>}
+                        </article>
+                      ))}
+                    </div>
+                  </details>
+                )}
+
+                <button onClick={() => void saveAssessment()} disabled={saving} className="mt-5 h-12 w-full rounded-full bg-[#c9a227] text-sm font-bold transition hover:bg-[#e4c462] disabled:opacity-60">{saving ? "Scoring and saving…" : `Save response · ${scorePreview?.classification || "Classify"} ${scorePreview?.score ?? ""}`}</button>
                 <a href={`https://wa.me/91${cleanPhone(selected.phone)}?text=${encodeURIComponent(`Hi ${selected.name}, this is Asher Realty following up on your property requirement${selected.project ? ` for ${selected.project}` : ""}.`)}`} target="_blank" rel="noopener noreferrer" className="mt-3 flex h-11 items-center justify-center rounded-full border border-slate-200 text-xs font-bold text-slate-600 hover:border-[#25D366] hover:text-[#1f9d50]"><MessageCircle className="mr-2 size-4" /> Continue on WhatsApp</a>
               </>
             )}
@@ -451,6 +683,46 @@ export default function CallingWorkspace({
           ].map(({ icon: Icon, title, text }) => (
             <article key={title} className="rounded-2xl border border-slate-200 bg-white p-5"><Icon className="size-5 text-[#b08a16]" /><h3 className="mt-4 text-lg font-bold">{title}</h3><p className="mt-2 text-xs leading-6 text-slate-500">{text}</p></article>
           ))}
+        </section>
+
+        <section className="mt-6 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white">
+          <div className="grid lg:grid-cols-2">
+            <div className="p-6 sm:p-8">
+              <p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#b08a16]">Aira conversation playbook</p>
+              <h2 className="mt-3 text-3xl font-medium">Helpful, concise and unmistakably AI</h2>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                {[
+                  ["Listen first", "Use short turns, allow interruptions and reflect the buyer's requirement before recommending."],
+                  ["One question", "Ask one clear question at a time: location, budget, timeline, purpose and visit intent."],
+                  ["Evidence only", "Use approved inventory and CRM data. Never create prices, offers, possession dates or legal claims."],
+                  ["Earn the handoff", "Give enough value to clarify the requirement, then connect the right human advisor at the right moment."],
+                ].map(([title, text]) => (
+                  <article key={title} className="rounded-2xl bg-[#f7f8fa] p-4">
+                    <p className="text-xs font-bold">{title}</p>
+                    <p className="mt-2 text-[11px] leading-5 text-slate-500">{text}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <div className="bg-[#071a2f] p-6 text-white sm:p-8">
+              <p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#e4c462]">Immediate human handoff</p>
+              <h2 className="mt-3 text-3xl font-medium">Know when the agent should stop talking</h2>
+              <div className="mt-6 space-y-3">
+                {[
+                  "The buyer asks to speak with a person",
+                  "Intent score reaches 75 or a site visit is requested",
+                  "Final price, discount or negotiation is discussed",
+                  "RERA, legal, loan or agreement advice is requested",
+                  "A complaint, distress signal or opt-out is detected",
+                ].map((rule, index) => (
+                  <div key={rule} className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#c9a227] text-[10px] font-bold text-[#071a2f]">{index + 1}</span>
+                    <p className="pt-1 text-xs leading-5 text-white/65">{rule}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
       </div>
     </main>
