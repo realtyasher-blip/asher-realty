@@ -31,7 +31,7 @@ const builders = ["All", ...Array.from(new Set(projects.map((project) => project
 const corridors = ["All corridors", ...Array.from(new Set(projects.map((project) => project.corridor)))];
 const stages = ["All stages", ...Array.from(new Set(projects.map((project) => project.status)))];
 const configurations = ["Any BHK", "1", "2", "3", "4"];
-const propertyTypes = ["Any type", "Apartment", "Villa", "Row House"];
+const propertyTypes = ["Any type", "Apartment", "Villa", "Row House", "Plot"];
 
 function priceBand(price: string) {
   if (/Contact/i.test(price)) return "Price on request";
