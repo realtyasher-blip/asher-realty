@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Phone } from "lucide-react";
+import { Menu, Phone, Sparkles } from "lucide-react";
 
+import BrandLogo from "@/components/brand/BrandLogo";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
@@ -12,7 +13,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import BrandLogo from "@/components/brand/BrandLogo";
 
 const navigation = [
   { label: "Projects", href: "/projects" },
@@ -25,102 +25,106 @@ const navigation = [
 
 export default function Navbar() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#071a2f]/90 text-white backdrop-blur-xl">
-      <div className="container-shell flex h-20 items-center justify-between">
-        <Link href="/" className="group flex items-center gap-3">
-          <BrandLogo />
-        </Link>
+    <header className="fixed inset-x-0 top-3 z-50 text-white">
+      <div className="container-shell">
+        <div className="flex h-[4.35rem] items-center justify-between rounded-[1.35rem] border border-white/10 bg-[#041421]/88 px-3 shadow-[0_16px_50px_rgba(0,0,0,.2)] backdrop-blur-2xl sm:px-4">
+          <Link href="/" className="group flex items-center gap-3">
+            <BrandLogo className="h-11 w-[168px] sm:w-[186px]" />
+          </Link>
 
-        <nav className="hidden items-center gap-5 lg:flex">
-          {navigation.map((item) => (
+          <nav className="hidden items-center gap-1 rounded-full border border-white/[0.07] bg-white/[0.045] p-1 xl:flex">
+            {navigation.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="rounded-full px-3.5 py-2 text-[11px] font-semibold text-white/65 transition hover:bg-white/[0.07] hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="hidden items-center gap-2 xl:flex">
+            <a
+              href="tel:+919019697170"
+              aria-label="Call Asher Realty"
+              className="flex size-11 items-center justify-center rounded-full border border-white/10 text-white/65 transition hover:border-[#c9a227]/45 hover:text-[#e4c462]"
+            >
+              <Phone className="size-4" />
+            </a>
+
             <Link
-              key={item.label}
-              href={item.href}
-              className="text-sm text-white/80 transition hover:text-[#e4c462]"
+              href="/#ai-match"
+              data-analytics-label="Navbar AI shortlist"
+              className={cn(
+                buttonVariants(),
+                "shine-button h-11 rounded-full bg-[#c9a227] px-5 text-xs text-[#071a2f] hover:bg-[#e4c462]"
+              )}
             >
-              {item.label}
+              <Sparkles className="mr-2 size-4" />
+              AI Shortlist
             </Link>
-          ))}
-        </nav>
+          </div>
 
-        <div className="hidden items-center gap-4 lg:flex">
-          <a
-            href="tel:+919019697170"
-            className="flex items-center gap-2 text-sm text-white/80 transition hover:text-white"
-          >
-            <Phone className="size-4 text-[#e4c462]" />
-            9019697170
-          </a>
+          <div className="xl:hidden">
+            <Sheet>
+              <SheetTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full border border-white/10 text-white hover:bg-white/10 hover:text-white"
+                    aria-label="Open navigation menu"
+                  />
+                }
+              >
+                <Menu className="size-6" />
+              </SheetTrigger>
 
-          <a
-            href="tel:+919019697170"
-            data-analytics-label="Navbar free buyer call"
-            className={cn(
-              buttonVariants(),
-              "rounded-full bg-[#c9a227] px-6 text-[#071a2f] hover:bg-[#e4c462]"
-            )}
-          >
-            Free Buyer Call
-          </a>
-        </div>
+              <SheetContent
+                side="right"
+                className="border-white/10 bg-[#041421] text-white"
+              >
+                <SheetHeader>
+                  <SheetTitle className="text-left text-white">
+                    Asher Realty
+                  </SheetTitle>
+                </SheetHeader>
 
-        <div className="lg:hidden">
-          <Sheet>
-            <SheetTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-white/10 hover:text-white"
-                  aria-label="Open navigation menu"
-                />
-              }
-            >
-              <Menu className="size-6" />
-            </SheetTrigger>
+                <nav className="mt-10 flex flex-col gap-6 px-1">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className="text-lg text-white/75 transition hover:text-[#e4c462]"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
 
-            <SheetContent
-              side="right"
-              className="border-white/10 bg-[#071a2f] text-white"
-            >
-              <SheetHeader>
-                <SheetTitle className="text-left text-white">
-                  Asher Realty
-                </SheetTitle>
-              </SheetHeader>
-
-              <nav className="mt-10 flex flex-col gap-6 px-1">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    className="text-lg text-white/80 transition hover:text-[#e4c462]"
+                  <a
+                    href="tel:+919019697170"
+                    className="mt-2 flex items-center gap-3 text-white/75 transition hover:text-white"
                   >
-                    {item.label}
+                    <Phone className="size-5 text-[#e4c462]" />
+                    +91 90196 97170
+                  </a>
+
+                  <Link
+                    href="/#ai-match"
+                    data-analytics-label="Mobile menu AI shortlist"
+                    className={cn(
+                      buttonVariants(),
+                      "mt-4 w-full rounded-full bg-[#c9a227] text-[#071a2f] hover:bg-[#e4c462]"
+                    )}
+                  >
+                    <Sparkles className="mr-2 size-4" />
+                    Build My AI Shortlist
                   </Link>
-                ))}
-
-                <a
-                  href="tel:+919019697170"
-                  className="mt-2 flex items-center gap-3 text-white/80 transition hover:text-white"
-                >
-                  <Phone className="size-5 text-[#e4c462]" />
-                  9019697170
-                </a>
-
-                <a
-                  href="tel:+919019697170"
-                  data-analytics-label="Mobile menu buyer call"
-                  className={cn(
-                    buttonVariants(),
-                    "mt-4 w-full rounded-full bg-[#c9a227] text-[#071a2f] hover:bg-[#e4c462]"
-                  )}
-                >
-                  Call a Buyer Advisor
-                </a>
-              </nav>
-            </SheetContent>
-          </Sheet>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

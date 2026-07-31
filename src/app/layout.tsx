@@ -42,20 +42,26 @@ export const metadata: Metadata = {
     "AI property search Bangalore",
   ],
   openGraph: {
-    title: "Asher Realty",
-    description: "Find Better. Invest Smarter.",
+    title: "Asher Realty | Bengaluru Buyer Intelligence",
+    description: "Property search, upgraded to intelligence.",
     url: "https://asherrealty.in",
     siteName: "Asher Realty",
     locale: "en_IN",
     type: "website",
     images: [
       {
-        url: "/images/hero-property-v2.png",
-        width: 1672,
-        height: 937,
-        alt: "Asher Realty — premium Bengaluru property advisory",
+        url: "/og-v2.png",
+        width: 1733,
+        height: 909,
+        alt: "Asher Realty — property search, upgraded to intelligence",
       },
     ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Asher Realty | Bengaluru Buyer Intelligence",
+    description: "Property search, upgraded to intelligence.",
+    images: ["/og-v2.png"],
   },
   icons: {
     icon: "/brand/asher-mark.png",
