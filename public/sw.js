@@ -1,4 +1,4 @@
-const CACHE_NAME = "asher-realty-app-v2";
+const CACHE_NAME = "asher-realty-app-v3";
 const APP_SHELL = [
   "/brand/asher-mark.png",
   "/brand/app-icon-192.png",
@@ -55,11 +55,15 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (
-    request.destination === "image" ||
-    request.destination === "font" ||
-    url.pathname.startsWith("/_next/static/")
-  ) {
+  // Next.js build assets are content-hashed and already receive long-lived
+  // browser caching. Keeping them in the service-worker cache can mix assets
+  // from two deployments and cause ChunkLoadError after an update.
+  if (url.pathname.startsWith("/_next/static/")) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  if (request.destination === "image" || request.destination === "font") {
     event.respondWith(
       caches.match(request).then(
         (cached) =>
