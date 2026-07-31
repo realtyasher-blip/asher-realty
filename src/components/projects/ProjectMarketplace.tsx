@@ -81,42 +81,45 @@ export default function ProjectMarketplace() {
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
+      const params = new URLSearchParams(window.location.search);
+      setFavouritesOnly(params.get("saved") === "1");
+
+      const requestedQuery = params.get("q");
+      const requestedBuilder = params.get("builder");
+      const requestedCorridor = params.get("corridor");
+      const requestedStage = params.get("stage");
+      const requestedConfiguration = params.get("bhk");
+      const requestedType = params.get("type");
+      const requestedPrice = params.get("price");
+
+      if (requestedQuery) setQuery(requestedQuery);
+      if (requestedBuilder && builders.includes(requestedBuilder)) {
+        setBuilder(requestedBuilder);
+      }
+      if (requestedCorridor && corridors.includes(requestedCorridor)) {
+        setCorridor(requestedCorridor);
+      }
+      if (requestedStage && stages.includes(requestedStage)) {
+        setStage(requestedStage);
+      }
+      if (
+        requestedConfiguration &&
+        configurations.includes(requestedConfiguration)
+      ) {
+        setConfiguration(requestedConfiguration);
+      }
+      if (requestedType && propertyTypes.includes(requestedType)) {
+        setPropertyType(requestedType);
+      }
+      if (requestedPrice && priceBands.includes(requestedPrice)) {
+        setPrice(requestedPrice);
+      }
+
       try {
-        setFavourites(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
-        setRecent(JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"));
-        const params = new URLSearchParams(window.location.search);
-        setFavouritesOnly(params.get("saved") === "1");
-
-        const requestedQuery = params.get("q");
-        const requestedBuilder = params.get("builder");
-        const requestedCorridor = params.get("corridor");
-        const requestedStage = params.get("stage");
-        const requestedConfiguration = params.get("bhk");
-        const requestedType = params.get("type");
-        const requestedPrice = params.get("price");
-
-        if (requestedQuery) setQuery(requestedQuery);
-        if (requestedBuilder && builders.includes(requestedBuilder)) {
-          setBuilder(requestedBuilder);
-        }
-        if (requestedCorridor && corridors.includes(requestedCorridor)) {
-          setCorridor(requestedCorridor);
-        }
-        if (requestedStage && stages.includes(requestedStage)) {
-          setStage(requestedStage);
-        }
-        if (
-          requestedConfiguration &&
-          configurations.includes(requestedConfiguration)
-        ) {
-          setConfiguration(requestedConfiguration);
-        }
-        if (requestedType && propertyTypes.includes(requestedType)) {
-          setPropertyType(requestedType);
-        }
-        if (requestedPrice && priceBands.includes(requestedPrice)) {
-          setPrice(requestedPrice);
-        }
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        const viewed = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
+        setFavourites(Array.isArray(saved) ? saved : []);
+        setRecent(Array.isArray(viewed) ? viewed : []);
       } catch {
         setFavourites([]);
         setRecent([]);
