@@ -1,7 +1,14 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
-const developers = [
+type Developer = {
+  name: string;
+  logo: string;
+  logoClassName: string;
+  cardClassName?: string;
+};
+
+const developers: Developer[] = [
   {
     name: "SOBHA",
     logo: "/logos/sobha-official.png",
@@ -52,6 +59,34 @@ const developers = [
     logo: "/logos/embassy-developments-official.svg",
     logoClassName: "max-h-12 max-w-[82%]",
   },
+  {
+    name: "Puravankara",
+    logo: "/logos/puravankara-official.svg",
+    logoClassName: "max-h-12 max-w-[82%]",
+  },
+  {
+    name: "Sattva Group",
+    logo: "/logos/sattva-official.png",
+    logoClassName: "max-h-14 max-w-[78%]",
+  },
+  {
+    name: "Total Environment",
+    logo: "/logos/total-environment-official.svg",
+    logoClassName: "max-h-12 max-w-[82%]",
+    cardClassName: "border-[#c9a227]/25 bg-[#071a2f]",
+  },
+  {
+    name: "Century Real Estate",
+    logo: "/logos/century-real-estate-official.png",
+    logoClassName: "max-h-14 max-w-[78%]",
+    cardClassName: "border-[#c9a227]/25 bg-[#071a2f]",
+  },
+  {
+    name: "Mahindra Lifespaces",
+    logo: "/logos/mahindra-lifespaces-official.svg",
+    logoClassName: "max-h-12 max-w-[82%]",
+    cardClassName: "border-[#c9a227]/25 bg-[#071a2f]",
+  },
 ];
 
 const whatsappUrl =
@@ -92,7 +127,7 @@ export default function FeaturedDevelopers() {
           {developers.map((developer) => (
             <div
               key={developer.name}
-              className="group relative flex min-h-40 items-center justify-center overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(7,26,47,0.05)] transition duration-300 hover:-translate-y-1 hover:border-[#c9a227]/50 hover:shadow-[0_20px_55px_rgba(7,26,47,0.11)]"
+              className={`group relative flex min-h-40 items-center justify-center overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(7,26,47,0.05)] transition duration-300 hover:-translate-y-1 hover:border-[#c9a227]/50 hover:shadow-[0_20px_55px_rgba(7,26,47,0.11)] ${developer.cardClassName ?? ""}`}
             >
               <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a227]/70 to-transparent opacity-0 transition group-hover:opacity-100" />
               <div className="relative flex h-20 w-full items-center justify-center">
