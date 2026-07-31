@@ -7,6 +7,7 @@ import {
   ArrowRight,
   BadgeCheck,
   BedDouble,
+  BrainCircuit,
   Building2,
   Calculator,
   CalendarClock,
@@ -381,8 +382,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </p>
               )}
               <Link
+                href={`/decision-lab?project=${projectSlug(project.name)}`}
+                className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full border border-[#c9a227]/45 bg-[#c9a227]/10 px-5 text-sm font-semibold text-[#e4c462] transition hover:bg-[#c9a227] hover:text-[#071a2f]"
+              >
+                <BrainCircuit className="mr-2 size-4" />
+                Run through Decision Lab
+              </Link>
+              <Link
                 href="/tools"
-                className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full border border-white/15 px-5 text-sm font-semibold text-white/75 transition hover:border-[#c9a227] hover:text-[#e4c462]"
+                className="mt-3 inline-flex h-12 w-full items-center justify-center rounded-full border border-white/15 px-5 text-sm font-semibold text-white/75 transition hover:border-[#c9a227] hover:text-[#e4c462]"
               >
                 <Calculator className="mr-2 size-4" />
                 Estimate EMI & buying cost

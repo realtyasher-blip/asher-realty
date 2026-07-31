@@ -75,6 +75,13 @@ const searchItems: SearchItem[] = [
       .toLowerCase(),
   })),
   {
+    title: "Open the Buyer Decision Lab",
+    description: "Rank projects by personal fit, visible cost and data confidence",
+    href: "/decision-lab",
+    type: "Tool" as const,
+    keywords: "decision lab buyer passport fit score confidence ranked shortlist ai",
+  },
+  {
     title: "Compare two Bengaluru projects",
     description: "Review location, pricing, possession and buyer fit side by side",
     href: "/compare",

@@ -149,6 +149,11 @@ export default function RootLayout({
                 gtag('event', 'comparison_opened', {
                   comparison_path: href
                 });
+              } else if (href.startsWith('/decision-lab')) {
+                gtag('event', 'decision_lab_opened', {
+                  decision_path: href,
+                  cta_label: label
+                });
               }
             });
           `}

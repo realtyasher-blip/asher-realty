@@ -300,6 +300,13 @@ export default function SmartMatch() {
                     Verify my shortlist
                   </a>
                 </div>
+                <Link
+                  href="/decision-lab"
+                  className="mt-3 inline-flex h-12 w-full items-center justify-center rounded-full bg-white/[0.06] px-5 text-xs font-bold text-white/65 transition hover:bg-white/[0.1] hover:text-[#e4c462]"
+                >
+                  Continue in the full Buyer Decision Lab
+                  <ArrowRight className="ml-2 size-4" />
+                </Link>
               </div>
             )}
           </div>

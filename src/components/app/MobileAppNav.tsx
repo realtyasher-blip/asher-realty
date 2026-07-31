@@ -20,7 +20,7 @@ import {
 const items = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/projects", icon: Building2 },
-  { label: "AI Match", href: "/#ai-match", icon: Sparkles, primary: true },
+  { label: "Decision", href: "/decision-lab", icon: Sparkles, primary: true },
   { label: "Compare", href: "/compare", icon: GitCompareArrows },
   { label: "Saved", href: "/my-search", icon: Heart },
 ];

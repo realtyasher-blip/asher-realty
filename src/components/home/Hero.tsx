@@ -109,11 +109,11 @@ export default function Hero() {
 
             <div className="hero-reveal hero-delay-3 mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/#ai-match"
+                href="/decision-lab"
                 className="shine-button inline-flex h-14 items-center justify-center rounded-full bg-[#d5ad2d] px-7 text-sm font-bold text-[#071a2f] transition hover:-translate-y-0.5 hover:bg-[#f0d477]"
               >
                 <Bot className="mr-2 size-5" />
-                Build my AI shortlist
+                Open my Decision Lab
               </Link>
               <Link
                 href="/intelligence"

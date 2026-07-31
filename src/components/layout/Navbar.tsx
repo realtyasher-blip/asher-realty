@@ -17,11 +17,11 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { label: "Projects", href: "/projects" },
+  { label: "Decision Lab", href: "/decision-lab" },
   { label: "Locations", href: "/locations" },
   { label: "Intelligence", href: "/intelligence" },
   { label: "Guides", href: "/guides" },
   { label: "Compare", href: "/compare" },
-  { label: "My Search", href: "/my-search" },
 ];
 
 export default function Navbar() {
@@ -71,15 +71,15 @@ export default function Navbar() {
             </a>
 
             <Link
-              href="/#ai-match"
-              data-analytics-label="Navbar AI shortlist"
+              href="/decision-lab"
+              data-analytics-label="Navbar Decision Lab"
               className={cn(
                 buttonVariants(),
                 "shine-button h-11 rounded-full bg-[#c9a227] px-5 text-xs text-[#071a2f] hover:bg-[#e4c462]"
               )}
             >
               <Sparkles className="mr-2 size-4" />
-              AI Shortlist
+              Decision Lab
             </Link>
           </div>
 
@@ -136,15 +136,15 @@ export default function Navbar() {
                   </a>
 
                   <Link
-                    href="/#ai-match"
-                    data-analytics-label="Mobile menu AI shortlist"
+                    href="/decision-lab"
+                    data-analytics-label="Mobile menu Decision Lab"
                     className={cn(
                       buttonVariants(),
                       "mt-4 w-full rounded-full bg-[#c9a227] text-[#071a2f] hover:bg-[#e4c462]"
                     )}
                   >
                     <Sparkles className="mr-2 size-4" />
-                    Build My AI Shortlist
+                    Open Buyer Decision Lab
                   </Link>
                 </nav>
               </SheetContent>

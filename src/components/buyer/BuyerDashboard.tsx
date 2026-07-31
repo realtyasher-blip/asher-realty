@@ -371,10 +371,10 @@ export default function BuyerDashboard() {
             </h2>
           </div>
           <Link
-            href="/#ai-match"
+            href="/decision-lab"
             className="inline-flex items-center text-sm font-bold text-[#071a2f] hover:text-[#b08a16]"
           >
-            Use advanced AI Match <ChevronRight className="ml-1 size-4" />
+            Open the Buyer Decision Lab <ChevronRight className="ml-1 size-4" />
           </Link>
         </div>
 
