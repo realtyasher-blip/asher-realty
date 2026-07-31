@@ -31,15 +31,15 @@ export type Project = {
 };
 
 export const developerLogos: Record<string, string> = {
-  SOBHA: "/logos/sobha.png",
-  "Prestige Group": "/logos/prestige.png",
-  "Birla Estates": "/logos/birla.png",
-  "Assetz Property Group": "/logos/assetz.png",
-  "Sumadhura Group": "/logos/sumadhura.svg",
-  "Brigade Group": "/logos/brigade.png",
-  Lodha: "/logos/lodha.svg",
-  "Godrej Properties": "/logos/godrej-official.webp",
-  "Bhartiya Urban": "/logos/bhartiya.jpg",
+  SOBHA: "/logos/sobha-official.png",
+  "Prestige Group": "/logos/prestige-official.svg",
+  "Birla Estates": "/logos/birla-estates-official.png",
+  "Assetz Property Group": "/logos/assetz-official.svg",
+  "Sumadhura Group": "/logos/sumadhura-official.svg",
+  "Brigade Group": "/logos/brigade-official.png",
+  Lodha: "/logos/lodha-official.svg",
+  "Godrej Properties": "/logos/godrej-properties-official.svg",
+  "Bhartiya Urban": "/logos/bhartiya-official.jpg",
 };
 
 export function projectSlug(name: string) {

@@ -4,39 +4,48 @@ import { ArrowUpRight } from "lucide-react";
 const developers = [
   {
     name: "SOBHA",
-    logo: "/logos/sobha.png",
+    logo: "/logos/sobha-official.png",
+    logoClassName: "max-h-12 max-w-[82%]",
   },
   {
     name: "Prestige Group",
-    logo: "/logos/prestige.png",
+    logo: "/logos/prestige-official.svg",
+    logoClassName: "max-h-[4.5rem] max-w-[72%]",
   },
   {
     name: "Brigade Group",
-    logo: "/logos/brigade.png",
+    logo: "/logos/brigade-official.png",
+    logoClassName: "max-h-[4.75rem] max-w-[58%]",
   },
   {
     name: "Godrej Properties",
-    logo: "/logos/godrej.png",
+    logo: "/logos/godrej-properties-official.svg",
+    logoClassName: "max-h-12 max-w-[82%]",
   },
   {
     name: "Birla Estates",
-    logo: "/logos/birla.png",
+    logo: "/logos/birla-estates-official.png",
+    logoClassName: "max-h-12 max-w-[82%]",
   },
   {
     name: "Assetz Property Group",
-    logo: "/logos/assetz.png",
+    logo: "/logos/assetz-official.svg",
+    logoClassName: "max-h-[4.5rem] max-w-[72%]",
   },
   {
     name: "Sumadhura Group",
-    logo: "/logos/sumadhura.svg",
+    logo: "/logos/sumadhura-official.svg",
+    logoClassName: "max-h-12 max-w-[86%]",
   },
   {
     name: "Lodha",
-    logo: "/logos/lodha.svg",
+    logo: "/logos/lodha-official.svg",
+    logoClassName: "max-h-11 max-w-[84%]",
   },
   {
     name: "Bhartiya Urban",
-    logo: "/logos/bhartiya.jpg",
+    logo: "/logos/bhartiya-official.jpg",
+    logoClassName: "max-h-[4.75rem] max-w-[58%] rounded-lg",
   },
 ];
 
@@ -78,14 +87,16 @@ export default function FeaturedDevelopers() {
           {developers.map((developer) => (
             <div
               key={developer.name}
-              className="group flex min-h-36 items-center justify-center rounded-[1.5rem] border border-slate-200 bg-[#f7f8fa] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#c9a227]/40 hover:bg-white hover:shadow-lg"
+              className="group relative flex min-h-40 items-center justify-center overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(7,26,47,0.05)] transition duration-300 hover:-translate-y-1 hover:border-[#c9a227]/50 hover:shadow-[0_20px_55px_rgba(7,26,47,0.11)]"
             >
-              <div className="relative h-16 w-full">
+              <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a227]/70 to-transparent opacity-0 transition group-hover:opacity-100" />
+              <div className="relative flex h-20 w-full items-center justify-center">
                 <Image
                   src={developer.logo}
-                  alt={`${developer.name} logo`}
-                  fill
-                  className="object-contain grayscale opacity-65 transition duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                  alt={`${developer.name} official logo`}
+                  width={280}
+                  height={110}
+                  className={`h-auto w-auto object-contain opacity-90 transition duration-300 group-hover:scale-[1.03] group-hover:opacity-100 ${developer.logoClassName}`}
                   sizes="(max-width: 768px) 50vw, 20vw"
                   unoptimized={developer.logo.endsWith(".svg")}
                 />
