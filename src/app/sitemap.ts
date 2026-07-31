@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { projectSlug, projects } from "@/data/projects";
 import { locationHubs } from "@/data/locations";
+import { guides } from "@/data/guides";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://asherrealty.in";
@@ -16,6 +17,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.82,
+  }));
+  const guidePages: MetadataRoute.Sitemap = guides.map((guide) => ({
+    url: `${baseUrl}/guides/${guide.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.78,
   }));
 
   return [
@@ -79,7 +86,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 0.92,
     },
+    {
+      url: `${baseUrl}/guides`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
     ...projectPages,
     ...locationPages,
+    ...guidePages,
   ];
 }

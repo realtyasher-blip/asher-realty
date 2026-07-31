@@ -12,6 +12,7 @@ const quickLinks = [
   { label: "Projects", href: "/projects" },
   { label: "Locations", href: "/locations" },
   { label: "Intelligence", href: "/intelligence" },
+  { label: "Buyer Guides", href: "/guides" },
   { label: "Book Site Visit", href: "/book-site-visit" },
   { label: "Compare", href: "/compare" },
   { label: "My Search", href: "/my-search" },

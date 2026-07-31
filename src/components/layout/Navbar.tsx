@@ -18,7 +18,7 @@ const navigation = [
   { label: "Projects", href: "/projects" },
   { label: "Locations", href: "/locations" },
   { label: "Intelligence", href: "/intelligence" },
-  { label: "AI Match", href: "/#ai-match" },
+  { label: "Guides", href: "/guides" },
   { label: "Compare", href: "/compare" },
   { label: "My Search", href: "/my-search" },
 ];

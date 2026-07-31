@@ -8,6 +8,7 @@ import HowItWorks from "@/components/home/HowItWorks";
 import ProjectComparison from "@/components/home/ProjectComparison";
 import SmartMatch from "@/components/home/SmartMatch";
 import MarketIntelligence from "@/components/home/MarketIntelligence";
+import KnowledgeHub from "@/components/home/KnowledgeHub";
 import PropertyDiscovery from "@/components/home/PropertyDiscovery";
 import WhyAsher from "@/components/home/WhyAsher";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
@@ -34,6 +35,7 @@ export default function Home() {
         <ProjectComparison />
         <AdvisorAdvantage />
         <MarketIntelligence />
+        <KnowledgeHub />
         <PropertyDiscovery />
         <HowItWorks />
         <WhyAsher />
