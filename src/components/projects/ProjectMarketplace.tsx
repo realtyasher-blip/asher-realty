@@ -80,7 +80,7 @@ export default function ProjectMarketplace() {
   const [recent, setRecent] = useState<string[]>([]);
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
+    const timer = window.setTimeout(() => {
       const params = new URLSearchParams(window.location.search);
       setFavouritesOnly(params.get("saved") === "1");
 
@@ -125,7 +125,7 @@ export default function ProjectMarketplace() {
         setRecent([]);
       }
     });
-    return () => window.cancelAnimationFrame(frame);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const filtered = useMemo(() => {
