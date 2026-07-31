@@ -17,7 +17,7 @@ export default function ProjectActions({
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
+    const timer = window.setTimeout(() => {
       try {
         const favourites: string[] = JSON.parse(
           localStorage.getItem(FAVOURITES_KEY) || "[]"
@@ -35,7 +35,7 @@ export default function ProjectActions({
         // Storage can be unavailable in privacy-restricted browsers.
       }
     });
-    return () => window.cancelAnimationFrame(frame);
+    return () => window.clearTimeout(timer);
   }, [slug]);
 
   function toggleSaved() {

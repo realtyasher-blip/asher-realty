@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Calculator, IndianRupee, Landmark, WalletCards } from "lucide-react";
 
 function formatRupees(value: number) {
@@ -41,6 +42,13 @@ export default function BuyerCalculators() {
       initialCash: upfront + registrationEstimate,
     };
   }, [downPayment, interestRate, propertyValue, tenure]);
+
+  const projectPriceBand =
+    propertyValue <= 200
+      ? "Up to ₹2 Cr"
+      : propertyValue <= 300
+        ? "₹2–3 Cr"
+        : "₹3 Cr+";
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_0.82fr]">
@@ -158,15 +166,21 @@ export default function BuyerCalculators() {
           </p>
         </div>
 
+        <Link
+          href={`/projects?price=${encodeURIComponent(projectPriceBand)}`}
+          className="mt-7 inline-flex h-13 w-full items-center justify-center rounded-full bg-[#c9a227] px-6 text-sm font-bold text-[#071a2f] transition hover:bg-[#e4c462]"
+        >
+          Browse homes in this budget
+        </Link>
         <a
           href={`https://wa.me/919019697170?text=${encodeURIComponent(
             `Hi Asher Realty, I am considering a property around ₹${propertyValue} lakh. Please help me shortlist suitable Bengaluru projects and explain the complete buying cost.`
           )}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-7 inline-flex h-13 w-full items-center justify-center rounded-full bg-[#c9a227] px-6 text-sm font-bold text-[#071a2f] transition hover:bg-[#e4c462]"
+          className="mt-3 inline-flex h-11 w-full items-center justify-center text-xs font-bold text-white/55 transition hover:text-white"
         >
-          Find homes in this budget
+          Ask an advisor about these numbers
         </a>
       </div>
     </div>

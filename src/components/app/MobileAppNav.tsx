@@ -2,33 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import {
   Building2,
   CalendarCheck,
   GitCompareArrows,
-  Heart,
   Home,
+  SearchCheck,
 } from "lucide-react";
 
 const items = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/projects", icon: Building2 },
-  { label: "Saved", href: "/projects?saved=1", icon: Heart },
+  { label: "My Search", href: "/my-search", icon: SearchCheck },
   { label: "Compare", href: "/compare", icon: GitCompareArrows },
   { label: "Visit", href: "/book-site-visit", icon: CalendarCheck },
 ];
 
 export default function MobileAppNav() {
   const pathname = usePathname();
-  const [savedView, setSavedView] = useState(false);
-
-  useEffect(() => {
-    setSavedView(
-      pathname === "/projects" &&
-        new URLSearchParams(window.location.search).get("saved") === "1"
-    );
-  }, [pathname]);
 
   if (pathname.startsWith("/crm")) return null;
 
@@ -39,13 +30,11 @@ export default function MobileAppNav() {
     >
       <div className="mx-auto grid max-w-lg grid-cols-5 px-2">
         {items.map(({ label, href, icon: Icon }) => {
-          const isSaved = label === "Saved";
-          const active = isSaved
-            ? savedView
-            : label === "Home"
+          const active =
+            label === "Home"
               ? pathname === "/"
               : label === "Explore"
-                ? pathname === "/projects" && !savedView
+                ? pathname === "/projects"
               : pathname === href || pathname.startsWith(`${href}/`);
 
           return (
@@ -63,9 +52,7 @@ export default function MobileAppNav() {
                 }`}
               >
                 <Icon
-                  className={`size-[19px] ${
-                    isSaved && active ? "fill-current" : ""
-                  }`}
+                  className="size-[19px]"
                 />
               </span>
               {label}

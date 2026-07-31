@@ -13,6 +13,7 @@ const quickLinks = [
   { label: "Locations", href: "/locations" },
   { label: "Book Site Visit", href: "/book-site-visit" },
   { label: "Compare", href: "/compare" },
+  { label: "My Search", href: "/my-search" },
   { label: "Buyer Tools", href: "/tools" },
   { label: "Why Asher", href: "/#about" },
   { label: "Contact", href: "/#contact" },

@@ -19,7 +19,7 @@ const navigation = [
   { label: "Locations", href: "/locations" },
   { label: "AI Match", href: "/#ai-match" },
   { label: "Compare", href: "/compare" },
-  { label: "Market", href: "/#market" },
+  { label: "My Search", href: "/my-search" },
   { label: "Tools", href: "/tools" },
 ];
 
