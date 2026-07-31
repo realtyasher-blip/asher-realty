@@ -49,12 +49,40 @@ export type CallAttempt = {
   classification: ProspectClass;
 };
 
+export const providerCallStatuses = [
+  "requested",
+  "ringing",
+  "in-progress",
+  "completed",
+  "failed",
+  "busy",
+  "no-answer",
+  "transferred",
+] as const;
+
+export type ProviderCallStatus = (typeof providerCallStatuses)[number];
+
+export type ProviderCall = {
+  id: string;
+  provider: "Exotel";
+  direction: "outbound" | "inbound";
+  requestedAt: string;
+  updatedAt: string;
+  status: ProviderCallStatus;
+  callSid: string;
+  openaiCallId: string;
+  recordingUrl: string;
+  project: string;
+  disclosureRequired: boolean;
+};
+
 export type CallingProfile = {
   consentStatus: ConsentStatus;
   consentSource: string;
   consentRecordedAt: string;
   doNotCall: boolean;
   attempts: CallAttempt[];
+  providerCalls: ProviderCall[];
 };
 
 export type CallAssessmentInput = Omit<CallAttempt, "id" | "recordedAt" | "score" | "classification"> & {
@@ -68,6 +96,7 @@ const emptyProfile: CallingProfile = {
   consentRecordedAt: "",
   doNotCall: false,
   attempts: [],
+  providerCalls: [],
 };
 
 export function stripCallingData(notes?: string | null) {
@@ -77,10 +106,10 @@ export function stripCallingData(notes?: string | null) {
 }
 
 export function parseCallingProfile(notes?: string | null): CallingProfile {
-  if (!notes) return { ...emptyProfile, attempts: [] };
+  if (!notes) return { ...emptyProfile, attempts: [], providerCalls: [] };
   const start = notes.indexOf(START);
   const end = notes.indexOf(END, start + START.length);
-  if (start === -1 || end === -1) return { ...emptyProfile, attempts: [] };
+  if (start === -1 || end === -1) return { ...emptyProfile, attempts: [], providerCalls: [] };
   try {
     const value = JSON.parse(notes.slice(start + START.length, end)) as Partial<CallingProfile>;
     const consentStatus = consentOptions.includes(value.consentStatus as ConsentStatus)
@@ -92,9 +121,10 @@ export function parseCallingProfile(notes?: string | null): CallingProfile {
       consentRecordedAt: typeof value.consentRecordedAt === "string" ? value.consentRecordedAt : "",
       doNotCall: Boolean(value.doNotCall),
       attempts: Array.isArray(value.attempts) ? value.attempts.slice(-20) : [],
+      providerCalls: Array.isArray(value.providerCalls) ? value.providerCalls.slice(-20) : [],
     };
   } catch {
-    return { ...emptyProfile, attempts: [] };
+    return { ...emptyProfile, attempts: [], providerCalls: [] };
   }
 }
 

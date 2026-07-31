@@ -33,11 +33,12 @@ import {
   type InterestLevel,
 } from "@/lib/crm/calling";
 import type { Lead } from "@/lib/crm/types";
+import type { VoiceReadiness } from "@/lib/crm/voice-types";
 
 type CallingWorkspaceProps = {
   initialLeads: Lead[];
   initialError?: string;
-  providerConfigured: boolean;
+  voiceReadiness: VoiceReadiness;
 };
 
 type FormState = CallAssessmentInput;
@@ -248,7 +249,7 @@ function qualityChecklist(form: FormState) {
 export default function CallingWorkspace({
   initialLeads,
   initialError = "",
-  providerConfigured,
+  voiceReadiness,
 }: CallingWorkspaceProps) {
   const [leads, setLeads] = useState(initialLeads);
   const [query, setQuery] = useState("");
@@ -266,7 +267,11 @@ export default function CallingWorkspace({
   const [error, setError] = useState(initialError);
   const [copied, setCopied] = useState(false);
   const [currentStage, setCurrentStage] = useState(0);
+  const [startingTestCall, setStartingTestCall] = useState(false);
+  const [transferringCall, setTransferringCall] = useState(false);
+  const [testAcknowledged, setTestAcknowledged] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
+  const providerConfigured = voiceReadiness.ready;
 
   const projectOptions = useMemo(
     () =>
@@ -360,6 +365,7 @@ export default function CallingWorkspace({
     setError("");
     setCopied(false);
     setCurrentStage(0);
+    setTestAcknowledged(false);
   }
 
   async function copyScript(text: string) {
@@ -454,6 +460,74 @@ export default function CallingWorkspace({
     }
   }
 
+  async function startTestCall() {
+    if (!selected || !testAcknowledged) return;
+    const confirmed = window.confirm(
+      `Start one AI test call to ${selected.name} at ${selected.phone}? This is allowed only because the CRM shows verified permission.`
+    );
+    if (!confirmed) return;
+    setStartingTestCall(true);
+    setNotice("");
+    setError("");
+    try {
+      const response = await fetch("/api/crm/calling/test-call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadId: selected.id,
+          acknowledgement: "START_SINGLE_CONSENTED_TEST_CALL",
+        }),
+      });
+      const data = (await response.json()) as {
+        lead?: Lead;
+        result?: { message?: string };
+        error?: string;
+      };
+      if (!response.ok || !data.lead) {
+        throw new Error(data.error || "Unable to start the test call.");
+      }
+      setLeads((current) =>
+        current.map((lead) => (lead.id === data.lead?.id ? data.lead : lead))
+      );
+      setSelected(data.lead);
+      setNotice(data.result?.message || "The controlled test call was requested.");
+      setTestAcknowledged(false);
+    } catch (callError) {
+      setError(callError instanceof Error ? callError.message : "Unable to start the test call.");
+    } finally {
+      setStartingTestCall(false);
+    }
+  }
+
+  async function transferActiveCall() {
+    if (!selected) return;
+    setTransferringCall(true);
+    setNotice("");
+    setError("");
+    try {
+      const response = await fetch("/api/crm/calling/transfer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: selected.id }),
+      });
+      const data = (await response.json()) as { lead?: Lead; error?: string };
+      if (!response.ok || !data.lead) {
+        throw new Error(data.error || "Unable to transfer the call.");
+      }
+      setLeads((current) =>
+        current.map((lead) => (lead.id === data.lead?.id ? data.lead : lead))
+      );
+      setSelected(data.lead);
+      setNotice("The active AI call was transferred to the configured human advisor.");
+    } catch (transferError) {
+      setError(
+        transferError instanceof Error ? transferError.message : "Unable to transfer the call."
+      );
+    } finally {
+      setTransferringCall(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#eef1f4] text-[#071a2f]">
       <header className="border-b border-white/10 bg-[#071a2f] text-white">
@@ -513,9 +587,23 @@ export default function CallingWorkspace({
             </div>
             <span className="inline-flex h-9 shrink-0 items-center rounded-full border border-current/15 bg-white/70 px-4 text-[10px] font-bold uppercase tracking-[.15em]">
               <span className={`mr-2 size-2 rounded-full ${providerConfigured ? "bg-emerald-500" : "bg-amber-500"}`} />
-              {providerConfigured ? "Review gate" : "No outbound calls"}
+              {providerConfigured ? "Single-test ready" : "No outbound calls"}
             </span>
           </div>
+          <div className="mt-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+            {voiceReadiness.checks.map((check) => (
+              <div key={check.key} className="rounded-xl border border-current/10 bg-white/65 p-3">
+                <div className="flex items-center gap-2">
+                  <span className={`size-2 rounded-full ${check.ready ? "bg-emerald-500" : "bg-amber-500"}`} />
+                  <p className="text-[10px] font-bold uppercase tracking-[.12em]">{check.label}</p>
+                </div>
+                <p className="mt-2 text-[10px] leading-5 text-slate-500">{check.detail}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-[10px] text-slate-500">
+            Voice: {voiceReadiness.voice} · Model: {voiceReadiness.model} · Bulk calling remains unavailable in this release.
+          </p>
         </section>
 
         {(error || notice) && (
@@ -651,7 +739,7 @@ export default function CallingWorkspace({
               <p className="mt-1 text-[11px] text-white/45">{campaignGoal} · {campaignLanguage} · human handoff for hot prospects or buyer requests</p>
             </div>
             <button disabled className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 text-xs font-bold text-white/35">
-              <PhoneCall className="mr-2 size-4" /> {providerConfigured ? "Activation review required" : "Connect provider to start"}
+              <PhoneCall className="mr-2 size-4" /> {providerConfigured ? "Select one eligible lead below" : "Complete voice activation checks"}
             </button>
           </div>
           <div className="grid border-t border-white/10 sm:grid-cols-3">
@@ -743,6 +831,52 @@ export default function CallingWorkspace({
                     )}
                   </div>
                   <p className="mt-3 text-xs leading-6 text-white/70">{nextBestAction(selected)}</p>
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-[#f7f8fa] p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-[9px] font-bold uppercase tracking-[.15em] text-[#b08a16]">Controlled voice test</p>
+                      <p className="mt-1 text-xs font-bold">One buyer, one explicit action, full safety gate</p>
+                    </div>
+                    <span className={`rounded-full border px-2.5 py-1 text-[9px] font-bold ${providerConfigured && selectedCalling?.eligible ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-amber-200 bg-amber-50 text-amber-700"}`}>
+                      {providerConfigured && selectedCalling?.eligible ? "Eligible" : "Blocked"}
+                    </span>
+                  </div>
+                  <label className="mt-4 flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-3 text-[10px] leading-5 text-slate-600">
+                    <input
+                      type="checkbox"
+                      checked={testAcknowledged}
+                      onChange={(event) => setTestAcknowledged(event.target.checked)}
+                      className="mt-1 accent-[#c9a227]"
+                    />
+                    I confirm this lead has documented permission, is not on a suppression list, and may receive one disclosed AI test call now.
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => void startTestCall()}
+                    disabled={!providerConfigured || !selectedCalling?.eligible || !testAcknowledged || startingTestCall}
+                    className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#071a2f] px-5 text-xs font-bold text-white transition hover:bg-[#c9a227] hover:text-[#071a2f] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+                  >
+                    <PhoneCall className="mr-2 size-4" /> {startingTestCall ? "Requesting test call…" : "Start one controlled AI test call"}
+                  </button>
+                  {selectedCalling?.profile.providerCalls.length ? (
+                    <div className="mt-3 space-y-2">
+                      {[...selectedCalling.profile.providerCalls].reverse().slice(0, 3).map((call) => (
+                        <div key={call.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px]">
+                          <span><strong>{call.status.replaceAll("-", " ")}</strong> · {displayDate(call.updatedAt)}</span>
+                          {call.openaiCallId && call.status === "in-progress" ? (
+                            <button type="button" disabled={transferringCall} onClick={() => void transferActiveCall()} className="rounded-full bg-rose-600 px-3 py-1.5 font-bold text-white disabled:opacity-50">
+                              {transferringCall ? "Transferring…" : "Transfer to advisor"}
+                            </button>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                  <p className="mt-3 text-[9px] leading-5 text-slate-400">
+                    No bulk action is available. Recording is controlled in Exotel and must match your approved notice and retention policy.
+                  </p>
                 </div>
 
                 <details open className="mt-4 rounded-2xl border border-[#c9a227]/25 bg-[#fffaf0] p-4">

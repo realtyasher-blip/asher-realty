@@ -10,6 +10,7 @@ import {
   verifySessionToken,
 } from "@/lib/crm/server";
 import type { Lead } from "@/lib/crm/types";
+import { getVoiceReadiness } from "@/lib/crm/voice";
 
 export const dynamic = "force-dynamic";
 
@@ -30,18 +31,13 @@ export default async function CallingPage() {
     error = "Unable to load leads.";
   }
 
-  const providerConfigured = Boolean(
-    process.env.AI_CALLING_ENABLED === "true" &&
-      process.env.OPENAI_API_KEY &&
-      process.env.EXOTEL_API_KEY &&
-      process.env.EXOTEL_API_TOKEN
-  );
+  const voiceReadiness = getVoiceReadiness();
 
   return (
     <CallingWorkspace
       initialLeads={leads}
       initialError={error}
-      providerConfigured={providerConfigured}
+      voiceReadiness={voiceReadiness}
     />
   );
 }
