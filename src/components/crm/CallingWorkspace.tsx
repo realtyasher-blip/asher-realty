@@ -41,7 +41,7 @@ type CallingWorkspaceProps = {
 };
 
 type FormState = CallAssessmentInput;
-type ViewFilter = "All" | "Eligible" | "Hot" | "Follow-up" | "Unreached" | "Suppressed";
+type ViewFilter = "All" | "Eligible" | "New" | "Hot" | "Warm" | "Follow-up" | "Unreached" | "Suppressed";
 
 const emptyForm: FormState = {
   consentStatus: "Not verified",
@@ -164,6 +164,87 @@ function handoffGuidance(form: FormState, score?: ReturnType<typeof assessLead> 
   };
 }
 
+function conversationStages(lead: Lead, language: string) {
+  const project = lead.project || "their Bengaluru property search";
+  return [
+    {
+      label: "Permission",
+      coaching: "Identify Aira clearly, mention the enquiry context and ask permission to continue.",
+      line: openerForLead(lead, language),
+    },
+    {
+      label: "Discover",
+      coaching: "Ask one question at a time and let the buyer finish before moving on.",
+      line: `To help me narrow the right options for ${project}, is this purchase mainly for your own use or for investment?`,
+    },
+    {
+      label: "Qualify",
+      coaching: "Confirm location, configuration, budget and purchase timeline without sounding like a form.",
+      line: "Which matters most for your decision right now: the location, total budget, larger space or possession timeline?",
+    },
+    {
+      label: "Advise",
+      coaching: "Reflect the requirement first. Offer no more than two relevant options and use approved facts only.",
+      line: "Based on what you shared, I can arrange a concise comparison of two suitable options with verified pricing and availability.",
+    },
+    {
+      label: "Next step",
+      coaching: "End with one specific action: human callback, comparison or site visit. Confirm the exact time.",
+      line: "Would you prefer a short advisor call today, or should I help arrange a guided site visit this weekend?",
+    },
+  ];
+}
+
+function objectionCoach(objection: string) {
+  if (!objection.trim()) return null;
+  if (/price|cost|expensive|budget|discount/i.test(objection)) {
+    return {
+      title: "Price concern",
+      response: "Acknowledge the budget, avoid promising discounts and offer a verified all-in cost comparison with two alternatives.",
+    };
+  }
+  if (/location|traffic|distance|commute|far/i.test(objection)) {
+    return {
+      title: "Location concern",
+      response: "Ask for the buyer's daily destination and preferred maximum commute before comparing corridors or projects.",
+    };
+  }
+  if (/later|time|not now|wait|future/i.test(objection)) {
+    return {
+      title: "Timing concern",
+      response: "Respect the timeline, ask what event will trigger the purchase and agree on a specific low-pressure follow-up date.",
+    };
+  }
+  if (/trust|legal|rera|approval|delay|possession/i.test(objection)) {
+    return {
+      title: "Trust or legal concern",
+      response: "Do not interpret documents. Offer verified RERA references and connect a human advisor for factual clarification.",
+    };
+  }
+  if (/loan|emi|finance|bank/i.test(objection)) {
+    return {
+      title: "Finance concern",
+      response: "Confirm the comfortable monthly range and offer a human loan specialist; never imply loan approval.",
+    };
+  }
+  return {
+    title: "Clarify before answering",
+    response: "Reflect the concern in the buyer's own words, ask one clarifying question and avoid a rehearsed rebuttal.",
+  };
+}
+
+function qualityChecklist(form: FormState) {
+  const answered = form.outcome === "Answered" || form.outcome === "Call back requested";
+  const checks = [
+    { label: "Permission documented", passed: form.consentStatus !== "Not verified" && form.consentStatus !== "Withdrawn" && Boolean(form.consentSource.trim()) },
+    { label: "AI identity disclosed", passed: !answered || form.disclosedAi },
+    { label: "Useful conversation summary", passed: !answered || form.summary.trim().length >= 20 },
+    { label: "Requirement qualified", passed: !answered || form.budgetConfirmed || Boolean(form.timeline.trim()) },
+    { label: "Clear next action", passed: Boolean(form.followUpAt || form.siteVisitDate) || ["No answer", "Busy", "Wrong number", "Not interested", "Do not call"].includes(form.outcome) },
+  ];
+  return { checks, score: checks.filter((check) => check.passed).length * 20 };
+}
+
 export default function CallingWorkspace({
   initialLeads,
   initialError = "",
@@ -184,6 +265,7 @@ export default function CallingWorkspace({
   const [notice, setNotice] = useState("");
   const [error, setError] = useState(initialError);
   const [copied, setCopied] = useState(false);
+  const [currentStage, setCurrentStage] = useState(0);
   const uploadRef = useRef<HTMLInputElement>(null);
 
   const projectOptions = useMemo(
@@ -201,7 +283,9 @@ export default function CallingWorkspace({
       const viewMatch =
         viewFilter === "All" ||
         (viewFilter === "Eligible" && eligible) ||
+        (viewFilter === "New" && !latest) ||
         (viewFilter === "Hot" && latest?.classification === "Hot") ||
+        (viewFilter === "Warm" && latest?.classification === "Warm") ||
         (viewFilter === "Follow-up" && Boolean(lead.follow_up_at)) ||
         (viewFilter === "Unreached" && latest?.classification === "Unreached") ||
         (viewFilter === "Suppressed" && (profile.doNotCall || profile.consentStatus === "Withdrawn"));
@@ -227,21 +311,34 @@ export default function CallingWorkspace({
     let suppressed = 0;
     let attempts = 0;
     let answered = 0;
+    let warm = 0;
+    let eligibleCount = 0;
+    let newLeads = 0;
+    let followUps = 0;
     for (const lead of leads) {
-      const { profile, latest } = callingSummary(lead);
+      const { profile, latest, eligible: isEligible } = callingSummary(lead);
       attempts += profile.attempts.length;
       answered += profile.attempts.filter((attempt) =>
         ["Answered", "Call back requested", "Not interested", "Do not call"].includes(attempt.outcome)
       ).length;
       if (latest?.classification === "Hot") hot += 1;
+      if (latest?.classification === "Warm") warm += 1;
       if (latest?.siteVisitDate || lead.status === "Site visit scheduled") visits += 1;
       if (profile.doNotCall || profile.consentStatus === "Withdrawn") suppressed += 1;
+      if (isEligible && !profile.doNotCall && !["Booked", "Not interested"].includes(lead.status)) eligibleCount += 1;
+      if (!latest) newLeads += 1;
+      if (lead.follow_up_at) followUps += 1;
     }
     return {
       hot,
+      warm,
       visits,
       suppressed,
       attempts,
+      answered,
+      eligibleCount,
+      newLeads,
+      followUps,
       answerRate: attempts ? Math.round((answered / attempts) * 100) : 0,
       visitRate: answered ? Math.round((visits / answered) * 100) : 0,
     };
@@ -251,6 +348,10 @@ export default function CallingWorkspace({
   const scorePreview = selected ? assessLead(selected, form) : null;
   const opener = selected ? openerForLead(selected, campaignLanguage) : "";
   const handoff = handoffGuidance(form, scorePreview);
+  const stages = selected ? conversationStages(selected, campaignLanguage) : [];
+  const activeStage = stages[currentStage];
+  const objectionHelp = objectionCoach(form.objection);
+  const quality = qualityChecklist(form);
 
   function openLead(lead: Lead) {
     setSelected(lead);
@@ -258,16 +359,22 @@ export default function CallingWorkspace({
     setNotice("");
     setError("");
     setCopied(false);
+    setCurrentStage(0);
   }
 
-  async function copyOpener() {
-    if (!opener) return;
-    await navigator.clipboard.writeText(opener);
+  async function copyScript(text: string) {
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
     setCopied(true);
   }
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [key]: value }));
+  }
+
+  function openSmartQueue(filter: ViewFilter) {
+    setViewFilter(filter);
+    requestAnimationFrame(() => document.getElementById("calling-leads")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
   function buildQueue() {
@@ -434,6 +541,63 @@ export default function CallingWorkspace({
           ))}
         </div>
 
+        <section className="mt-5 grid gap-5 xl:grid-cols-[1.25fr_.75fr]">
+          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#b08a16]">AI daily briefing</p>
+                <h2 className="mt-2 text-3xl font-medium">The queue that deserves attention now</h2>
+              </div>
+              <p className="max-w-sm text-xs leading-6 text-slate-500">Aira prioritises permission, buyer intent and the next agreed action—never just list order.</p>
+            </div>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { filter: "Eligible" as ViewFilter, label: "Ready to contact", value: stats.eligibleCount, text: "Permission verified" },
+                { filter: "New" as ViewFilter, label: "Unassessed", value: stats.newLeads, text: "Needs first review" },
+                { filter: "Hot" as ViewFilter, label: "Human handoff", value: stats.hot, text: "High intent" },
+                { filter: "Follow-up" as ViewFilter, label: "Follow-ups", value: stats.followUps, text: "Next action saved" },
+              ].map((item) => (
+                <button
+                  type="button"
+                  key={item.label}
+                  onClick={() => openSmartQueue(item.filter)}
+                  className="group rounded-2xl border border-slate-200 bg-[#f7f8fa] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#c9a227]/45 hover:bg-white hover:shadow-md"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{item.value}</span>
+                    <span className="flex size-8 items-center justify-center rounded-full bg-white text-[#b08a16] transition group-hover:bg-[#071a2f] group-hover:text-white">→</span>
+                  </div>
+                  <p className="mt-3 text-xs font-bold">{item.label}</p>
+                  <p className="mt-1 text-[10px] text-slate-400">{item.text}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[1.75rem] bg-[#071a2f] p-5 text-white shadow-[0_18px_50px_rgba(7,26,47,.14)] sm:p-7">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#e4c462]">Conversion funnel</p>
+                <h2 className="mt-2 text-2xl font-medium">From call to visit</h2>
+              </div>
+              <Sparkles className="size-6 text-[#e4c462]" />
+            </div>
+            <div className="mt-6 space-y-4">
+              {[
+                { label: "Attempts", value: stats.attempts, width: stats.attempts ? 100 : 0 },
+                { label: "Conversations", value: stats.answered, width: stats.attempts ? Math.round((stats.answered / stats.attempts) * 100) : 0 },
+                { label: "Qualified", value: stats.hot + stats.warm, width: stats.answered ? Math.round(((stats.hot + stats.warm) / stats.answered) * 100) : 0 },
+                { label: "Site visits", value: stats.visits, width: stats.answered ? Math.round((stats.visits / stats.answered) * 100) : 0 },
+              ].map((step) => (
+                <div key={step.label}>
+                  <div className="flex items-center justify-between text-[11px]"><span className="text-white/55">{step.label}</span><span className="font-bold">{step.value}</span></div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-[#c9a227] to-[#e4c462]" style={{ width: `${Math.min(100, step.width)}%` }} /></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="mt-5 overflow-hidden rounded-[1.75rem] bg-[#071a2f] text-white shadow-[0_20px_60px_rgba(7,26,47,.14)]">
           <div className="border-b border-white/10 px-6 py-5 lg:px-8">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -497,7 +661,7 @@ export default function CallingWorkspace({
           </div>
         </section>
 
-        <div className="mt-6 grid gap-6 xl:grid-cols-[1.35fr_.85fr]">
+        <div id="calling-leads" className="mt-6 grid scroll-mt-5 gap-6 xl:grid-cols-[1.35fr_.85fr]">
           <section className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
             <div className="grid gap-3 border-b border-slate-100 p-4 sm:grid-cols-[1fr_auto]">
               <label className="relative">
@@ -508,7 +672,7 @@ export default function CallingWorkspace({
             </div>
 
             <div className="flex gap-2 overflow-x-auto border-b border-slate-100 px-4 py-3">
-              {(["All", "Eligible", "Hot", "Follow-up", "Unreached", "Suppressed"] as ViewFilter[]).map((filter) => (
+              {(["All", "Eligible", "New", "Hot", "Warm", "Follow-up", "Unreached", "Suppressed"] as ViewFilter[]).map((filter) => (
                 <button
                   key={filter}
                   type="button"
@@ -587,13 +751,49 @@ export default function CallingWorkspace({
                     <p className="text-sm leading-7 text-slate-600">{opener}</p>
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                       <p className="text-[10px] text-slate-400">Goal: {campaignGoal}</p>
-                      <button type="button" onClick={() => void copyOpener()} className="inline-flex h-9 items-center rounded-full bg-[#071a2f] px-4 text-[10px] font-bold text-white">
+                      <button type="button" onClick={() => void copyScript(opener)} className="inline-flex h-9 items-center rounded-full bg-[#071a2f] px-4 text-[10px] font-bold text-white">
                         <Copy className="mr-2 size-3.5" /> {copied ? "Copied" : "Copy opener"}
                       </button>
                     </div>
                   </div>
                   <p className="mt-3 text-[10px] leading-5 text-slate-500">Ask one question at a time. Pause after the buyer answers. Never invent inventory, offers or final pricing.</p>
                 </details>
+
+                {activeStage && (
+                  <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                    <div className="border-b border-slate-100 p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-[9px] font-bold uppercase tracking-[.14em] text-[#b08a16]">Guided call · Step {currentStage + 1} of {stages.length}</p>
+                          <h3 className="mt-1 text-lg font-bold">{activeStage.label}</h3>
+                        </div>
+                        <span className="text-xs font-bold text-slate-400">{Math.round(((currentStage + 1) / stages.length) * 100)}%</span>
+                      </div>
+                      <div className="mt-4 grid grid-cols-5 gap-1.5">
+                        {stages.map((stage, index) => (
+                          <button
+                            type="button"
+                            key={stage.label}
+                            aria-label={`Open ${stage.label} step`}
+                            onClick={() => { setCurrentStage(index); setCopied(false); }}
+                            className={`h-1.5 rounded-full transition ${index <= currentStage ? "bg-[#c9a227]" : "bg-slate-200"}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-[11px] leading-5 text-slate-500">{activeStage.coaching}</p>
+                      <div className="mt-3 rounded-xl bg-[#f7f8fa] p-3">
+                        <p className="text-xs leading-6 text-[#071a2f]">“{activeStage.line}”</p>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between gap-2">
+                        <button type="button" disabled={currentStage === 0} onClick={() => { setCurrentStage((stage) => Math.max(0, stage - 1)); setCopied(false); }} className="h-9 rounded-full border border-slate-200 px-4 text-[10px] font-bold text-slate-500 disabled:opacity-35">Previous</button>
+                        <button type="button" onClick={() => void copyScript(activeStage.line)} className="inline-flex h-9 items-center rounded-full border border-slate-200 px-4 text-[10px] font-bold text-[#071a2f]"><Copy className="mr-2 size-3.5" /> Copy line</button>
+                        <button type="button" disabled={currentStage === stages.length - 1} onClick={() => { setCurrentStage((stage) => Math.min(stages.length - 1, stage + 1)); setCopied(false); }} className="h-9 rounded-full bg-[#071a2f] px-4 text-[10px] font-bold text-white disabled:opacity-35">Next</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <label className="text-xs font-bold">Permission status<select value={form.consentStatus} onChange={(e) => update("consentStatus", e.target.value as ConsentStatus)} className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-3 text-xs">{consentOptions.map((item) => <option key={item}>{item}</option>)}</select></label>
@@ -611,6 +811,18 @@ export default function CallingWorkspace({
 
                 <label className="mt-4 block text-xs font-bold">Conversation summary<textarea rows={3} value={form.summary} onChange={(e) => update("summary", e.target.value)} placeholder="Requirement, motivation and agreed next step" className="mt-2 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] p-3 text-sm outline-none focus:border-[#c9a227]" /></label>
                 <label className="mt-4 block text-xs font-bold">Primary objection<input value={form.objection} onChange={(e) => update("objection", e.target.value)} placeholder="Price, location, timing or financing" className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-3 text-sm" /></label>
+
+                {objectionHelp && (
+                  <div className="mt-3 rounded-2xl border border-blue-200 bg-blue-50 p-4">
+                    <div className="flex items-start gap-3">
+                      <Sparkles className="mt-0.5 size-4 shrink-0 text-blue-700" />
+                      <div>
+                        <p className="text-xs font-bold text-blue-800">AI objection coach · {objectionHelp.title}</p>
+                        <p className="mt-1 text-[11px] leading-5 text-slate-600">{objectionHelp.response}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   <label className="text-xs font-bold">Site visit date<input type="date" value={form.siteVisitDate} onChange={(e) => update("siteVisitDate", e.target.value)} className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-3 text-xs" /></label>
@@ -644,6 +856,26 @@ export default function CallingWorkspace({
                     </div>
                   </div>
                 )}
+
+                <details className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+                  <summary className="cursor-pointer list-none">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="text-[9px] font-bold uppercase tracking-[.14em] text-slate-400">Call quality coach</p>
+                        <p className="mt-1 text-xs font-bold">{quality.score >= 80 ? "Ready to save" : "Improve the call record"}</p>
+                      </div>
+                      <div className="text-right"><span className="text-2xl font-bold">{quality.score}</span><span className="text-xs text-slate-400">/100</span></div>
+                    </div>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100"><div className={`h-full rounded-full ${quality.score >= 80 ? "bg-emerald-500" : quality.score >= 60 ? "bg-amber-500" : "bg-rose-500"}`} style={{ width: `${quality.score}%` }} /></div>
+                  </summary>
+                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                    {quality.checks.map((check) => (
+                      <div key={check.label} className={`rounded-xl border p-3 text-[10px] font-bold ${check.passed ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-[#f7f8fa] text-slate-400"}`}>
+                        {check.passed ? "✓" : "○"} {check.label}
+                      </div>
+                    ))}
+                  </div>
+                </details>
 
                 <div className={`mt-4 rounded-2xl border p-4 ${handoff.urgent ? "border-rose-200 bg-rose-50" : "border-emerald-200 bg-emerald-50"}`}>
                   <p className={`text-xs font-bold ${handoff.urgent ? "text-rose-700" : "text-emerald-700"}`}>{handoff.title}</p>

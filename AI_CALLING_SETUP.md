@@ -18,6 +18,11 @@ The protected workspace is available at `/crm/calling` after CRM login.
 - Live intent-score preview, next-best action and automatic handoff guidance
 - Per-lead call history with outcomes, classifications, scores, objections and summaries
 - Calling-funnel metrics for attempts, answer rate, hot prospects and site-visit conversion
+- Daily AI briefing with one-click Ready, New, Hot and Follow-up queues
+- Guided five-stage conversation flow from permission through next action
+- Real-time objection coaching for price, location, timing, trust and finance concerns
+- A 100-point call-quality checklist covering permission, disclosure, summary,
+  qualification and the agreed next action
 
 Imported contacts are deduplicated against existing CRM phone numbers and are
 marked “Not verified” for calling permission. Verify the permission source in
