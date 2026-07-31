@@ -77,6 +77,26 @@ export async function createLead(input: LeadInput) {
   return rows[0];
 }
 
+export async function createImportedLeads(
+  contacts: Array<{ name: string; phone: string }>,
+  fileName: string
+) {
+  const profile = parseCallingProfile("");
+  const note = `Imported from ${fileName}. Calling permission has not been verified.`;
+  const rows = contacts.map((contact) => ({
+    name: contact.name,
+    phone: contact.phone,
+    source: "excel_contact_import",
+    status: "New" as const,
+    notes: mergeCallingProfile(note, profile),
+  }));
+  return supabaseRequest<Lead[]>("leads", {
+    method: "POST",
+    headers: { Prefer: "return=representation" },
+    body: JSON.stringify(rows),
+  });
+}
+
 export async function listLeads() {
   return supabaseRequest<Lead[]>(
     "leads?select=*&order=created_at.desc&limit=500"

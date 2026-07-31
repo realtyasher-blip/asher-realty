@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Bot,
@@ -17,6 +17,7 @@ import {
   Sparkles,
   UserCheck,
   Users,
+  Upload,
 } from "lucide-react";
 
 import {
@@ -108,8 +109,10 @@ export default function CallingWorkspace({
   const [selected, setSelected] = useState<Lead | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState(initialError);
+  const uploadRef = useRef<HTMLInputElement>(null);
 
   const projectOptions = useMemo(
     () =>
@@ -197,6 +200,50 @@ export default function CallingWorkspace({
     }
   }
 
+  async function uploadContacts(file?: File) {
+    if (!file) return;
+    setUploading(true);
+    setNotice("");
+    setError("");
+    try {
+      const payload = new FormData();
+      payload.append("file", file);
+      const response = await fetch("/api/crm/calling/import", {
+        method: "POST",
+        body: payload,
+      });
+      const data = (await response.json()) as {
+        imported?: number;
+        duplicates?: number;
+        rejected?: number;
+        errors?: Array<{ row: number; reason: string }>;
+        error?: string;
+      };
+      if (response.status === 401) {
+        window.location.reload();
+        return;
+      }
+      if (!response.ok) throw new Error(data.error || "Unable to import contacts.");
+
+      const leadsResponse = await fetch("/api/crm/leads", { cache: "no-store" });
+      const leadsData = (await leadsResponse.json()) as { leads?: Lead[] };
+      if (leadsResponse.ok && leadsData.leads) setLeads(leadsData.leads);
+
+      const firstError = data.errors?.[0];
+      setNotice(
+        `${data.imported || 0} contact${data.imported === 1 ? "" : "s"} imported. ` +
+          `${data.duplicates || 0} duplicate${data.duplicates === 1 ? "" : "s"} skipped. ` +
+          `${data.rejected || 0} invalid row${data.rejected === 1 ? "" : "s"} skipped.` +
+          (firstError ? ` First issue: row ${firstError.row} — ${firstError.reason}.` : "")
+      );
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Unable to import contacts.");
+    } finally {
+      setUploading(false);
+      if (uploadRef.current) uploadRef.current.value = "";
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#eef1f4] text-[#071a2f]">
       <header className="border-b border-white/10 bg-[#071a2f] text-white">
@@ -219,6 +266,24 @@ export default function CallingWorkspace({
               <a href="/api/crm/export" className="inline-flex h-11 items-center rounded-full bg-[#c9a227] px-5 text-xs font-bold text-[#071a2f] transition hover:bg-[#e4c462]">
                 <FileSpreadsheet className="mr-2 size-4" /> Export Excel
               </a>
+              <a href="/api/crm/calling/import" className="inline-flex h-11 items-center rounded-full border border-white/15 px-5 text-xs font-bold text-white/75 transition hover:bg-white/10">
+                <Download className="mr-2 size-4" /> Name–number template
+              </a>
+              <input
+                ref={uploadRef}
+                type="file"
+                accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+                onChange={(event) => void uploadContacts(event.target.files?.[0])}
+                className="hidden"
+              />
+              <button
+                type="button"
+                disabled={uploading}
+                onClick={() => uploadRef.current?.click()}
+                className="inline-flex h-11 items-center rounded-full border border-[#c9a227]/40 bg-[#c9a227]/10 px-5 text-xs font-bold text-[#e4c462] transition hover:bg-[#c9a227]/20 disabled:opacity-60"
+              >
+                <Upload className="mr-2 size-4" /> {uploading ? "Importing…" : "Upload contacts"}
+              </button>
             </div>
           </div>
         </div>

@@ -11,6 +11,11 @@ The protected workspace is available at `/crm/calling` after CRM login.
 - Follow-up and site-visit updates in the existing lead record
 - Transcript and recording-reference fields
 - Excel export with calling outcomes, scores and consent status
+- Contact import from `.xlsx` or `.csv` files containing only Name and Number
+
+Imported contacts are deduplicated against existing CRM phone numbers and are
+marked “Not verified” for calling permission. Verify the permission source in
+the calling workspace before adding an imported contact to a queue.
 
 ## Production activation gate
 
