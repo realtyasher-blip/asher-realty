@@ -9,7 +9,6 @@ import ProjectComparison from "@/components/home/ProjectComparison";
 import SmartMatch from "@/components/home/SmartMatch";
 import MarketIntelligence from "@/components/home/MarketIntelligence";
 import KnowledgeHub from "@/components/home/KnowledgeHub";
-import PropertyDiscovery from "@/components/home/PropertyDiscovery";
 import WhyAsher from "@/components/home/WhyAsher";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
@@ -17,6 +16,7 @@ import Navbar from "@/components/layout/Navbar";
 import LocalBusinessSchema from "@/components/seo/LocalBusinessSchema";
 import DecisionIntelligence from "@/components/home/DecisionIntelligence";
 import AdvisorAdvantage from "@/components/home/AdvisorAdvantage";
+import BuyerQuickStart from "@/components/home/BuyerQuickStart";
 
 export const revalidate = 86400;
 
@@ -29,14 +29,14 @@ export default function Home() {
       <main>
         <Hero />
         <TrustStrip />
-        <SmartMatch />
-        <DecisionIntelligence />
+        <BuyerQuickStart />
         <FeaturedProjects />
+        <SmartMatch />
         <ProjectComparison />
-        <AdvisorAdvantage />
+        <DecisionIntelligence />
         <MarketIntelligence />
         <KnowledgeHub />
-        <PropertyDiscovery />
+        <AdvisorAdvantage />
         <HowItWorks />
         <WhyAsher />
         <FeaturedDevelopers />

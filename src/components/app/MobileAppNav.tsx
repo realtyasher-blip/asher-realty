@@ -19,8 +19,8 @@ import {
 
 const items = [
   { label: "Home", href: "/", icon: Home },
-  { label: "Explore", href: "/projects", icon: Building2 },
-  { label: "Decision", href: "/decision-lab", icon: Sparkles, primary: true },
+  { label: "Projects", href: "/projects", icon: Building2 },
+  { label: "AI Match", href: "/decision-lab", icon: Sparkles, primary: true },
   { label: "Compare", href: "/compare", icon: GitCompareArrows },
   { label: "Saved", href: "/my-search", icon: Heart },
 ];
@@ -68,7 +68,7 @@ export default function MobileAppNav() {
           const active =
             label === "Home"
               ? pathname === "/"
-              : label === "Explore"
+              : label === "Projects"
                 ? pathname === "/projects"
                 : pathname === href || pathname.startsWith(`${href}/`);
 

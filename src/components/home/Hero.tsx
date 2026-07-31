@@ -24,7 +24,7 @@ const locations = [
   "Hebbal",
   "Devanahalli",
 ];
-const homeTypes = ["Apartment", "Villa", "Row House", "Investment property"];
+const homeTypes = ["Apartment", "Villa", "Row House", "Plot"];
 const budgets = ["₹50L–₹1Cr", "₹1Cr–₹2Cr", "₹2Cr–₹3Cr", "₹3Cr+"];
 
 const locationCorridors: Record<string, string> = {
@@ -91,20 +91,20 @@ export default function Hero() {
           <div className="max-w-4xl">
             <div className="hero-reveal inline-flex items-center gap-2 rounded-full border border-[#e4c462]/25 bg-[#c9a227]/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#f0d477] backdrop-blur-xl">
               <Sparkles className="size-4" />
-              Bengaluru&apos;s buyer intelligence platform
+              Bengaluru homes, made easier to choose
             </div>
 
             <h1 className="hero-reveal hero-delay-1 mt-7 max-w-4xl text-6xl font-medium leading-[0.9] tracking-[-0.045em] sm:text-7xl lg:text-[6.2rem]">
-              Property search,
+              Find the right Bengaluru home.
               <span className="mt-2 block bg-gradient-to-r from-[#fff3c4] via-[#e4c462] to-[#b98e17] bg-clip-text text-transparent">
-                upgraded to intelligence.
+                Without the guesswork.
               </span>
             </h1>
 
             <p className="hero-reveal hero-delay-2 mt-7 max-w-2xl text-base leading-8 text-white/64 sm:text-lg">
-              Discover, compare and verify premium Bengaluru homes through one
-              beautifully organised decision platform—with AI matching and a
-              buyer-side advisor when the details matter.
+              Search trusted projects, compare the details that matter and get
+              a personalised shortlist—with clear data and a local advisor when
+              you need one.
             </p>
 
             <div className="hero-reveal hero-delay-3 mt-9 flex flex-col gap-3 sm:flex-row">
@@ -113,13 +113,13 @@ export default function Hero() {
                 className="shine-button inline-flex h-14 items-center justify-center rounded-full bg-[#d5ad2d] px-7 text-sm font-bold text-[#071a2f] transition hover:-translate-y-0.5 hover:bg-[#f0d477]"
               >
                 <Bot className="mr-2 size-5" />
-                Open my Decision Lab
+                Get my AI shortlist
               </Link>
               <Link
-                href="/intelligence"
+                href="/projects"
                 className="inline-flex h-14 items-center justify-center rounded-full border border-white/16 bg-white/[0.07] px-7 text-sm font-bold text-white backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-[#c9a227]/55 hover:bg-white/[0.11]"
               >
-                Open market intelligence
+                Browse all projects
                 <ArrowRight className="ml-2 size-4" />
               </Link>
             </div>
@@ -127,7 +127,7 @@ export default function Hero() {
             <div className="hero-reveal hero-delay-4 mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[11px] font-semibold text-white/48">
               <span className="inline-flex items-center gap-2">
                 <ShieldCheck className="size-4 text-emerald-400" />
-                Independent buyer guidance
+                Buyer-first guidance
               </span>
               <span className="inline-flex items-center gap-2">
                 <Database className="size-4 text-[#e4c462]" />
@@ -135,7 +135,7 @@ export default function Hero() {
               </span>
               <span className="inline-flex items-center gap-2">
                 <span className="live-pulse" />
-                Market desk refreshed daily
+                Catalogue reviewed regularly
               </span>
             </div>
           </div>
@@ -145,15 +145,15 @@ export default function Hero() {
               <div className="flex items-center justify-between px-2 pb-4 pt-1">
                 <div>
                   <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#e4c462]">
-                    Live buyer desk
+                    Project spotlight
                   </p>
                   <p className="mt-1 text-xs text-white/42">
-                    Curated project spotlight
+                    A useful place to start
                   </p>
                 </div>
                 <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-[9px] font-bold text-emerald-300">
                   <span className="live-pulse" />
-                  Updated
+                  Verified listing
                 </span>
               </div>
 
@@ -241,7 +241,7 @@ export default function Hero() {
                 <select
                   value={location}
                   onChange={(event) => setLocation(event.target.value)}
-                  className="mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none"
+                  className="dark-select mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none"
                 >
                   <option value="" className="text-[#071a2f]">
                     Anywhere in Bengaluru
@@ -264,7 +264,7 @@ export default function Hero() {
                 <select
                   value={homeType}
                   onChange={(event) => setHomeType(event.target.value)}
-                  className="mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none"
+                  className="dark-select mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none"
                 >
                   <option value="" className="text-[#071a2f]">
                     Any home type
@@ -287,7 +287,7 @@ export default function Hero() {
                 <select
                   value={budget}
                   onChange={(event) => setBudget(event.target.value)}
-                  className="mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none"
+                  className="dark-select mt-1 w-full bg-transparent text-sm font-semibold text-white outline-none"
                 >
                   <option value="" className="text-[#071a2f]">
                     Flexible budget

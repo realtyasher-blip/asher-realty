@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, Phone, Search, Sparkles } from "lucide-react";
 
 import { OPEN_SEARCH_EVENT } from "@/components/app/UniversalSearch";
@@ -17,14 +18,16 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { label: "Projects", href: "/projects" },
-  { label: "Decision Lab", href: "/decision-lab" },
-  { label: "Locations", href: "/locations" },
-  { label: "Intelligence", href: "/intelligence" },
-  { label: "Guides", href: "/guides" },
+  { label: "AI Match", href: "/decision-lab" },
+  { label: "Areas", href: "/locations" },
+  { label: "Market Data", href: "/intelligence" },
+  { label: "Buyer Guides", href: "/guides" },
   { label: "Compare", href: "/compare" },
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   function openSearch() {
     window.dispatchEvent(new CustomEvent(OPEN_SEARCH_EVENT));
   }
@@ -38,15 +41,26 @@ export default function Navbar() {
           </Link>
 
           <nav className="hidden items-center gap-1 rounded-full border border-white/[0.07] bg-white/[0.045] p-1 xl:flex">
-            {navigation.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="rounded-full px-3.5 py-2 text-[11px] font-semibold text-white/65 transition hover:bg-white/[0.07] hover:text-white"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navigation.map((item) => {
+              const active =
+                pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "rounded-full px-3.5 py-2 text-[11px] font-semibold transition",
+                    active
+                      ? "bg-white/[0.1] text-[#f0d477]"
+                      : "text-white/65 hover:bg-white/[0.07] hover:text-white"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="hidden items-center gap-2 xl:flex">
@@ -79,7 +93,7 @@ export default function Navbar() {
               )}
             >
               <Sparkles className="mr-2 size-4" />
-              Decision Lab
+              Get AI shortlist
             </Link>
           </div>
 
@@ -144,7 +158,7 @@ export default function Navbar() {
                     )}
                   >
                     <Sparkles className="mr-2 size-4" />
-                    Open Buyer Decision Lab
+                    Get my AI shortlist
                   </Link>
                 </nav>
               </SheetContent>

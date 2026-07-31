@@ -553,6 +553,13 @@ export default function ProjectMarketplace() {
                 Clear
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(false)}
+              className="mt-1 inline-flex h-11 w-full items-center justify-center rounded-xl bg-[#071a2f] px-5 text-xs font-bold text-white lg:hidden"
+            >
+              Show {filtered.length} matching project{filtered.length === 1 ? "" : "s"}
+            </button>
           </div>
         </div>
 
@@ -723,7 +730,7 @@ export default function ProjectMarketplace() {
                         href={`/projects/${slug}`}
                         className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-[#071a2f] px-5 text-sm font-semibold text-white transition hover:bg-[#0d2948]"
                       >
-                        View project
+                        See full details
                         <ArrowUpRight className="ml-2 size-4" />
                       </Link>
                       <a
@@ -734,7 +741,7 @@ export default function ProjectMarketplace() {
                         rel="noopener noreferrer"
                         className="inline-flex h-12 items-center justify-center rounded-full border border-[#c9a227] px-5 text-sm font-semibold text-[#071a2f] transition hover:bg-[#c9a227]"
                       >
-                        Enquire
+                        Ask on WhatsApp
                       </a>
                     </div>
                     <button
