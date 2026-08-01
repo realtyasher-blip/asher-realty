@@ -81,6 +81,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   ];
   const developerLogo = developerLogos[project.developer];
   const developerProfile = getDeveloperBySlug(developerSlug(project.developer));
+  const isComingSoon = project.status === "Coming soon";
+  const statusLabel = isComingSoon ? "EOI / Coming soon" : project.status;
+  const primaryCtaLabel = isComingSoon
+    ? "Register Interest Safely"
+    : "Get Price & Floor Plans";
 
   return (
     <>
@@ -126,7 +131,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               )}
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] backdrop-blur">
-                  {project.status}
+                  {statusLabel}
                 </span>
                 <span className="rounded-full border border-[#c9a227]/40 bg-[#c9a227]/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#e4c462] backdrop-blur">
                   {project.developer}
@@ -155,7 +160,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   )}
                 >
                   <MessageCircle className="mr-2 size-5" />
-                  Get Price & Floor Plans
+                  {primaryCtaLabel}
                 </a>
                 <a
                   href="tel:+919019697170"
@@ -227,6 +232,18 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </div>
             ))}
           </div>
+
+          {project.launchNote && (
+            <div className="mt-5 flex items-start gap-4 rounded-[1.5rem] border border-amber-200 bg-amber-50 p-5 text-amber-950">
+              <ShieldCheck className="mt-0.5 size-6 shrink-0 text-amber-600" />
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-amber-700">
+                  EOI / pre-launch protection
+                </p>
+                <p className="mt-2 text-sm leading-7">{project.launchNote}</p>
+              </div>
+            </div>
+          )}
 
           <div className="mt-10 grid gap-4 lg:grid-cols-3">
             <article className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_12px_45px_rgba(7,26,47,0.06)]">
@@ -308,6 +325,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   </div>
                 ))}
               </div>
+              {project.mediaNote && (
+                <p className="mt-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-xs leading-6 text-slate-500">
+                  <strong className="text-[#071a2f]">Media note:</strong>{" "}
+                  {project.mediaNote}
+                </p>
+              )}
               {project.video && (
                 <div className="mt-10">
                   <div className="mb-5 flex items-center gap-3">
@@ -452,8 +475,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <ShieldCheck className="size-9 text-[#e4c462]" />
               <h2 className="mt-5 text-3xl font-medium">Buyer-ready brief</h2>
               <p className="mt-4 leading-7 text-white/60">
-                Get the current cost sheet, available units, floor plans and
-                guided site-visit assistance from one Asher Realty advisor.
+                {isComingSoon
+                  ? "Get the current EOI terms, RERA check, phase release and launch updates from one Asher Realty advisor."
+                  : "Get the current cost sheet, available units, floor plans and guided site-visit assistance from one Asher Realty advisor."}
               </p>
               <div className="mt-7 space-y-4">
                 {project.highlights.map((highlight) => (
@@ -471,7 +495,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 rel="noopener noreferrer"
                 className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-full bg-[#c9a227] px-6 font-semibold text-[#071a2f] transition hover:bg-[#e4c462]"
               >
-                Request Complete Details
+                {isComingSoon ? "Request Verified EOI Brief" : "Request Complete Details"}
               </a>
               <p className="mt-5 text-xs leading-5 text-white/35">
                 Verified {project.verifiedAt}. Pricing and inventory require

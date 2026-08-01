@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Prestige Evergreen official launch announcement</title>
+  <desc id="desc">Asher Realty editorial visual based on Prestige Estates' official exchange launch disclosure.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071a2f"/>
+      <stop offset="1" stop-color="#123d55"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c9a227"/>
+      <stop offset=".5" stop-color="#f3d77e"/>
+      <stop offset="1" stop-color="#a87d0b"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="55"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <circle cx="1330" cy="150" r="260" fill="#c9a227" opacity=".16" filter="url(#blur)"/>
+  <circle cx="180" cy="910" r="330" fill="#2a7d75" opacity=".18" filter="url(#blur)"/>
+  <g opacity=".18" fill="#b4d7cf">
+    <path d="M0 805C210 710 344 762 508 702c201-74 345-62 532 20 190 84 337 26 560-68v346H0z"/>
+  </g>
+  <g fill="none" stroke="url(#gold)" stroke-width="7" opacity=".72">
+    <path d="M124 790h1352"/>
+    <path d="M330 790V520h120v270M480 790V402h156v388M666 790V470h132v320M828 790V330h192v460M1050 790V450h154v340M1235 790V548h112v242"/>
+  </g>
+  <text x="132" y="160" fill="#e4c462" font-family="Arial, sans-serif" font-size="31" font-weight="700" letter-spacing="9">OFFICIAL LAUNCH DISCLOSURE</text>
+  <text x="128" y="323" fill="#fff" font-family="Georgia, serif" font-size="112">Prestige</text>
+  <text x="128" y="438" fill="url(#gold)" font-family="Georgia, serif" font-size="132">Evergreen</text>
+  <text x="136" y="518" fill="#fff" opacity=".76" font-family="Arial, sans-serif" font-size="34" letter-spacing="4">AT PRESTIGE RAINTREE PARK · WHITEFIELD–VARTHUR</text>
+  <g transform="translate(130 600)">
+    <rect width="620" height="98" rx="49" fill="#fff" opacity=".08" stroke="#fff" stroke-opacity=".2"/>
+    <text x="43" y="61" fill="#fff" font-family="Arial, sans-serif" font-size="29">24 acres · approx. 2,000 residences</text>
+  </g>
+  <text x="134" y="902" fill="#fff" opacity=".58" font-family="Arial, sans-serif" font-size="26">EDITORIAL VISUAL · PROJECT RENDERS PENDING PUBLIC VERIFICATION</text>
+</svg>

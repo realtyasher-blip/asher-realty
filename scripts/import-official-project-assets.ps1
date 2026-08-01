@@ -48,7 +48,54 @@ $assets = @(
   @{ Path = "public/projects/nikoo-homes-vi/gallery-2.jpg"; Url = "https://nikoohomes.com/wp-content/uploads/2024/01/NH6_BLOCK-3-1.jpg" },
 
   @{ Path = "public/projects/nikoo-homes-8/hero.jpg"; Url = "https://nikoohomes.com/wp-content/uploads/2026/05/home_garden.jpg" },
-  @{ Path = "public/projects/nikoo-homes-8/gallery-1.png"; Url = "https://nikoohomes.com/wp-content/uploads/2026/05/township.png" }
+  @{ Path = "public/projects/nikoo-homes-8/gallery-1.png"; Url = "https://nikoohomes.com/wp-content/uploads/2026/05/township.png" },
+
+  @{ Path = "public/projects/assetz-meru-meadow/hero.webp"; Url = "https://assetzproperty-222d9.kxcdn.com/meruandmeadow/images/banner-background.webp" },
+  @{ Path = "public/projects/assetz-meru-meadow/gallery-1.webp"; Url = "https://assetzproperty-222d9.kxcdn.com/meruandmeadow/images/project-overview.webp" },
+  @{ Path = "public/projects/assetz-meru-meadow/gallery-2.webp"; Url = "https://assetzproperty-222d9.kxcdn.com/meruandmeadow/images/gallery/g-1.webp" },
+
+  @{ Path = "public/projects/assetz-sora-saki/hero.jpg"; Url = "https://assetzproperty-222d9.kxcdn.com/soraandsaki/wp-content/uploads/2024/07/HD-KIADB-Entry-portal-scaled.jpg" },
+  @{ Path = "public/projects/assetz-sora-saki/gallery-1.jpg"; Url = "https://assetzproperty-222d9.kxcdn.com/soraandsaki/wp-content/uploads/2024/07/Living-Dining-scaled.jpg" },
+  @{ Path = "public/projects/assetz-sora-saki/gallery-2.jpg"; Url = "https://assetzproperty-222d9.kxcdn.com/soraandsaki/wp-content/uploads/2024/07/BALCONY-scaled.jpg" },
+
+  @{ Path = "public/projects/assetz-22-crest/hero.jpg"; Url = "https://www.assetzproperty.com/22andcrest/wp-content/uploads/2022/08/homepage-banner.jpg" },
+  @{ Path = "public/projects/assetz-22-crest/gallery-1.jpg"; Url = "https://www.assetzproperty.com/22andcrest/wp-content/uploads/2022/09/gallery-desktop-1.jpg" },
+  @{ Path = "public/projects/assetz-22-crest/gallery-2.jpg"; Url = "https://www.assetzproperty.com/22andcrest/wp-content/uploads/2022/07/int-1.jpg" },
+
+  @{ Path = "public/projects/sumadhura-panorama/hero.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Panorama_aerial_view_2_1_1_17116ff07e.png" },
+  @{ Path = "public/projects/sumadhura-panorama/gallery-1.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Copy_of_Pool_View_night_1_a8778ae595.png" },
+  @{ Path = "public/projects/sumadhura-panorama/gallery-2.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Entry_Gate_new_angle_1_40913fdb8b.png" },
+
+  @{ Path = "public/projects/sumadhura-capitol-residences/hero.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Property_View_1_c5f925429a.png" },
+  @{ Path = "public/projects/sumadhura-capitol-residences/gallery-1.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Pool_View_1_c0915df3de.png" },
+  @{ Path = "public/projects/sumadhura-capitol-residences/gallery-2.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Driveway_View_1_06c927395b.png" },
+
+  @{ Path = "public/projects/sumadhura-edition/hero.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Single_Building_6_K_1_7fcdae1590.png" },
+  @{ Path = "public/projects/sumadhura-edition/gallery-1.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Road_View_hires_1_dea80fb72a.png" },
+  @{ Path = "public/projects/sumadhura-edition/gallery-2.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/pool_semi_aerial_6k_1_45809fc56c.png" },
+
+  @{ Path = "public/projects/sumadhura-elysium/hero.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Clubhousentrance_1_1_2_fb7514b6ad.png" },
+  @{ Path = "public/projects/sumadhura-elysium/gallery-1.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/Rectangle_34624258_92d293f550.png" },
+  @{ Path = "public/projects/sumadhura-elysium/gallery-2.png"; Url = "https://corporatecms.sumadhuragroup.com/uploads/image_36_d618998369.png" },
+
+  @{ Path = "public/projects/lodha-haven/hero.jpg"; Url = "https://www.lodhagroup.com/sites/default/files/projects/banner/1987634783_Hosa-Road_website_1930%20x%20800_14.jpg" },
+  @{ Path = "public/projects/lodha-haven/gallery-1.jpg"; Url = "https://www.lodhagroup.com/sites/default/files/2025-06/haven-USP1%20_527x468.jpg" },
+  @{ Path = "public/projects/lodha-haven/gallery-2.jpg"; Url = "https://www.lodhagroup.com/sites/default/files/2025-06/haven-USP2_527x468.jpg" },
+
+  @{ Path = "public/projects/godrej-athena/hero.webp"; Url = "https://gplwebsitecdnblob.blob.core.windows.net/godrej-cdn/Images/godrej-athena-web-banner-1920x900-01-cmmn98fei003a7qph1d8tgp4x.webp" },
+  @{ Path = "public/projects/godrej-athena/gallery-1.webp"; Url = "https://gplwebsitecdnblob.blob.core.windows.net/godrej-cdn/Images/godrej-athena-web-banner-1740x810-01-cmmna24hd003s7qph9nt012gu.webp" },
+
+  @{ Path = "public/projects/godrej-vanantara/hero.jpg"; Url = "https://www.godrejproperties.com/landing-page/bangalore/residential/godrej-vanantara/images/vanantara_banner_desk_16.jpg" },
+  @{ Path = "public/projects/godrej-vanantara/gallery-1.webp"; Url = "https://www.godrejproperties.com/landing-page/bangalore/residential/godrej-vanantara/images/Godrej_Vanantara_overview_desktop-compressed.webp" },
+  @{ Path = "public/projects/godrej-vanantara/gallery-2.webp"; Url = "https://www.godrejproperties.com/landing-page/bangalore/residential/godrej-vanantara/images/rd_desk.webp" },
+
+  @{ Path = "public/projects/purva-blubelle/hero.jpg"; Url = "https://www.puravankara.com/uploads/Purva_Blubelle_a2b7f2cf73.jpg" },
+  @{ Path = "public/projects/purva-blubelle/gallery-1.webp"; Url = "https://www.puravankara.com/uploads/1_ef3f6f6e15.webp" },
+  @{ Path = "public/projects/purva-blubelle/gallery-2.png"; Url = "https://www.puravankara.com/uploads/co_working_c9a6b3e915.png" },
+
+  @{ Path = "public/projects/purva-atmosphere/hero.jpg"; Url = "https://www.puravankara.com/uploads/Purva_Atmosphere_59c2f79612.jpg" },
+  @{ Path = "public/projects/purva-atmosphere/gallery-1.png"; Url = "https://www.puravankara.com/uploads/Atmosphere_2_3ac8ae75a5.png" },
+  @{ Path = "public/projects/purva-atmosphere/gallery-2.png"; Url = "https://www.puravankara.com/uploads/2_16e3dac6e1.png" }
 )
 
 foreach ($asset in $assets) {

@@ -16,6 +16,7 @@ import {
   List,
   MapPin,
   Search,
+  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   X,
@@ -159,6 +160,8 @@ export default function ProjectMarketplace() {
           project.unitSizes || "",
           project.status,
           project.description,
+          project.launchNote || "",
+          project.mediaNote || "",
           ...project.highlights,
         ]
           .join(" ")
@@ -301,6 +304,13 @@ export default function ProjectMarketplace() {
       },
     },
     {
+      label: "Pre-launch / EOI",
+      action: () => {
+        resetFilters();
+        setStage("Coming soon");
+      },
+    },
+    {
       label: "East Bengaluru",
       action: () => {
         resetFilters();
@@ -345,8 +355,8 @@ export default function ProjectMarketplace() {
               label: "New-launch options",
             },
             {
-              value: projects.filter((project) => project.possession).length,
-              label: "Possession dates tracked",
+              value: projects.filter((project) => project.status === "Coming soon").length,
+              label: "EOI / coming-soon watchlist",
             },
           ].map((stat) => (
             <div
@@ -374,6 +384,16 @@ export default function ProjectMarketplace() {
               {item.label}
             </button>
           ))}
+        </div>
+
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-amber-950">
+          <ShieldCheck className="mt-0.5 size-5 shrink-0 text-amber-600" />
+          <p className="text-xs leading-6">
+            <strong>Pre-launch safety:</strong> EOI and coming-soon listings are
+            a buyer watchlist, not a booking recommendation. We reconfirm RERA,
+            phase inventory, EOI refund terms and the official cost sheet before
+            a buyer transfers any amount.
+          </p>
         </div>
 
         <div className="sticky top-20 z-30 rounded-[1.75rem] border border-slate-200 bg-white/95 p-4 shadow-[0_20px_60px_rgba(7,26,47,.09)] backdrop-blur-xl sm:p-5">
@@ -647,7 +667,9 @@ export default function ProjectMarketplace() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#071a2f]/75 via-transparent to-transparent" />
                     <span className="absolute left-4 top-4 rounded-full bg-white/92 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.12em] text-[#071a2f] backdrop-blur">
-                      {project.status}
+                      {project.status === "Coming soon"
+                        ? "EOI / Coming soon"
+                        : project.status}
                     </span>
                     <button
                       type="button"
