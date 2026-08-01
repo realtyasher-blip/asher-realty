@@ -154,6 +154,11 @@ export default function RootLayout({
                   decision_path: href,
                   cta_label: label
                 });
+              } else if (href.startsWith('/my-search')) {
+                gtag('event', 'buyer_workspace_opened', {
+                  cta_label: label,
+                  page_path: window.location.pathname
+                });
               }
             });
           `}

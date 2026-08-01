@@ -22,7 +22,7 @@ const items = [
   { label: "Projects", href: "/projects", icon: Building2 },
   { label: "AI Match", href: "/decision-lab", icon: Sparkles, primary: true },
   { label: "Compare", href: "/compare", icon: GitCompareArrows },
-  { label: "Saved", href: "/my-search", icon: Heart },
+  { label: "My Search", href: "/my-search", icon: Heart },
 ];
 
 const emptyWorkspace: BuyerWorkspaceSnapshot = {
@@ -62,7 +62,7 @@ export default function MobileAppNav() {
           const badge =
             label === "Compare"
               ? workspace.comparison.length
-              : label === "Saved"
+              : label === "My Search"
                 ? workspace.favourites.length
                 : 0;
           const active =

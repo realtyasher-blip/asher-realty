@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   Building2,
+  Heart,
   MessageCircle,
   Sparkles,
 } from "lucide-react";
@@ -31,6 +32,16 @@ const paths = [
     action: "Build my shortlist",
     href: "/decision-lab",
     tone: "gold",
+  },
+  {
+    icon: Heart,
+    eyebrow: "Your persistent buyer workspace",
+    title: "Open My Search",
+    description:
+      "Keep your buyer brief, personal fit scores, saved homes, visit route and verification checklist together on this device.",
+    action: "Open buyer workspace",
+    href: "/my-search",
+    tone: "light",
   },
   {
     icon: MessageCircle,
@@ -64,7 +75,7 @@ export default function BuyerQuickStart() {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
+        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {paths.map(({ icon: Icon, eyebrow, title, description, action, href, external, tone }) => {
             const className =
               tone === "dark"

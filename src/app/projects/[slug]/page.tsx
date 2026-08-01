@@ -26,6 +26,7 @@ import BrandLogo from "@/components/brand/BrandLogo";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import { buttonVariants } from "@/components/ui/button";
 import ProjectActions from "@/components/projects/ProjectActions";
+import ProjectFitCard from "@/components/projects/ProjectFitCard";
 import {
   developerLogos,
   getProjectBySlug,
@@ -244,6 +245,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </div>
             </div>
           )}
+
+          <ProjectFitCard project={project} />
 
           <div className="mt-10 grid gap-4 lg:grid-cols-3">
             <article className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_12px_45px_rgba(7,26,47,0.06)]">

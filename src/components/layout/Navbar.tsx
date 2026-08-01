@@ -22,7 +22,7 @@ const navigation = [
   { label: "AI Match", href: "/decision-lab" },
   { label: "Areas", href: "/locations" },
   { label: "Market Data", href: "/intelligence" },
-  { label: "Compare", href: "/compare" },
+  { label: "My Search", href: "/my-search" },
 ];
 
 export default function Navbar() {

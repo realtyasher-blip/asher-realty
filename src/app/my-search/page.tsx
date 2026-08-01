@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import BuyerDashboard from "@/components/buyer/BuyerDashboard";
+import BuyerDecisionToolkit from "@/components/buyer/BuyerDecisionToolkit";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
@@ -31,6 +32,7 @@ export default function MySearchPage() {
           </div>
           <div className="mt-12">
             <BuyerDashboard />
+            <BuyerDecisionToolkit />
           </div>
         </div>
       </main>

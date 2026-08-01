@@ -19,11 +19,20 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
+  Target,
   X,
 } from "lucide-react";
 
 import { developerLogos, projectSlug, projects } from "@/data/projects";
 import { developerSlug } from "@/data/developers";
+import {
+  BUYER_PROFILE_EVENT,
+  buyerBriefSummary,
+  defaultBuyerPreferences,
+  readBuyerPreferences,
+  scoreProject,
+  type BuyerPreferences,
+} from "@/lib/buyerProfile";
 import {
   BUYER_WORKSPACE_EVENT,
   COMPARISON_KEY,
@@ -52,6 +61,7 @@ function priceBand(price: string) {
 
 const priceBands = ["Any price", "Up to ₹2 Cr", "₹2–3 Cr", "₹3 Cr+", "Price on request"];
 const sortOptions = [
+  { value: "best-fit", label: "Best fit for me" },
   { value: "recommended", label: "Recommended" },
   { value: "price-low", label: "Price: low to high" },
   { value: "possession", label: "Possession sooner" },
@@ -87,6 +97,9 @@ export default function ProjectMarketplace() {
   const [recent, setRecent] = useState<string[]>([]);
   const [comparison, setComparison] = useState<string[]>([]);
   const [comparisonNotice, setComparisonNotice] = useState("");
+  const [buyerPreferences, setBuyerPreferences] =
+    useState<BuyerPreferences>(defaultBuyerPreferences);
+  const [profileReady, setProfileReady] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -128,6 +141,10 @@ export default function ProjectMarketplace() {
       setFavourites(workspace.favourites);
       setRecent(workspace.recent);
       setComparison(workspace.comparison);
+      const profile = readBuyerPreferences();
+      setBuyerPreferences(profile);
+      setProfileReady(true);
+      if (profile.customized) setSort("best-fit");
     });
 
     const syncWorkspace = () => {
@@ -136,11 +153,19 @@ export default function ProjectMarketplace() {
       setRecent(workspace.recent);
       setComparison(workspace.comparison);
     };
+    const syncProfile = () => {
+      setBuyerPreferences(readBuyerPreferences());
+      setProfileReady(true);
+    };
     window.addEventListener(BUYER_WORKSPACE_EVENT, syncWorkspace);
+    window.addEventListener(BUYER_PROFILE_EVENT, syncProfile);
+    window.addEventListener("storage", syncProfile);
 
     return () => {
       window.clearTimeout(timer);
       window.removeEventListener(BUYER_WORKSPACE_EVENT, syncWorkspace);
+      window.removeEventListener(BUYER_PROFILE_EVENT, syncProfile);
+      window.removeEventListener("storage", syncProfile);
     };
   }, []);
 
@@ -188,6 +213,12 @@ export default function ProjectMarketplace() {
     });
 
     return matches.sort((a, b) => {
+      if (sort === "best-fit") {
+        return (
+          scoreProject(b, buyerPreferences).score -
+          scoreProject(a, buyerPreferences).score
+        );
+      }
       if (sort === "price-low") return priceValue(a.price) - priceValue(b.price);
       if (sort === "possession") {
         return dateValue(a.possession) - dateValue(b.possession);
@@ -206,6 +237,7 @@ export default function ProjectMarketplace() {
     });
   }, [
     builder,
+    buyerPreferences,
     configuration,
     corridor,
     favourites,
@@ -218,6 +250,14 @@ export default function ProjectMarketplace() {
     stage,
     sort,
   ]);
+
+  const topPersonalMatch = useMemo(
+    () =>
+      projects
+        .map((project) => scoreProject(project, buyerPreferences))
+        .sort((left, right) => right.score - left.score)[0],
+    [buyerPreferences]
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => setVisibleCount(9), 0);
@@ -368,6 +408,40 @@ export default function ProjectMarketplace() {
             </div>
           ))}
         </div>
+
+        {profileReady && (
+          <div className="mb-6 overflow-hidden rounded-[1.75rem] bg-[#071a2f] text-white shadow-[0_20px_65px_rgba(7,26,47,.14)]">
+            <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-[auto_1fr_auto] lg:items-center">
+              <span className="flex size-12 items-center justify-center rounded-2xl bg-[#c9a227]/15 text-[#e4c462]">
+                <Target className="size-5" />
+              </span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#e4c462]">
+                  {buyerPreferences.customized
+                    ? "Your buyer brief is active"
+                    : "Personalise this catalogue"}
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold">
+                  {buyerPreferences.customized
+                    ? `${topPersonalMatch.project.name} is currently your strongest catalogue fit.`
+                    : "Make 75 projects behave like your personal shortlist."}
+                </h2>
+                <p className="mt-2 text-xs leading-6 text-white/50">
+                  {buyerPreferences.customized
+                    ? `${buyerBriefSummary(buyerPreferences)} · ${topPersonalMatch.score}% top fit`
+                    : "Add your work hub, budget, move-in plan and top priority. Fit scores will appear across every project."}
+                </p>
+              </div>
+              <Link
+                href="/my-search#buyer-profile"
+                className="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-[#c9a227] px-6 text-xs font-bold text-[#071a2f] transition hover:bg-[#e4c462]"
+              >
+                {buyerPreferences.customized ? "Edit my brief" : "Create my buyer brief"}
+                <ArrowUpRight className="ml-2 size-4" />
+              </Link>
+            </div>
+          </div>
+        )}
 
         <div className="mb-5 flex gap-2 overflow-x-auto pb-1">
           <span className="inline-flex shrink-0 items-center gap-2 py-2 pr-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
@@ -644,6 +718,7 @@ export default function ProjectMarketplace() {
               const slug = projectSlug(project.name);
               const isSaved = favourites.includes(slug);
               const isCompared = comparison.includes(slug);
+              const personalFit = scoreProject(project, buyerPreferences);
               return (
                 <article
                   key={project.name}
@@ -671,6 +746,11 @@ export default function ProjectMarketplace() {
                         ? "EOI / Coming soon"
                         : project.status}
                     </span>
+                    {buyerPreferences.customized && (
+                      <span className="absolute left-4 top-14 rounded-full bg-emerald-50 px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.1em] text-emerald-700 shadow-md">
+                        {personalFit.score}% personal fit
+                      </span>
+                    )}
                     <button
                       type="button"
                       onClick={() => toggleFavourite(slug)}
@@ -714,6 +794,21 @@ export default function ProjectMarketplace() {
                         Checked {project.verifiedAt}
                       </span>
                     </div>
+                    {buyerPreferences.customized && (
+                      <div className="mb-5 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-800">
+                            <Target className="size-3.5" /> Why it fits you
+                          </p>
+                          <span className="text-xs font-extrabold text-emerald-700">
+                            {personalFit.score}/100
+                          </span>
+                        </div>
+                        <p className="mt-2 text-xs leading-5 text-emerald-900/70">
+                          {personalFit.reasons.join(" · ")}
+                        </p>
+                      </div>
+                    )}
                     <p className="line-clamp-3 text-sm leading-7 text-slate-600">
                       {project.description}
                     </p>

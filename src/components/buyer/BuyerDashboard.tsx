@@ -20,27 +20,20 @@ import {
 
 import { projectSlug, projects, type Project } from "@/data/projects";
 import {
+  buyerPreferenceOptions,
+  defaultBuyerPreferences,
+  readBuyerPreferences,
+  scoreProject,
+  writeBuyerPreferences,
+  type BuyerPreferenceField,
+  type BuyerPreferences,
+} from "@/lib/buyerProfile";
+import {
   COMPARISON_KEY,
   FAVOURITES_KEY,
   RECENT_KEY,
   writeBuyerWorkspaceList,
 } from "@/lib/buyerWorkspace";
-
-const PREFERENCES_KEY = "asher-buyer-preferences";
-
-type Preferences = {
-  corridor: string;
-  configuration: string;
-  budget: string;
-  purpose: string;
-};
-
-const defaultPreferences: Preferences = {
-  corridor: "Flexible",
-  configuration: "3",
-  budget: "Flexible",
-  purpose: "Self-use",
-};
 
 function parseStoredArray(key: string) {
   try {
@@ -49,63 +42,6 @@ function parseStoredArray(key: string) {
   } catch {
     return [];
   }
-}
-
-function projectPriceCrores(price: string) {
-  const match = price.match(/₹(\d+(?:\.\d+)?)/);
-  return match ? Number(match[1]) : null;
-}
-
-function budgetFits(project: Project, budget: string) {
-  const value = projectPriceCrores(project.price);
-  if (budget === "Flexible" || value === null) return true;
-  if (budget === "Up to ₹2 Cr") return value <= 2;
-  if (budget === "₹2–3 Cr") return value >= 2 && value <= 3;
-  return value >= 3;
-}
-
-function scoreProject(project: Project, preferences: Preferences) {
-  let score = project.featured ? 58 : 50;
-  const reasons: string[] = [];
-
-  if (
-    preferences.corridor === "Flexible" ||
-    project.corridor === preferences.corridor
-  ) {
-    score += 18;
-    reasons.push(
-      preferences.corridor === "Flexible"
-        ? "Strong Bengaluru option"
-        : `${preferences.corridor} match`
-    );
-  }
-  if (project.configuration.includes(preferences.configuration)) {
-    score += 12;
-    reasons.push(`${preferences.configuration} BHK available`);
-  }
-  if (budgetFits(project, preferences.budget)) {
-    score += 10;
-    reasons.push(
-      projectPriceCrores(project.price) === null
-        ? "Price needs live confirmation"
-        : "Matches selected budget"
-    );
-  }
-  if (
-    preferences.purpose === "Investment" &&
-    ["North Bengaluru", "East Bengaluru"].includes(project.corridor)
-  ) {
-    score += 8;
-    reasons.push("Growth-corridor location");
-  }
-  if (preferences.purpose === "Self-use" && project.highlights.length >= 3) {
-    score += 6;
-    reasons.push("Family-lifestyle fit");
-  }
-  if (project.rera) score += 3;
-  if (project.possession) score += 3;
-
-  return { project, score: Math.min(score, 97), reasons: reasons.slice(0, 3) };
 }
 
 function MiniProjectCard({
@@ -162,7 +98,7 @@ export default function BuyerDashboard() {
   const [recentSlugs, setRecentSlugs] = useState<string[]>([]);
   const [lastComparison, setLastComparison] = useState<string[]>([]);
   const [preferences, setPreferences] =
-    useState<Preferences>(defaultPreferences);
+    useState<BuyerPreferences>(defaultBuyerPreferences);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -170,16 +106,7 @@ export default function BuyerDashboard() {
       setSavedSlugs(parseStoredArray(FAVOURITES_KEY));
       setRecentSlugs(parseStoredArray(RECENT_KEY));
       setLastComparison(parseStoredArray(COMPARISON_KEY));
-      try {
-        const stored = JSON.parse(
-          localStorage.getItem(PREFERENCES_KEY) || "null"
-        );
-        if (stored && typeof stored === "object") {
-          setPreferences({ ...defaultPreferences, ...stored });
-        }
-      } catch {
-        setPreferences(defaultPreferences);
-      }
+      setPreferences(readBuyerPreferences());
       setReady(true);
     }, 0);
     return () => window.clearTimeout(timer);
@@ -210,13 +137,13 @@ export default function BuyerDashboard() {
     [preferences]
   );
 
-  function updatePreference<K extends keyof Preferences>(
+  function updatePreference<K extends BuyerPreferenceField>(
     key: K,
-    value: Preferences[K]
+    value: BuyerPreferences[K]
   ) {
-    const next = { ...preferences, [key]: value };
+    const next = { ...preferences, [key]: value, customized: true };
     setPreferences(next);
-    localStorage.setItem(PREFERENCES_KEY, JSON.stringify(next));
+    writeBuyerPreferences(next);
   }
 
   function removeSaved(slug: string) {
@@ -226,8 +153,8 @@ export default function BuyerDashboard() {
   }
 
   function resetSearch() {
-    setPreferences(defaultPreferences);
-    localStorage.setItem(PREFERENCES_KEY, JSON.stringify(defaultPreferences));
+    setPreferences(defaultBuyerPreferences);
+    writeBuyerPreferences(defaultBuyerPreferences);
   }
 
   const compareSlugs = savedSlugs.slice(0, 2);
@@ -289,7 +216,7 @@ export default function BuyerDashboard() {
         ))}
       </section>
 
-      <section className="overflow-hidden rounded-[2rem] bg-[#071a2f] text-white shadow-[0_25px_90px_rgba(7,26,47,.16)]">
+      <section id="buyer-profile" className="scroll-mt-28 overflow-hidden rounded-[2rem] bg-[#071a2f] text-white shadow-[0_25px_90px_rgba(7,26,47,.16)]">
         <div className="grid lg:grid-cols-[.72fr_1.28fr]">
           <div className="p-7 sm:p-10">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#c9a227]/30 bg-[#c9a227]/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[#e4c462]">
@@ -300,8 +227,9 @@ export default function BuyerDashboard() {
               Make every shortlist more relevant.
             </h2>
             <p className="mt-5 text-sm leading-7 text-white/55">
-              Your preferences stay on this device and shape the recommendations
-              below. No account or personal financial details are required.
+              Your commute anchor, move-in plan and buying priorities now shape
+              fit scores across the entire platform. Your brief stays on this
+              device; no account or financial documents are required.
             </p>
             <button
               type="button"
@@ -313,34 +241,7 @@ export default function BuyerDashboard() {
             </button>
           </div>
           <div className="grid gap-4 border-t border-white/10 bg-white/[0.05] p-6 sm:grid-cols-2 sm:p-8 lg:border-l lg:border-t-0">
-            {[
-              {
-                label: "Preferred corridor",
-                key: "corridor" as const,
-                options: [
-                  "Flexible",
-                  "East Bengaluru",
-                  "North Bengaluru",
-                  "South Bengaluru",
-                  "Central Bengaluru",
-                ],
-              },
-              {
-                label: "Home size",
-                key: "configuration" as const,
-                options: ["1", "2", "3", "4"],
-              },
-              {
-                label: "Budget",
-                key: "budget" as const,
-                options: ["Flexible", "Up to ₹2 Cr", "₹2–3 Cr", "₹3 Cr+"],
-              },
-              {
-                label: "Buying for",
-                key: "purpose" as const,
-                options: ["Self-use", "Investment"],
-              },
-            ].map(({ label, key, options }) => (
+            {buyerPreferenceOptions.map(({ label, key, options }) => (
               <label key={key}>
                 <span className="text-xs font-semibold text-white/50">{label}</span>
                 <select
