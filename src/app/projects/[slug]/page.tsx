@@ -16,7 +16,6 @@ import {
   MapPin,
   MapPinned,
   MessageCircle,
-  Phone,
   Route,
   ShieldCheck,
   Sparkles,
@@ -84,9 +83,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const developerProfile = getDeveloperBySlug(developerSlug(project.developer));
   const isComingSoon = project.status === "Coming soon";
   const statusLabel = isComingSoon ? "EOI / Coming soon" : project.status;
-  const primaryCtaLabel = isComingSoon
-    ? "Register Interest Safely"
-    : "Get Price & Floor Plans";
+  const visitUrl = `/book-site-visit?project=${projectSlug(project.name)}`;
 
   return (
     <>
@@ -151,27 +148,27 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 {project.description}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href={visitUrl}
                   className={cn(
                     buttonVariants({ size: "lg" }),
                     "h-14 rounded-full bg-[#c9a227] px-8 text-[#071a2f] hover:bg-[#e4c462]"
                   )}
                 >
-                  <MessageCircle className="mr-2 size-5" />
-                  {primaryCtaLabel}
-                </a>
+                  <CalendarClock className="mr-2 size-5" />
+                  Book a guided visit
+                </Link>
                 <a
-                  href="tel:+919019697170"
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={cn(
                     buttonVariants({ size: "lg", variant: "outline" }),
                     "h-14 rounded-full border-white/30 bg-white/5 px-8 text-white hover:bg-white hover:text-[#071a2f]"
                   )}
                 >
-                  <Phone className="mr-2 size-5" />
-                  Call 9019697170
+                  <MessageCircle className="mr-2 size-5" />
+                  Ask price & floor plans
                 </a>
               </div>
               <ProjectActions slug={projectSlug(project.name)} name={project.name} />
@@ -599,6 +596,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </div>
         </section>
       </main>
+      <div className="fixed inset-x-3 bottom-[5.4rem] z-[64] rounded-2xl border border-white/10 bg-[#071a2f]/96 p-2 shadow-[0_18px_55px_rgba(0,0,0,.3)] backdrop-blur-xl lg:hidden">
+        <Link
+          href={visitUrl}
+          className="flex h-12 items-center justify-center rounded-xl bg-[#c9a227] px-5 text-sm font-bold text-[#071a2f]"
+        >
+          <CalendarClock className="mr-2 size-4" />
+          Book a guided visit
+        </Link>
+      </div>
       <FloatingWhatsApp />
     </>
   );

@@ -137,7 +137,7 @@ export default function PropertyCopilot() {
     [submittedQuery]
   );
 
-  if (pathname.startsWith("/crm")) return null;
+  if (!(pathname === "/projects" || pathname === "/my-search")) return null;
 
   function runSearch(value: string) {
     const next = value.trim();
@@ -159,14 +159,14 @@ export default function PropertyCopilot() {
         type="button"
         onClick={() => setOpen(true)}
         className="fixed bottom-[5.65rem] right-3 z-[65] inline-flex h-11 items-center gap-1.5 rounded-full border border-[#c9a227]/40 bg-[#071a2f] px-3 text-[11px] font-bold text-white shadow-[0_16px_45px_rgba(7,26,47,.3)] transition hover:-translate-y-0.5 hover:bg-[#0d2948] sm:right-4 sm:h-12 sm:gap-2 sm:px-4 sm:text-xs lg:bottom-6 lg:right-6 lg:h-14 lg:px-5 lg:text-sm"
-        aria-label="Open Asher AI property copilot"
+        aria-label="Ask Asher for property help"
       >
         <span className="relative flex size-7 items-center justify-center rounded-full bg-[#c9a227] text-[#071a2f]">
           <Bot className="size-4" />
           <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-emerald-400 ring-2 ring-[#071a2f]" />
         </span>
-        <span className="sm:hidden">AI</span>
-        <span className="hidden sm:inline">Ask Asher AI</span>
+        <span className="sm:hidden">Ask</span>
+        <span className="hidden sm:inline">Ask Asher</span>
       </button>
 
       {open && (
@@ -186,13 +186,13 @@ export default function PropertyCopilot() {
                   </span>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#e4c462]">
-                      Catalogue intelligence
+                      Property search assistant
                     </p>
                     <h2 id="asher-copilot-title" className="mt-1 text-3xl font-medium">
-                      Ask Asher AI
+                      Ask Asher
                     </h2>
                     <p className="mt-2 text-xs leading-5 text-white/55">
-                      Describe your home in plain English. Get a ranked, explainable shortlist.
+                      Describe the home you want in plain English. We&apos;ll suggest useful starting points.
                     </p>
                   </div>
                 </div>

@@ -1,10 +1,11 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { CalendarCheck, CheckCircle2, MessageCircle } from "lucide-react";
 
-import { projects } from "@/data/projects";
+import { projectSlug, projects } from "@/data/projects";
 import { trackEvent } from "@/lib/analytics";
+import { readBuyerPreferences } from "@/lib/buyerProfile";
 
 type VisitForm = {
   name: string;
@@ -38,10 +39,45 @@ const initial: VisitForm = {
   ai_call_consent: false,
 };
 
+const visitBudgetMap: Record<string, string> = {
+  "Up to ₹2 Cr": "₹1–2 crore",
+  "₹2–3 Cr": "₹2–3 crore",
+  "₹3 Cr+": "₹3 crore+",
+};
+
 export default function SiteVisitForm() {
   const [form, setForm] = useState(initial);
   const [state, setState] = useState<"idle" | "saving" | "saved" | "fallback">("idle");
   const minDate = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const requestedProject = params.get("project");
+      const project = projects.find(
+        (item) => projectSlug(item.name) === requestedProject
+      );
+      const preferences = readBuyerPreferences();
+
+      setForm((current) => ({
+        ...current,
+        project: project?.name || current.project,
+        location:
+          preferences.customized && preferences.corridor !== "Flexible"
+            ? preferences.corridor
+            : current.location,
+        configuration: preferences.customized
+          ? `${preferences.configuration} BHK`
+          : current.configuration,
+        budget:
+          preferences.customized && preferences.budget !== "Flexible"
+            ? visitBudgetMap[preferences.budget] || current.budget
+            : current.budget,
+      }));
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   function update(name: keyof VisitForm, value: string) {
     setForm((current) => ({ ...current, [name]: value }));

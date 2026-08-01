@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s | Asher Realty",
   },
   description:
-    "Search, compare and understand premium Bengaluru properties with AI-assisted matching, buyer intelligence and personalised guidance from Asher Realty.",
+    "Find, save and compare premium Bengaluru properties with clear project information and personalised guidance from Asher Realty.",
   keywords: [
     "Asher Realty",
     "Bengaluru real estate",
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     "AI property search Bangalore",
   ],
   openGraph: {
-    title: "Asher Realty | Bengaluru Buyer Intelligence",
-    description: "Property search, upgraded to intelligence.",
+    title: "Asher Realty | Find the Right Bengaluru Home",
+    description: "Search less. Shortlist better. Visit with confidence.",
     url: "https://asherrealty.in",
     siteName: "Asher Realty",
     locale: "en_IN",
@@ -61,8 +61,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Asher Realty | Bengaluru Buyer Intelligence",
-    description: "Property search, upgraded to intelligence.",
+    title: "Asher Realty | Find the Right Bengaluru Home",
+    description: "Search less. Shortlist better. Visit with confidence.",
     images: ["/og-v2.png"],
   },
   icons: {
