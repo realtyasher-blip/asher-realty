@@ -18,10 +18,10 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { label: "Projects", href: "/projects" },
+  { label: "Builders", href: "/builders" },
   { label: "AI Match", href: "/decision-lab" },
   { label: "Areas", href: "/locations" },
   { label: "Market Data", href: "/intelligence" },
-  { label: "Buyer Guides", href: "/guides" },
   { label: "Compare", href: "/compare" },
 ];
 

@@ -10,6 +10,7 @@ import BrandLogo from "@/components/brand/BrandLogo";
 const quickLinks = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
+  { label: "Builders", href: "/builders" },
   { label: "Buyer Decision Lab", href: "/decision-lab" },
   { label: "Locations", href: "/locations" },
   { label: "Intelligence", href: "/intelligence" },

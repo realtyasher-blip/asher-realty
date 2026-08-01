@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 import { developerLogos, projectSlug, projects } from "@/data/projects";
+import { developerSlug } from "@/data/developers";
 import {
   BUYER_WORKSPACE_EVENT,
   COMPARISON_KEY,
@@ -668,16 +669,25 @@ export default function ProjectMarketplace() {
 
                   <div className="flex flex-col p-6">
                     <div className="mb-5 flex items-center justify-between gap-4">
-                      <div className="relative h-8 w-28">
-                        <Image
-                          src={developerLogos[project.developer]}
-                          alt={`${project.developer} logo`}
-                          fill
-                          className="object-contain object-left"
-                          sizes="112px"
-                          unoptimized={developerLogos[project.developer]?.endsWith(".svg")}
-                        />
-                      </div>
+                      <Link
+                        href={`/builders/${developerSlug(project.developer)}`}
+                        aria-label={`View ${project.developer} builder profile`}
+                        className="group/builder flex items-center gap-3"
+                      >
+                        <span className="relative block h-8 w-28">
+                          <Image
+                            src={developerLogos[project.developer]}
+                            alt={`${project.developer} logo`}
+                            fill
+                            className="object-contain object-left"
+                            sizes="112px"
+                            unoptimized={developerLogos[project.developer]?.endsWith(".svg")}
+                          />
+                        </span>
+                        <span className="hidden text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 transition group-hover/builder:text-[#a47b10] sm:inline">
+                          Builder profile
+                        </span>
+                      </Link>
                       <span className="rounded-full bg-[#f5f6f8] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
                         Checked {project.verifiedAt}
                       </span>

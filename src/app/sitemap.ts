@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { projectSlug, projects } from "@/data/projects";
 import { locationHubs } from "@/data/locations";
 import { guides } from "@/data/guides";
+import { developerProfiles, developerSlug } from "@/data/developers";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://asherrealty.in";
@@ -24,6 +25,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly",
     priority: 0.78,
   }));
+  const builderPages: MetadataRoute.Sitemap = developerProfiles.map((profile) => ({
+    url: `${baseUrl}/builders/${developerSlug(profile.name)}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.78,
+  }));
 
   return [
     {
@@ -37,6 +44,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/builders`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.88,
     },
     {
       url: `${baseUrl}/locations`,
@@ -99,6 +112,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     ...projectPages,
+    ...builderPages,
     ...locationPages,
     ...guidePages,
   ];

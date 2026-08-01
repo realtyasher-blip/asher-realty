@@ -94,7 +94,7 @@ export default function Hero() {
               Bengaluru homes, made easier to choose
             </div>
 
-            <h1 className="hero-reveal hero-delay-1 mt-7 max-w-4xl text-6xl font-medium leading-[0.9] tracking-[-0.045em] sm:text-7xl lg:text-[6.2rem]">
+            <h1 className="hero-reveal hero-delay-1 mt-7 max-w-4xl text-[3.25rem] font-medium leading-[0.96] tracking-[-0.04em] sm:text-7xl lg:text-[5.5rem]">
               Find the right Bengaluru home.
               <span className="mt-2 block bg-gradient-to-r from-[#fff3c4] via-[#e4c462] to-[#b98e17] bg-clip-text text-transparent">
                 Without the guesswork.

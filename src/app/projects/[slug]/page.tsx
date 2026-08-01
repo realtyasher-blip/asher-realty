@@ -32,6 +32,7 @@ import {
   projectSlug,
   projects,
 } from "@/data/projects";
+import { developerSlug, getDeveloperBySlug } from "@/data/developers";
 import { cn } from "@/lib/utils";
 
 type ProjectPageProps = {
@@ -79,6 +80,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     "Ask for an all-inclusive cost sheet, tower-specific availability and RERA-linked possession schedule.",
   ];
   const developerLogo = developerLogos[project.developer];
+  const developerProfile = getDeveloperBySlug(developerSlug(project.developer));
 
   return (
     <>
@@ -133,6 +135,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   {project.corridor}
                 </span>
               </div>
+              <p className="mt-5 text-xs font-semibold text-white/45">
+                Bengaluru · {project.location} · {project.configuration}
+              </p>
               <h1 className="mt-6 text-5xl font-medium leading-none sm:text-7xl">
                 {project.name}
               </h1>
@@ -168,7 +173,38 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </div>
         </section>
 
-        <section className="container-shell relative z-10 -mt-8 pb-24">
+        <nav
+          aria-label="Project sections"
+          className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 shadow-[0_10px_35px_rgba(7,26,47,.07)] backdrop-blur-xl"
+        >
+          <div className="container-shell flex items-center gap-1 overflow-x-auto py-2">
+            {[
+              ["Overview", "#overview"],
+              ["Photos & video", "#gallery"],
+              ["Amenities", "#amenities"],
+              ["Location", "#location"],
+              ["About builder", "#builder"],
+            ].map(([label, href]) => (
+              <a
+                key={label}
+                href={href}
+                className="shrink-0 rounded-full px-4 py-2.5 text-xs font-bold text-slate-500 transition hover:bg-[#f3f5f7] hover:text-[#071a2f]"
+              >
+                {label}
+              </a>
+            ))}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-auto hidden h-10 shrink-0 items-center rounded-full bg-[#071a2f] px-5 text-xs font-bold text-white transition hover:bg-[#c9a227] hover:text-[#071a2f] sm:inline-flex"
+            >
+              Ask about this project
+            </a>
+          </div>
+        </nav>
+
+        <section id="overview" className="container-shell relative z-10 scroll-mt-20 pb-24 pt-8">
           <div className="grid gap-4 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_24px_80px_rgba(7,26,47,0.12)] sm:grid-cols-2 lg:grid-cols-4 lg:p-7">
             {[
               { icon: MapPin, label: "Location", value: project.location },
@@ -246,7 +282,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </div>
 
           <div className="mt-16 grid gap-12 lg:grid-cols-[1.25fr_0.75fr]">
-            <div>
+            <div id="gallery" className="scroll-mt-20">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#c9a227]">
                 Project gallery
               </p>
@@ -299,7 +335,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </div>
               )}
 
-              <section className="mt-16">
+              <section id="amenities" className="mt-16 scroll-mt-20">
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#c9a227]">
                   Lifestyle programme
                 </p>
@@ -323,7 +359,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </div>
               </section>
 
-              <section className="mt-16 overflow-hidden rounded-[2rem] border border-slate-200 bg-white">
+              <section id="location" className="mt-16 scroll-mt-20 overflow-hidden rounded-[2rem] border border-slate-200 bg-white">
                 <div className="border-b border-slate-100 bg-[#f7f8fa] p-7">
                   <Route className="size-7 text-[#c9a227]" />
                   <p className="mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#b08a16]">
@@ -345,6 +381,71 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   ))}
                 </div>
               </section>
+
+              {developerProfile && (
+                <section
+                  id="builder"
+                  className="mt-16 scroll-mt-20 overflow-hidden rounded-[2rem] border border-slate-200 bg-white"
+                >
+                  <div className="grid gap-0 lg:grid-cols-[0.72fr_1.28fr]">
+                    <div className="flex flex-col justify-between bg-[#071a2f] p-7 text-white sm:p-9">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#e4c462]">
+                          About the builder
+                        </p>
+                        {developerLogo && (
+                          <div className="relative mt-6 h-16 w-44 rounded-xl bg-white p-3">
+                            <Image
+                              src={developerLogo}
+                              alt={`${project.developer} official logo`}
+                              fill
+                              className="object-contain p-3"
+                              sizes="176px"
+                              unoptimized={developerLogo.endsWith(".svg")}
+                            />
+                          </div>
+                        )}
+                        <h2 className="mt-7 text-3xl font-medium">
+                          {developerProfile.name}
+                        </h2>
+                        <p className="mt-2 text-xs font-semibold text-white/40">
+                          {developerProfile.established} · {developerProfile.headquarters}
+                        </p>
+                      </div>
+                      <Link
+                        href={`/builders/${developerSlug(developerProfile.name)}`}
+                        className="mt-8 inline-flex items-center text-sm font-bold text-[#e4c462]"
+                      >
+                        Full builder profile
+                        <ArrowRight className="ml-2 size-4" />
+                      </Link>
+                    </div>
+                    <div className="p-7 sm:p-9">
+                      <p className="text-sm leading-8 text-slate-600">
+                        {developerProfile.summary}
+                      </p>
+                      <div className="mt-7 flex flex-wrap gap-2">
+                        {developerProfile.knownFor.map((item) => (
+                          <span
+                            key={item}
+                            className="rounded-full bg-[#fff7dc] px-3 py-2 text-[10px] font-bold text-[#765907]"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="mt-7 rounded-2xl bg-[#f3f5f7] p-5">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#a47b10]">
+                          Buyer perspective
+                        </p>
+                        <p className="mt-3 text-sm leading-7 text-[#071a2f]">
+                          {developerProfile.buyerLens}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
             </div>
 
             <aside className="h-fit rounded-[2rem] bg-[#071a2f] p-7 text-white lg:sticky lg:top-28">

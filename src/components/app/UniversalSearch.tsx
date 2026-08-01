@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowUpRight,
+  BadgeCheck,
   BookOpen,
   Building2,
   Calculator,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { guides } from "@/data/guides";
+import { developerProfiles, developerSlug } from "@/data/developers";
 import { locationHubs } from "@/data/locations";
 import { projectSlug, projects } from "@/data/projects";
 
@@ -25,7 +27,7 @@ type SearchItem = {
   title: string;
   description: string;
   href: string;
-  type: "Project" | "Location" | "Guide" | "Tool";
+  type: "Project" | "Builder" | "Location" | "Guide" | "Tool";
   image?: string;
   keywords: string;
 };
@@ -45,6 +47,21 @@ const searchItems: SearchItem[] = [
       project.configuration,
       project.propertyType || "",
       project.status,
+    ]
+      .join(" ")
+      .toLowerCase(),
+  })),
+  ...developerProfiles.map((profile) => ({
+    title: profile.name,
+    description: `${profile.established} · ${profile.headquarters} · Builder profile`,
+    href: `/builders/${developerSlug(profile.name)}`,
+    type: "Builder" as const,
+    keywords: [
+      profile.name,
+      profile.established,
+      profile.headquarters,
+      profile.summary,
+      ...profile.knownFor,
     ]
       .join(" ")
       .toLowerCase(),
@@ -106,6 +123,7 @@ const searchItems: SearchItem[] = [
 
 const typeIcons = {
   Project: Building2,
+  Builder: BadgeCheck,
   Location: MapPin,
   Guide: BookOpen,
   Tool: Calculator,
