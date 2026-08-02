@@ -21,6 +21,7 @@ const quickLinks = [
   { label: "Buyer Tools", href: "/tools" },
   { label: "Why Asher", href: "/#about" },
   { label: "Contact", href: "/#contact" },
+  { label: "Staff CRM Login", href: "/crm" },
 ];
 
 const locations = [
