@@ -168,10 +168,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   )}
                 >
                   <MessageCircle className="mr-2 size-5" />
-                  Ask price & floor plans
+                  Check today&apos;s all-in cost
                 </a>
               </div>
               <ProjectActions slug={projectSlug(project.name)} name={project.name} />
+              <Link
+                href="/buyer-advantage"
+                className="mt-4 inline-flex text-sm font-semibold text-[#f0d477] underline-offset-4 transition hover:text-white hover:underline"
+              >
+                See the Asher Buyer Advantage
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
             </div>
           </div>
         </section>

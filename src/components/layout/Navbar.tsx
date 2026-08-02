@@ -21,6 +21,7 @@ const navigation = [
   { label: "Buy", href: "/projects" },
   { label: "Areas", href: "/locations" },
   { label: "Market", href: "/intelligence" },
+  { label: "Buyer Benefits", href: "/buyer-advantage" },
   { label: "Saved Homes", href: "/my-search" },
 ];
 

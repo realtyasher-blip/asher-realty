@@ -99,6 +99,14 @@ const searchItems: SearchItem[] = [
     keywords: "decision lab buyer passport fit score confidence ranked shortlist ai",
   },
   {
+    title: "Asher Buyer Advantage",
+    description: "One buyer brief from shortlist through booking and handover",
+    href: "/buyer-advantage",
+    type: "Tool" as const,
+    keywords:
+      "buyer advantage buyer passport benefits support booking handover cost sheet",
+  },
+  {
     title: "Compare two Bengaluru projects",
     description: "Review location, pricing, possession and buyer fit side by side",
     href: "/compare",

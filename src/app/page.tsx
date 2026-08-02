@@ -1,4 +1,5 @@
 import AdvisorConcierge from "@/components/home/AdvisorConcierge";
+import BuyerAdvantagePreview from "@/components/home/BuyerAdvantagePreview";
 import CuriosityStudio from "@/components/home/CuriosityStudio";
 import Hero from "@/components/home/Hero";
 import MarketPulse from "@/components/home/MarketPulse";
@@ -23,6 +24,7 @@ export default function Home() {
         <CuriosityStudio />
         <ProjectSpotlight />
         <MarketPulse />
+        <BuyerAdvantagePreview />
         <AdvisorConcierge />
       </main>
 
