@@ -29,13 +29,7 @@ function dateLabel(value: string) {
 
 export default async function MarketPulse() {
   const feed = await getMarketNews();
-  const developers = new Set(projects.map((project) => project.developer)).size;
-  const earlyStage = projects.filter((project) =>
-    ["Coming soon", "New launch"].includes(project.status)
-  ).length;
-  const withRera = projects.filter((project) => project.rera).length;
-
-  const corridors = corridorOrder.map((name) => ({
+  const rawCorridors = corridorOrder.map((name) => ({
     name: name.replace(" Bengaluru", ""),
     count: projects.filter((project) => project.corridor === name).length,
     early: projects.filter(
@@ -43,6 +37,23 @@ export default async function MarketPulse() {
         project.corridor === name &&
         ["Coming soon", "New launch"].includes(project.status)
     ).length,
+  }));
+  const widestCorridor = Math.max(...rawCorridors.map((corridor) => corridor.count));
+  const corridors = rawCorridors.map((corridor) => ({
+    ...corridor,
+    width: Math.max(26, Math.round((corridor.count / widestCorridor) * 100)),
+    choice:
+      corridor.count >= widestCorridor * 0.75
+        ? "Broad choice"
+        : corridor.count >= widestCorridor * 0.45
+          ? "Focused choice"
+          : "Selective choice",
+    launchSignal:
+      corridor.early >= 5
+        ? "Active launch pipeline"
+        : corridor.early >= 2
+          ? "Some early-stage activity"
+          : "Mostly established options",
   }));
 
   return (
@@ -54,21 +65,21 @@ export default async function MarketPulse() {
               <Radar className="size-4" /> Bengaluru Market Pulse
             </span>
             <h2 className="mt-6 text-4xl font-medium leading-tight sm:text-6xl">
-              Useful numbers.
+              Useful signals.
               <span className="mt-1 block text-[#e4c462]">Honest context.</span>
             </h2>
             <p className="mt-5 max-w-xl text-sm leading-7 text-white/52 sm:text-base">
-              A daily market reading layered over a builder-sourced catalogue.
-              Counts show platform coverage—not live inventory or future returns.
+              A daily Bengaluru market reading with source dates, corridor
+              context and practical buyer interpretation—not vanity totals.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { value: projects.length, label: "Projects tracked" },
-              { value: developers, label: "Builders covered" },
-              { value: earlyStage, label: "New / upcoming" },
-              { value: withRera, label: "RERA fields listed" },
+              { value: "Daily", label: "Bengaluru news scan" },
+              { value: "Dated", label: "Project reviews" },
+              { value: "Phase-wise", label: "RERA context" },
+              { value: "Buyer-side", label: "Market interpretation" },
             ].map((item) => (
               <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur">
                 <p className="text-3xl font-extrabold text-white">{item.value}</p>
@@ -93,10 +104,10 @@ export default async function MarketPulse() {
                 <div key={corridor.name}>
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold">{corridor.name}</span>
-                    <span className="text-white/38">{corridor.count} tracked · {corridor.early} early-stage</span>
+                    <span className="text-white/38">{corridor.choice} · {corridor.launchSignal}</span>
                   </div>
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/8">
-                    <div className="h-full rounded-full bg-gradient-to-r from-[#9f7710] to-[#e4c462]" style={{ width: `${Math.max(16, (corridor.count / projects.length) * 100 * 2.7)}%` }} />
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#9f7710] to-[#e4c462]" style={{ width: `${corridor.width}%` }} />
                   </div>
                 </div>
               ))}

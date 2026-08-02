@@ -2,33 +2,29 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   BadgeCheck,
-  Building2,
+  Compass,
   Database,
-  Users,
+  RefreshCcw,
 } from "lucide-react";
-
-import { projects } from "@/data/projects";
 
 const items = [
   {
-    icon: Building2,
-    value: projects.length,
-    title: "Curated projects",
-    text: "New-launch, active and under-construction choices",
+    icon: Compass,
+    value: "Buyer-first",
+    title: "Independent view",
+    text: "Compare the decision instead of following builder inventory",
   },
   {
-    icon: Users,
-    value: new Set(projects.map((project) => project.developer)).size,
-    title: "Leading builders",
-    text: "Compared through one buyer-side decision desk",
+    icon: RefreshCcw,
+    value: "Dated",
+    title: "Project facts",
+    text: "Every brief shows when its public information was reviewed",
   },
   {
     icon: BadgeCheck,
-    value: `${Math.round(
-      (projects.filter((project) => project.rera).length / projects.length) * 100
-    )}%`,
-    title: "RERA disclosed",
-    text: "Across the current structured public catalogue",
+    value: "Phase-wise",
+    title: "RERA context",
+    text: "Exact registrations are kept visible where disclosed",
   },
   {
     icon: Database,

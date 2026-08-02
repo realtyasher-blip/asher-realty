@@ -50,7 +50,6 @@ export default function AdvisorConcierge() {
   const images = imageNames
     .map((name) => projects.find((project) => project.name === name))
     .filter((project): project is (typeof projects)[number] => Boolean(project));
-  const developerCount = new Set(projects.map((project) => project.developer)).size;
 
   return (
     <section id="contact" className="overflow-hidden bg-[#f0eee8] py-20 sm:py-28">
@@ -99,19 +98,13 @@ export default function AdvisorConcierge() {
                   ))}
                 </div>
 
-                <div className="mt-9 grid grid-cols-3 gap-4 border-t border-white/10 pt-7">
-                  <div>
-                    <p className="text-3xl font-bold text-[#e4c462]">{projects.length}</p>
-                    <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-white/42">Projects</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold text-[#e4c462]">{developerCount}</p>
-                    <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-white/42">Builders</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold text-[#e4c462]">1</p>
-                    <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-white/42">Buyer-side desk</p>
-                  </div>
+                <div className="mt-9 border-t border-white/10 pt-7">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#e4c462]">
+                    One clear buyer-side conversation
+                  </p>
+                  <p className="mt-3 max-w-lg text-xs leading-6 text-white/48">
+                    Independent comparison · unit-level questions · focused site visits
+                  </p>
                 </div>
               </div>
             </div>
