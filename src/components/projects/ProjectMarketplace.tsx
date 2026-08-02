@@ -35,6 +35,13 @@ import {
   readBuyerWorkspace,
   toggleBuyerWorkspaceItem,
 } from "@/lib/buyerWorkspace";
+import {
+  projectDecisionCaution,
+  projectFitBand,
+  projectOffersConfiguration,
+  projectPriceCrores,
+  projectSourceLabel,
+} from "@/lib/decisionEngine";
 import { cn } from "@/lib/utils";
 
 const builders = ["All builders", ...Array.from(new Set(projects.map((project) => project.developer)))];
@@ -52,14 +59,14 @@ const sortOptions = [
 ];
 
 function priceValue(price: string) {
-  const match = price.match(/₹\s?(\d+(?:\.\d+)?)/);
-  return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
+  return projectPriceCrores(price) ?? Number.POSITIVE_INFINITY;
 }
 
 function projectPriceBand(price: string) {
   if (/contact|request/i.test(price)) return "Price on request";
-  const value = priceValue(price);
+  const value = projectPriceCrores(price);
   if (!Number.isFinite(value)) return "Price on request";
+  if (value === null) return "Price on request";
   if (value < 2) return "Up to ₹2 Cr";
   if (value <= 3) return "₹2–3 Cr";
   return "₹3 Cr+";
@@ -67,8 +74,8 @@ function projectPriceBand(price: string) {
 
 function dateValue(value?: string) {
   if (!value) return Number.POSITIVE_INFINITY;
-  const parsed = Date.parse(value);
-  return Number.isNaN(parsed) ? Number.POSITIVE_INFINITY : parsed;
+  const year = value.match(/\b(20\d{2})\b/)?.[1];
+  return year ? Number(year) : Number.POSITIVE_INFINITY;
 }
 
 export default function ProjectMarketplace() {
@@ -154,8 +161,8 @@ export default function ProjectMarketplace() {
       return (
         (!term || searchable.includes(term)) &&
         (corridor === "All Bengaluru" || project.corridor === corridor) &&
-        (configuration === "Any BHK" || project.configuration.includes(configuration)) &&
-        (price === "Any budget" || projectPriceBand(project.price) === price || projectPriceBand(project.price) === "Price on request") &&
+        (configuration === "Any BHK" || projectOffersConfiguration(project, configuration)) &&
+        (price === "Any budget" || projectPriceBand(project.price) === price) &&
         (builder === "All builders" || project.developer === builder) &&
         (stage === "Any stage" || project.status === stage) &&
         (propertyType === "Any home type" || `${project.propertyType || ""} ${project.configuration}`.toLowerCase().includes(propertyType.toLowerCase())) &&
@@ -247,10 +254,10 @@ export default function ProjectMarketplace() {
             </div>
           </div>
           <Link
-            href="/my-search#preferences"
+            href="/home-match"
             className="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-[#c9a227] px-6 text-xs font-bold text-[#071a2f] transition hover:bg-[#e4c462]"
           >
-            {preferences.customized ? "Change preferences" : "Set my preferences"}
+            {preferences.customized ? "Refine Home Match" : "Start Home Match"}
             <ArrowRight className="ml-2 size-4" />
           </Link>
         </div>
@@ -354,7 +361,7 @@ export default function ProjectMarketplace() {
               {filtered.length} matching home{filtered.length === 1 ? "" : "s"}
             </p>
             <p className="mt-1 text-xs text-slate-400">
-              Live price and unit availability are confirmed before a visit.
+              Strict budget filters exclude projects without a visible price. Live cost and units are confirmed before a visit.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -416,7 +423,7 @@ export default function ProjectMarketplace() {
                       {preferences.customized ? <Target className="mt-0.5 size-4 shrink-0 text-emerald-700" /> : <Sparkles className="mt-0.5 size-4 shrink-0 text-[#b08a16]" />}
                       <div>
                         <p className={cn("text-[10px] font-bold uppercase tracking-[0.12em]", preferences.customized ? "text-emerald-800" : "text-[#94700f]") }>
-                          {preferences.customized ? `Why this matches · ${fit.score}%` : "Why consider it"}
+                          {preferences.customized ? `Why this matches · ${projectFitBand(fit.score)}` : "Why consider it"}
                         </p>
                         <p className="mt-1 text-xs leading-5 text-[#071a2f]/72">
                           {preferences.customized ? fit.reasons.slice(0, 2).join(" · ") : project.buyerNotes?.[0] || project.highlights[0]}
@@ -424,9 +431,16 @@ export default function ProjectMarketplace() {
                       </div>
                     </div>
 
+                    <div className="mt-3 rounded-xl bg-amber-50 px-3 py-3 text-[9px] leading-5 text-amber-950/65">
+                      <span className="font-extrabold uppercase tracking-[0.08em] text-amber-700">Check before visit · </span>
+                      {projectDecisionCaution(project)}
+                    </div>
+
+                    <p className="mt-3 text-[9px] font-semibold text-slate-400">{projectSourceLabel(project)}</p>
+
                     <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
                       <Link href={`/projects/${slug}`} className="inline-flex h-12 items-center justify-center rounded-full bg-[#071a2f] px-5 text-sm font-semibold text-white transition hover:bg-[#0d2948]">
-                        View project
+                        Open buyer brief
                         <ArrowUpRight className="ml-2 size-4" />
                       </Link>
                       <button type="button" onClick={() => toggleComparison(slug, project.name)} aria-label={compared ? `Remove ${project.name} from comparison` : `Compare ${project.name}`} aria-pressed={compared} className={cn("flex size-12 items-center justify-center rounded-full border transition", compared ? "border-[#c9a227] bg-[#fff7dc] text-[#7a5b08]" : "border-slate-200 text-slate-400 hover:border-[#c9a227] hover:text-[#071a2f]") }>

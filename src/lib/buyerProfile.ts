@@ -1,4 +1,11 @@
 import type { Project } from "@/data/projects";
+import {
+  budgetFits,
+  projectOffersConfiguration,
+  projectPriceCrores,
+} from "@/lib/decisionEngine";
+
+export { budgetFits, projectPriceCrores } from "@/lib/decisionEngine";
 
 export const BUYER_PROFILE_KEY = "asher-buyer-preferences";
 export const BUYER_PROFILE_EVENT = "asher:buyer-profile-updated";
@@ -113,21 +120,6 @@ function safeProjectText(project: Project) {
     .toLowerCase();
 }
 
-export function projectPriceCrores(price: string) {
-  const match = price.match(/(?:₹|INR)\s*(\d+(?:\.\d+)?)/i);
-  if (!match) return null;
-  const value = Number(match[1]);
-  return /\bL\b|lakh/i.test(price) ? value / 100 : value;
-}
-
-export function budgetFits(project: Project, budget: string) {
-  const value = projectPriceCrores(project.price);
-  if (budget === "Flexible" || value === null) return true;
-  if (budget === "Up to ₹2 Cr") return value <= 2;
-  if (budget === "₹2–3 Cr") return value >= 2 && value <= 3;
-  return value >= 3;
-}
-
 function timelineFit(project: Project, timeline: string) {
   if (timeline === "Flexible") return true;
   if (timeline === "Ready–2 years") {
@@ -160,7 +152,7 @@ export function scoreProject(project: Project, preferences: BuyerPreferences) {
     reasons.push("Strong Bengaluru option");
   }
 
-  if (project.configuration.includes(preferences.configuration)) {
+  if (projectOffersConfiguration(project, preferences.configuration)) {
     score += 14;
     reasons.push(`${preferences.configuration} BHK available`);
   }
@@ -168,12 +160,13 @@ export function scoreProject(project: Project, preferences: BuyerPreferences) {
   if (budgetFits(project, preferences.budget)) {
     score += 12;
     reasons.push(
-      projectPriceCrores(project.price) === null
-        ? "Price needs live confirmation"
-        : "Within selected budget band"
+      "Within selected budget band"
     );
   } else {
-    score -= 8;
+    score -= projectPriceCrores(project.price) === null ? 3 : 8;
+    if (projectPriceCrores(project.price) === null) {
+      reasons.push("Price needs live confirmation");
+    }
   }
 
   if (timelineFit(project, preferences.timeline)) {

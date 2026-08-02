@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BriefcaseBusiness, Sparkles, Target } from "lucide-react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  CircleAlert,
+  ShieldCheck,
+  Sparkles,
+  Target,
+} from "lucide-react";
 
 import type { Project } from "@/data/projects";
 import {
@@ -12,6 +19,12 @@ import {
   scoreProject,
   type BuyerPreferences,
 } from "@/lib/buyerProfile";
+import {
+  projectDataConfidence,
+  projectDecisionCaution,
+  projectFitBand,
+  projectSourceLabel,
+} from "@/lib/decisionEngine";
 
 export default function ProjectFitCard({ project }: { project: Project }) {
   const [preferences, setPreferences] =
@@ -57,7 +70,7 @@ export default function ProjectFitCard({ project }: { project: Project }) {
           </div>
         </div>
         <Link
-          href="/my-search#buyer-profile"
+          href="/home-match"
           className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-[#071a2f] px-5 text-xs font-bold text-white"
         >
           Create buyer brief <ArrowRight className="ml-2 size-4" />
@@ -66,39 +79,40 @@ export default function ProjectFitCard({ project }: { project: Project }) {
     );
   }
 
+  const confidence = projectDataConfidence(project);
+
   return (
     <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-emerald-200 bg-emerald-50">
-      <div className="grid gap-5 p-5 sm:grid-cols-[auto_1fr_auto] sm:items-center">
-        <span className="flex size-14 items-center justify-center rounded-2xl bg-emerald-600 text-lg font-extrabold text-white shadow-lg shadow-emerald-900/10">
-          {fit.score}
-        </span>
+      <div className="grid gap-5 p-5 lg:grid-cols-[.9fr_1.1fr_auto] lg:items-center">
         <div>
-          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-emerald-800">
-            <Target className="size-4" /> Personal fit score
+          <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-800">
+            <Target className="size-4" /> Personal decision snapshot
           </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {fit.reasons.map((reason) => (
-              <span
-                key={reason}
-                className="rounded-full bg-white px-3 py-1.5 text-[10px] font-semibold text-emerald-800"
-              >
-                {reason}
-              </span>
-            ))}
+          <p className="mt-2 text-2xl font-extrabold text-emerald-950">
+            {projectFitBand(fit.score)}
+          </p>
+          <p className="mt-2 flex items-center gap-2 text-[9px] font-semibold text-emerald-800/65">
+            <ShieldCheck className="size-3.5" /> {confidence.label} data · {projectSourceLabel(project)}
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl bg-white/80 p-4">
+            <p className="text-[9px] font-extrabold uppercase tracking-[0.1em] text-emerald-700">Why it may fit</p>
+            <p className="mt-2 text-[11px] font-semibold leading-5 text-emerald-950/70">{fit.reasons.slice(0, 3).join(" · ")}</p>
+          </div>
+          <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+            <p className="flex items-center gap-2 text-[9px] font-extrabold uppercase tracking-[0.1em] text-amber-700"><CircleAlert className="size-3.5" /> What to verify</p>
+            <p className="mt-2 text-[11px] leading-5 text-amber-950/65">{projectDecisionCaution(project)}</p>
           </div>
         </div>
+
         <Link
-          href="/my-search#buyer-profile"
-          className="inline-flex items-center text-xs font-bold text-emerald-900 hover:text-[#071a2f]"
+          href="/home-match"
+          className="inline-flex h-11 items-center justify-center rounded-full border border-emerald-300 bg-white px-5 text-xs font-bold text-emerald-900 transition hover:border-[#c9a227]"
         >
           <BriefcaseBusiness className="mr-2 size-4" /> Edit my brief
         </Link>
-      </div>
-      <div className="h-1.5 bg-emerald-100">
-        <div
-          className="h-full rounded-r-full bg-emerald-500"
-          style={{ width: `${fit.score}%` }}
-        />
       </div>
     </div>
   );

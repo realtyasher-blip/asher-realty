@@ -156,7 +156,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   )}
                 >
                   <CalendarClock className="mr-2 size-5" />
-                  Book a guided visit
+                  Get cost sheet + visit plan
                 </Link>
                 <a
                   href={whatsappUrl}
@@ -495,7 +495,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 rel="noopener noreferrer"
                 className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-full bg-[#c9a227] px-6 font-semibold text-[#071a2f] transition hover:bg-[#e4c462]"
               >
-                {isComingSoon ? "Request Verified EOI Brief" : "Request Complete Details"}
+                {isComingSoon ? "Request verified EOI brief" : "Get cost sheet + visit plan"}
               </a>
               <p className="mt-5 text-xs leading-5 text-white/35">
                 Verified {project.verifiedAt}. Pricing and inventory require
@@ -507,11 +507,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </p>
               )}
               <Link
-                href={`/decision-lab?project=${projectSlug(project.name)}`}
+                href="/home-match"
                 className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full border border-[#c9a227]/45 bg-[#c9a227]/10 px-5 text-sm font-semibold text-[#e4c462] transition hover:bg-[#c9a227] hover:text-[#071a2f]"
               >
                 <BrainCircuit className="mr-2 size-4" />
-                Run through Decision Lab
+                Check against my Home Match
               </Link>
               <Link
                 href="/tools"
@@ -602,7 +602,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           className="flex h-12 items-center justify-center rounded-xl bg-[#c9a227] px-5 text-sm font-bold text-[#071a2f]"
         >
           <CalendarClock className="mr-2 size-4" />
-          Book a guided visit
+          Get cost sheet + visit plan
         </Link>
       </div>
       <FloatingWhatsApp />

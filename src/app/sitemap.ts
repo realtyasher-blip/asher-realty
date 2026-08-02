@@ -58,10 +58,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/decision-lab`,
+      url: `${baseUrl}/home-match`,
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 0.94,
+      priority: 0.96,
     },
     {
       url: `${baseUrl}/book-site-visit`,

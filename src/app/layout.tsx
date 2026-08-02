@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   applicationName: "Asher Realty",
   manifest: "/manifest.webmanifest",
   title: {
-    default: "Asher Realty | Premium Properties in Bengaluru",
+    default: "Asher Realty | AI Home Match for Bengaluru Buyers",
     template: "%s | Asher Realty",
   },
   description:
-    "Find, save and compare premium Bengaluru properties with clear project information and personalised guidance from Asher Realty.",
+    "Match, compare and visit premium Bengaluru properties with explainable recommendations, dated project facts and personalised guidance from Asher Realty.",
   keywords: [
     "Asher Realty",
     "Bengaluru real estate",
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     "AI property search Bangalore",
   ],
   openGraph: {
-    title: "Asher Realty | Find the Right Bengaluru Home",
-    description: "Search less. Shortlist better. Visit with confidence.",
+    title: "Asher Realty | Your Life First. Then the Property.",
+    description: "Build an explainable Bengaluru shortlist, compare the strongest homes and visit with confidence.",
     url: "https://asherrealty.in",
     siteName: "Asher Realty",
     locale: "en_IN",
@@ -61,8 +61,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Asher Realty | Find the Right Bengaluru Home",
-    description: "Search less. Shortlist better. Visit with confidence.",
+    title: "Asher Realty | Your Life First. Then the Property.",
+    description: "Build an explainable Bengaluru shortlist, compare the strongest homes and visit with confidence.",
     images: ["/og-v2.png"],
   },
   icons: {
@@ -153,6 +153,12 @@ export default function RootLayout({
                 gtag('event', 'decision_lab_opened', {
                   decision_path: href,
                   cta_label: label
+                });
+              } else if (href.startsWith('/home-match')) {
+                gtag('event', 'home_match_opened', {
+                  match_path: href,
+                  cta_label: label,
+                  page_path: window.location.pathname
                 });
               } else if (href.startsWith('/my-search')) {
                 gtag('event', 'buyer_workspace_opened', {

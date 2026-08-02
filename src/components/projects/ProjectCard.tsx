@@ -6,13 +6,20 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   BedDouble,
+  CalendarClock,
+  CircleAlert,
   Heart,
   IndianRupee,
   MapPin,
+  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 
 import { projectSlug, type Project } from "@/data/projects";
+import {
+  projectDecisionCaution,
+  projectSourceLabel,
+} from "@/lib/decisionEngine";
 import {
   BUYER_WORKSPACE_EVENT,
   FAVOURITES_KEY,
@@ -113,11 +120,38 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </div>
 
+        <div className="mt-4 grid grid-cols-2 gap-3 border-y border-slate-100 py-4">
+          <div className="flex items-start gap-2">
+            <CalendarClock className="mt-0.5 size-4 shrink-0 text-[#a47b10]" />
+            <span>
+              <span className="block text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">Possession</span>
+              <span className="mt-1 block line-clamp-2 text-[10px] font-semibold leading-5 text-[#071a2f]">{project.possession || "Confirm current phase"}</span>
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-[#a47b10]" />
+            <span>
+              <span className="block text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">RERA detail</span>
+              <span className="mt-1 block line-clamp-2 text-[10px] font-semibold leading-5 text-[#071a2f]">{project.rera || "Phase confirmation needed"}</span>
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-4 flex gap-2 rounded-xl bg-amber-50 px-3 py-3">
+          <CircleAlert className="mt-0.5 size-3.5 shrink-0 text-amber-700" />
+          <p className="text-[9px] leading-5 text-amber-950/65">
+            <span className="font-extrabold uppercase tracking-[0.08em] text-amber-700">Check before visit · </span>
+            {projectDecisionCaution(project)}
+          </p>
+        </div>
+
+        <p className="mt-4 text-[9px] font-semibold text-slate-400">{projectSourceLabel(project)}</p>
+
         <Link
           href={`/projects/${slug}`}
           className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-[#071a2f] px-5 text-sm font-semibold text-white transition hover:bg-[#0d2948]"
         >
-          View project
+          Open buyer brief
           <ArrowUpRight className="ml-2 size-4" />
         </Link>
       </div>

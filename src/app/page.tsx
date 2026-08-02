@@ -1,9 +1,10 @@
 import BengaluruAreas from "@/components/home/BengaluruAreas";
+import BuyerCommandCentre from "@/components/home/BuyerCommandCentre";
 import ConsultationSection from "@/components/home/ConsultationSection";
 import FeaturedProjects from "@/components/home/FeaturedProjects";
 import Hero from "@/components/home/Hero";
+import MarketPulse from "@/components/home/MarketPulse";
 import TrustStrip from "@/components/home/TrustStrip";
-import WhyAsher from "@/components/home/WhyAsher";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
@@ -20,9 +21,10 @@ export default function Home() {
       <main>
         <Hero />
         <TrustStrip />
+        <BuyerCommandCentre />
         <FeaturedProjects />
+        <MarketPulse />
         <BengaluruAreas />
-        <WhyAsher />
         <ConsultationSection />
       </main>
 

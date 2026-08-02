@@ -11,7 +11,7 @@ const quickLinks = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
   { label: "Builders", href: "/builders" },
-  { label: "Buyer Decision Lab", href: "/decision-lab" },
+  { label: "AI Home Match", href: "/home-match" },
   { label: "Locations", href: "/locations" },
   { label: "Intelligence", href: "/intelligence" },
   { label: "Buyer Guides", href: "/guides" },

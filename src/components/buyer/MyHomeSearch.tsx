@@ -8,12 +8,14 @@ import {
   BedDouble,
   CalendarCheck,
   Check,
+  CircleAlert,
   GitCompareArrows,
   Heart,
   IndianRupee,
   MapPin,
   Search,
   SlidersHorizontal,
+  Sparkles,
   Trash2,
 } from "lucide-react";
 
@@ -22,9 +24,14 @@ import {
   BUYER_PROFILE_EVENT,
   defaultBuyerPreferences,
   readBuyerPreferences,
+  scoreProject,
   writeBuyerPreferences,
   type BuyerPreferences,
 } from "@/lib/buyerProfile";
+import {
+  projectDecisionCaution,
+  projectFitBand,
+} from "@/lib/decisionEngine";
 import {
   BUYER_WORKSPACE_EVENT,
   COMPARISON_KEY,
@@ -41,12 +48,14 @@ const emptyWorkspace: BuyerWorkspaceSnapshot = {
   recent: [],
 };
 
-const corridorOptions = [
+const workHubOptions = [
   "Flexible",
-  "East Bengaluru",
-  "North Bengaluru",
-  "South Bengaluru",
-  "Central Bengaluru",
+  "Whitefield / ITPL",
+  "ORR / Bellandur",
+  "Manyata Tech Park",
+  "Electronic City",
+  "CBD / MG Road",
+  "Airport / Devanahalli",
 ];
 const configurationOptions = ["1", "2", "3", "4"];
 const budgetOptions = ["Flexible", "Up to ₹2 Cr", "₹2–3 Cr", "₹3 Cr+"];
@@ -90,6 +99,15 @@ export default function MyHomeSearch() {
         .filter((project): project is (typeof projects)[number] => Boolean(project))
         .slice(0, 4),
     [workspace.recent]
+  );
+
+  const matchedProjects = useMemo(
+    () =>
+      projects
+        .map((project) => scoreProject(project, preferences))
+        .sort((left, right) => right.score - left.score)
+        .slice(0, 4),
+    [preferences]
   );
 
   const currentStep = !preferences.customized
@@ -189,9 +207,9 @@ export default function MyHomeSearch() {
 
         <div className="mt-7 grid gap-4 md:grid-cols-3">
           <label>
-            <span className="flex items-center gap-2 text-sm font-semibold text-[#071a2f]"><MapPin className="size-4 text-[#a47b10]" />Preferred area</span>
-            <select value={preferences.corridor} onChange={(event) => setPreferences((current) => ({ ...current, corridor: event.target.value }))} className="mt-2 h-12 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm text-[#071a2f] outline-none focus:border-[#c9a227]">
-              {corridorOptions.map((option) => <option key={option}>{option}</option>)}
+            <span className="flex items-center gap-2 text-sm font-semibold text-[#071a2f]"><MapPin className="size-4 text-[#a47b10]" />Work hub / daily anchor</span>
+            <select value={preferences.workHub} onChange={(event) => setPreferences((current) => ({ ...current, corridor: "Flexible", workHub: event.target.value }))} className="mt-2 h-12 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm text-[#071a2f] outline-none focus:border-[#c9a227]">
+              {workHubOptions.map((option) => <option key={option}>{option}</option>)}
             </select>
           </label>
           <label>
@@ -215,6 +233,41 @@ export default function MyHomeSearch() {
           <p role="status" className="text-xs text-emerald-700">{savedMessage}</p>
         </div>
       </section>
+
+      {preferences.customized && (
+        <section className="mt-7 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-[#071a2f] p-6 text-white shadow-[0_18px_60px_rgba(7,26,47,.12)] sm:p-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#e4c462]"><Sparkles className="size-4" /> Top matches for your brief</p>
+              <h2 className="mt-3 text-3xl font-semibold">A focused place to continue.</h2>
+              <p className="mt-2 max-w-2xl text-xs leading-6 text-white/45">Match labels are directional. Unknown prices and phase-level facts remain visible until confirmed.</p>
+            </div>
+            <Link href="/home-match" className="inline-flex h-11 w-fit items-center rounded-full border border-white/15 px-5 text-xs font-bold text-white transition hover:border-[#c9a227]">
+              Refine Home Match <ArrowRight className="ml-2 size-4" />
+            </Link>
+          </div>
+
+          <div className="mt-7 grid gap-4 lg:grid-cols-2">
+            {matchedProjects.map(({ project, score, reasons }) => (
+              <article key={project.name} className="grid grid-cols-[104px_1fr] gap-4 rounded-2xl border border-white/10 bg-white/[0.055] p-3 sm:grid-cols-[132px_1fr]">
+                <Link href={`/projects/${projectSlug(project.name)}`} className="relative min-h-36 overflow-hidden rounded-xl">
+                  <Image src={project.image} alt={project.name} fill className="object-cover" sizes="132px" />
+                </Link>
+                <div className="min-w-0 py-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.13em] text-[#e4c462]">{projectFitBand(score)}</p>
+                    <span className="text-[8px] font-bold uppercase tracking-[0.1em] text-white/25">{project.status}</span>
+                  </div>
+                  <Link href={`/projects/${projectSlug(project.name)}`} className="mt-1 block truncate text-lg font-bold hover:text-[#e4c462]">{project.name}</Link>
+                  <p className="mt-1 truncate text-[10px] text-white/38">{project.location}</p>
+                  <p className="mt-3 line-clamp-2 text-[10px] font-semibold leading-5 text-white/62"><Check className="mr-1 inline size-3 text-emerald-400" />{reasons.slice(0, 2).join(" · ")}</p>
+                  <p className="mt-2 line-clamp-1 text-[9px] leading-5 text-amber-200/70"><CircleAlert className="mr-1 inline size-3" />{projectDecisionCaution(project)}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mt-7 rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_14px_45px_rgba(7,26,47,.06)] sm:p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

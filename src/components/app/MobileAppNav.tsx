@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, Compass, Heart, Search } from "lucide-react";
+import { CalendarCheck, Compass, Heart, Sparkles } from "lucide-react";
 
 import {
   BUYER_WORKSPACE_EVENT,
@@ -13,7 +13,7 @@ import {
 
 const items = [
   { label: "Discover", href: "/", icon: Compass },
-  { label: "Search", href: "/projects", icon: Search },
+  { label: "Match", href: "/home-match", icon: Sparkles },
   { label: "Saved", href: "/my-search", icon: Heart },
   { label: "Visits", href: "/book-site-visit", icon: CalendarCheck },
 ];

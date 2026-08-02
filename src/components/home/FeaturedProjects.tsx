@@ -7,7 +7,7 @@ import { projects } from "@/data/projects";
 const featured = [
   ...projects.filter((project) => project.featured),
   ...projects.filter((project) => !project.featured),
-].slice(0, 6);
+].slice(0, 3);
 
 export default function FeaturedProjects() {
   return (

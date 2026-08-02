@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Asher Realty — Bengaluru Property App",
     short_name: "Asher Realty",
     description:
-      "Discover, compare and save premium Bengaluru properties, then book guided site visits with Asher Realty.",
+      "Match, compare and save premium Bengaluru properties, then plan guided site visits with Asher Realty.",
     start_url: "/?source=app",
     scope: "/",
     display: "standalone",
@@ -35,10 +35,10 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       {
-        name: "Explore Projects",
-        short_name: "Projects",
-        description: "Browse Bengaluru residential projects",
-        url: "/projects?source=app-shortcut",
+        name: "Find My Home",
+        short_name: "Home Match",
+        description: "Build a personalised Bengaluru project shortlist",
+        url: "/home-match?source=app-shortcut",
         icons: [
           {
             src: "/brand/app-icon-192.png",

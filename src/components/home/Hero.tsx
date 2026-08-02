@@ -14,12 +14,12 @@ import {
 } from "lucide-react";
 
 const searchAreas = [
-  { label: "Whitefield / ITPL", query: "Whitefield", corridor: "East Bengaluru" },
-  { label: "ORR / Bellandur", query: "ORR", corridor: "East Bengaluru" },
-  { label: "Manyata / Hebbal", query: "Manyata", corridor: "North Bengaluru" },
-  { label: "Electronic City", query: "Electronic City", corridor: "South Bengaluru" },
-  { label: "Airport / Devanahalli", query: "Devanahalli", corridor: "North Bengaluru" },
-  { label: "Central Bengaluru", query: "Central Bengaluru", corridor: "Central Bengaluru" },
+  { label: "Whitefield / ITPL", workHub: "Whitefield / ITPL" },
+  { label: "ORR / Bellandur", workHub: "ORR / Bellandur" },
+  { label: "Manyata / Hebbal", workHub: "Manyata Tech Park" },
+  { label: "Electronic City", workHub: "Electronic City" },
+  { label: "Airport / Devanahalli", workHub: "Airport / Devanahalli" },
+  { label: "Central Bengaluru", workHub: "CBD / MG Road" },
 ];
 
 const configurations = ["2", "3", "4"];
@@ -39,13 +39,12 @@ export default function Hero() {
     const selectedArea = searchAreas.find((item) => item.label === area);
 
     if (selectedArea) {
-      params.set("q", selectedArea.query);
-      params.set("corridor", selectedArea.corridor);
+      params.set("workHub", selectedArea.workHub);
     }
     if (configuration) params.set("bhk", configuration);
-    if (budget) params.set("price", budget);
+    if (budget) params.set("budget", budget);
 
-    return `/projects?${params.toString()}`;
+    return `/home-match?${params.toString()}`;
   }, [area, budget, configuration]);
 
   return (
@@ -77,8 +76,8 @@ export default function Hero() {
           </h1>
 
           <p className="hero-reveal hero-delay-2 mt-7 max-w-2xl text-base leading-8 text-white/68 sm:text-lg">
-            Start with three simple preferences. We&apos;ll show relevant homes,
-            explain why they fit and help you arrange the right site visits.
+            Start with three simple preferences. Asher Home Match will rank
+            relevant projects, explain the fit and keep every important check visible.
           </p>
 
           <div className="hero-reveal hero-delay-3 mt-9 max-w-5xl rounded-[1.75rem] border border-white/14 bg-[#041421]/78 p-3 shadow-[0_25px_90px_rgba(0,0,0,.3)] backdrop-blur-2xl">
@@ -151,11 +150,11 @@ export default function Hero() {
 
               <Link
                 href={resultsUrl}
-                data-analytics-label="Hero show matching homes"
+                data-analytics-label="Hero build matched shortlist"
                 className="shine-button inline-flex min-h-16 items-center justify-center rounded-2xl bg-[#d5ad2d] px-7 text-sm font-bold text-[#071a2f] transition hover:bg-[#f0d477]"
               >
                 <Search className="mr-2 size-5" />
-                Show matching homes
+                Build my shortlist
               </Link>
             </div>
           </div>
@@ -175,6 +174,13 @@ export default function Hero() {
               Prefer human help? Talk to an advisor
               <ArrowRight className="ml-2 size-4" />
             </a>
+            <Link
+              href="/projects"
+              className="inline-flex w-fit items-center text-xs font-bold text-white/55 transition hover:text-white"
+            >
+              Or browse all projects
+              <ArrowRight className="ml-2 size-4" />
+            </Link>
           </div>
         </div>
       </div>

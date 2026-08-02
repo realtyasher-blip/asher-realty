@@ -17,9 +17,10 @@ import {
 import { cn } from "@/lib/utils";
 
 const navigation = [
+  { label: "Home Match", href: "/home-match" },
   { label: "Buy", href: "/projects" },
   { label: "Areas", href: "/locations" },
-  { label: "Bengaluru Market", href: "/intelligence" },
+  { label: "Market", href: "/intelligence" },
   { label: "Saved Homes", href: "/my-search" },
 ];
 
