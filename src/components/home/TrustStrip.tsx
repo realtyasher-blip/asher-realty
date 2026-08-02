@@ -72,10 +72,10 @@ export default function TrustStrip() {
           >
             <span>
               <span className="block text-[9px] font-bold uppercase tracking-[0.15em] text-[#e4c462]">
-                Explore the data
+                Follow the signals
               </span>
               <span className="mt-1 block text-sm font-bold">
-                Intelligence centre
+                What is moving now?
               </span>
             </span>
             <ArrowUpRight className="size-5 text-[#e4c462] transition group-hover:-translate-y-1 group-hover:translate-x-1" />

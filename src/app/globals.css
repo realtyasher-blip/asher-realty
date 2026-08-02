@@ -154,6 +154,17 @@ textarea {
   }
 }
 
+@keyframes collection-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .hero-reveal {
   animation: hero-reveal 0.55s ease-out both;
 }
@@ -174,8 +185,16 @@ textarea {
   animation-delay: 320ms;
 }
 
+.collection-reveal {
+  animation: collection-reveal 360ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-reveal {
+    animation: none;
+  }
+
+  .collection-reveal {
     animation: none;
   }
 

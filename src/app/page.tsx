@@ -1,9 +1,8 @@
-import BengaluruAreas from "@/components/home/BengaluruAreas";
-import BuyerCommandCentre from "@/components/home/BuyerCommandCentre";
-import ConsultationSection from "@/components/home/ConsultationSection";
-import FeaturedProjects from "@/components/home/FeaturedProjects";
+import AdvisorConcierge from "@/components/home/AdvisorConcierge";
+import CuriosityStudio from "@/components/home/CuriosityStudio";
 import Hero from "@/components/home/Hero";
 import MarketPulse from "@/components/home/MarketPulse";
+import ProjectSpotlight from "@/components/home/ProjectSpotlight";
 import TrustStrip from "@/components/home/TrustStrip";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
@@ -21,11 +20,10 @@ export default function Home() {
       <main>
         <Hero />
         <TrustStrip />
-        <BuyerCommandCentre />
-        <FeaturedProjects />
+        <CuriosityStudio />
+        <ProjectSpotlight />
         <MarketPulse />
-        <BengaluruAreas />
-        <ConsultationSection />
+        <AdvisorConcierge />
       </main>
 
       <Footer />

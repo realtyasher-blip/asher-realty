@@ -65,19 +65,19 @@ export default function Hero() {
         <div className="w-full max-w-5xl">
           <div className="hero-reveal inline-flex items-center gap-2 rounded-full border border-[#e4c462]/25 bg-[#c9a227]/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#f0d477] backdrop-blur-xl">
             <ShieldCheck className="size-4" />
-            Independent Bengaluru property guidance
+            Bengaluru property discovery · built around the buyer
           </div>
 
           <h1 className="hero-reveal hero-delay-1 mt-7 max-w-4xl text-[3.25rem] font-medium leading-[0.96] tracking-[-0.04em] sm:text-7xl lg:text-[5.5rem]">
-            Find a Bengaluru home
+            Don&apos;t just browse homes.
             <span className="mt-2 block bg-gradient-to-r from-[#fff3c4] via-[#e4c462] to-[#b98e17] bg-clip-text text-transparent">
-              that fits your real life.
+              Discover how you want to live.
             </span>
           </h1>
 
           <p className="hero-reveal hero-delay-2 mt-7 max-w-2xl text-base leading-8 text-white/68 sm:text-lg">
-            Start with three simple preferences. Asher Home Match will rank
-            relevant projects, explain the fit and keep every important check visible.
+            Match homes to your work, budget and daily life. Then explore the
+            stories, trade-offs and questions that make a property worth visiting.
           </p>
 
           <div className="hero-reveal hero-delay-3 mt-9 max-w-5xl rounded-[1.75rem] border border-white/14 bg-[#041421]/78 p-3 shadow-[0_25px_90px_rgba(0,0,0,.3)] backdrop-blur-2xl">
@@ -154,15 +154,22 @@ export default function Hero() {
                 className="shine-button inline-flex min-h-16 items-center justify-center rounded-2xl bg-[#d5ad2d] px-7 text-sm font-bold text-[#071a2f] transition hover:bg-[#f0d477]"
               >
                 <Search className="mr-2 size-5" />
-                Build my shortlist
+                Show my matches
               </Link>
             </div>
           </div>
 
-          <div className="hero-reveal hero-delay-4 mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="hero-reveal hero-delay-4 mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
             <p className="text-xs font-semibold text-white/50">
               No sign-up required · Change your preferences anytime
             </p>
+            <a
+              href="#discover"
+              className="inline-flex w-fit items-center text-xs font-bold text-[#e4c462] transition hover:text-white"
+            >
+              Not ready to search? Explore by lifestyle
+              <ArrowRight className="ml-2 size-4" />
+            </a>
             <a
               href={advisorUrl}
               target="_blank"
@@ -171,7 +178,7 @@ export default function Hero() {
               className="inline-flex w-fit items-center text-xs font-bold text-white transition hover:text-[#e4c462]"
             >
               <MessageCircle className="mr-2 size-4 text-[#e4c462]" />
-              Prefer human help? Talk to an advisor
+              Ask a buyer advisor
               <ArrowRight className="ml-2 size-4" />
             </a>
             <Link
