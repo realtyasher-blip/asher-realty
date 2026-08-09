@@ -14,6 +14,7 @@ import {
   MapPin,
   MessageCircle,
   Search,
+  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   Target,
@@ -436,7 +437,15 @@ export default function ProjectMarketplace() {
                       {projectDecisionCaution(project)}
                     </div>
 
-                    <p className="mt-3 text-[9px] font-semibold text-slate-400">{projectSourceLabel(project)}</p>
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-[9px] font-semibold text-slate-400">{projectSourceLabel(project)}</p>
+                      {project.reraApprovedOn && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[8px] font-extrabold uppercase tracking-[0.08em] text-emerald-800">
+                          <ShieldCheck className="size-3" />
+                          RERA {project.reraApprovedOn}
+                        </span>
+                      )}
+                    </div>
 
                     <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
                       <Link href={`/projects/${slug}`} className="inline-flex h-12 items-center justify-center rounded-full bg-[#071a2f] px-5 text-sm font-semibold text-white transition hover:bg-[#0d2948]">

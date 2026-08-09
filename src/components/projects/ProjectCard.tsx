@@ -145,7 +145,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </p>
         </div>
 
-        <p className="mt-4 text-[9px] font-semibold text-slate-400">{projectSourceLabel(project)}</p>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-[9px] font-semibold text-slate-400">{projectSourceLabel(project)}</p>
+          {project.reraApprovedOn && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[8px] font-extrabold uppercase tracking-[0.08em] text-emerald-800">
+              <ShieldCheck className="size-3" />
+              RERA {project.reraApprovedOn}
+            </span>
+          )}
+        </div>
 
         <Link
           href={`/projects/${slug}`}

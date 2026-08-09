@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Assetz Mizu and Ki RERA data cover</title>
+  <desc id="desc">A branded data cover for a newly approved Karnataka RERA villa project.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#041221"/><stop offset=".55" stop-color="#071a2f"/><stop offset="1" stop-color="#123a52"/></linearGradient>
+    <radialGradient id="glow" cx="78%" cy="20%" r="65%"><stop stop-color="#e4c462" stop-opacity=".32"/><stop offset="1" stop-color="#e4c462" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse"><path d="M72 0H0V72" fill="none" stroke="#fff" stroke-opacity=".045"/></pattern>
+  </defs>
+  <rect width="1600" height="1200" fill="url(#bg)"/><rect width="1600" height="1200" fill="url(#glow)"/><rect width="1600" height="1200" fill="url(#grid)"/>
+  <g fill="none" stroke="#c9a227" stroke-width="3" opacity=".45"><path d="M930 930V410l120-108 118 108v520M1168 930V520l105-88 105 88v410M1002 930V566h94v364M1224 930V655h104v275"/><path d="M870 930h620"/></g>
+  <g font-family="Montserrat, Arial, sans-serif">
+    <rect x="94" y="86" width="408" height="54" rx="27" fill="#c9a227" fill-opacity=".14" stroke="#e4c462" stroke-opacity=".65"/>
+    <text x="124" y="122" font-size="22" font-weight="700" letter-spacing="3" fill="#f0d477">NEW RERA APPROVAL</text>
+    <text x="94" y="238" font-size="28" font-weight="700" letter-spacing="5" fill="#e4c462">ASSETZ PROPERTY GROUP</text>
+    <text x="94" y="370" font-size="82" font-weight="700" fill="#fff">Mizu &amp; Ki</text>
+    <text x="94" y="430" font-size="28" fill="#fff" fill-opacity=".7">Hennur Main Road · Chikkagubbi</text>
+    <line x1="94" y1="492" x2="705" y2="492" stroke="#c9a227" stroke-width="3"/>
+    <text x="94" y="575" font-size="24" font-weight="700" fill="#e4c462">RERA-FIRST PROJECT PROFILE</text>
+    <text x="94" y="625" font-size="25" fill="#fff" fill-opacity=".72">4 BHK villas · 8.52 registered acres</text>
+    <text x="94" y="669" font-size="25" fill="#fff" fill-opacity=".72">188 filed inventories · 12 blocks</text>
+    <text x="94" y="713" font-size="25" fill="#fff" fill-opacity=".72">Approved 07 Aug 2026</text>
+    <rect x="94" y="816" width="570" height="104" rx="22" fill="#fff" fill-opacity=".06" stroke="#fff" stroke-opacity=".13"/>
+    <text x="126" y="858" font-size="18" font-weight="700" letter-spacing="2" fill="#e4c462">OFFICIAL FILING REVIEWED</text>
+    <text x="126" y="895" font-size="19" fill="#fff" fill-opacity=".62">Carpet area · UDS · plans · completion</text>
+    <text x="94" y="1094" font-size="18" letter-spacing="3" fill="#fff" fill-opacity=".48">ASHER REALTY · EVIDENCE BEFORE MARKETING</text>
+  </g>
+</svg>

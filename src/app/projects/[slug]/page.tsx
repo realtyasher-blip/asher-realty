@@ -137,6 +137,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 <span className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] backdrop-blur">
                   {project.corridor}
                 </span>
+                {project.reraApprovedOn && (
+                  <span className="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-100 backdrop-blur">
+                    RERA approved {project.reraApprovedOn}
+                  </span>
+                )}
               </div>
               <p className="mt-5 text-xs font-semibold text-white/45">
                 Bengaluru · {project.location} · {project.configuration}

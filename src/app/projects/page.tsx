@@ -3,7 +3,6 @@ import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import ProjectMarketplace from "@/components/projects/ProjectMarketplace";
-import { projects } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Bengaluru Projects | Search New & Under-Construction Homes",
@@ -32,8 +31,8 @@ export default function ProjectsPage() {
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 {[
-                  `${projects.length} active options`,
-                  `${new Set(projects.map((project) => project.developer)).size} leading builders`,
+                  "RERA-mapped project profiles",
+                  "Carpet + UDS evidence on reviewed filings",
                   "Save without signing in",
                 ].map((item) => (
                   <span
