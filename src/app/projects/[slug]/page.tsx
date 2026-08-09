@@ -8,7 +8,6 @@ import {
   BadgeCheck,
   BedDouble,
   BrainCircuit,
-  Building2,
   Calculator,
   CalendarClock,
   Check,
@@ -25,6 +24,7 @@ import BrandLogo from "@/components/brand/BrandLogo";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import { buttonVariants } from "@/components/ui/button";
 import ProjectActions from "@/components/projects/ProjectActions";
+import ProjectEvidencePassport from "@/components/projects/ProjectEvidencePassport";
 import ProjectFitCard from "@/components/projects/ProjectFitCard";
 import {
   developerLogos,
@@ -188,6 +188,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="container-shell flex items-center gap-1 overflow-x-auto py-2">
             {[
               ["Overview", "#overview"],
+              ["RERA evidence", "#evidence"],
               ["Photos & video", "#gallery"],
               ["Amenities", "#amenities"],
               ["Location", "#location"],
@@ -248,30 +249,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
           )}
 
+          <ProjectEvidencePassport project={project} />
+
           <ProjectFitCard project={project} />
 
-          <div className="mt-10 grid gap-4 lg:grid-cols-3">
-            <article className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_12px_45px_rgba(7,26,47,0.06)]">
-              <Building2 className="size-7 text-[#c9a227]" />
-              <p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-                Project snapshot
-              </p>
-              <div className="mt-5 space-y-4">
-                {[
-                  ["Property type", project.propertyType || "Premium residential community"],
-                  ["Unit sizes", project.unitSizes || "Request current area schedule"],
-                  ["Development", project.area || "Confirm current phase"],
-                ].map(([label, value]) => (
-                  <div key={label} className="flex items-start justify-between gap-5 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
-                    <span className="text-sm text-slate-400">{label}</span>
-                    <span className="max-w-[60%] text-right text-sm font-semibold leading-6 text-[#071a2f]">
-                      {value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </article>
-
+          <div className="mt-10 grid gap-4 lg:grid-cols-2">
             <article className="rounded-[1.75rem] border border-[#c9a227]/25 bg-[#fffaf0] p-6">
               <Sparkles className="size-7 text-[#b08a16]" />
               <p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-[#9a7613]">
@@ -290,15 +272,24 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <article className="rounded-[1.75rem] border border-slate-200 bg-[#071a2f] p-6 text-white">
               <BadgeCheck className="size-7 text-[#e4c462]" />
               <p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-[#e4c462]">
-                Verification desk
+                What Asher checks next
               </p>
               <p className="mt-5 text-sm leading-7 text-white/65">
-                We reconfirm the selected tower, inventory, floor plan, payment
-                schedule and all-inclusive cost before arranging your visit.
+                We turn the evidence gaps above into a unit-specific buyer pack
+                before you pay a booking amount.
               </p>
-              <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-white/40">Last editorial check</p>
-                <p className="mt-1 font-semibold">{project.verifiedAt}</p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {[
+                  "Map tower and unit to RERA phase",
+                  "Match carpet area and UDS",
+                  "Request sanctioned plan and exact floor plan",
+                  "Reconcile cost sheet and payment milestones",
+                ].map((item) => (
+                  <div key={item} className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <Check className="mt-0.5 size-4 shrink-0 text-[#e4c462]" />
+                    <p className="text-xs leading-5 text-white/65">{item}</p>
+                  </div>
+                ))}
               </div>
             </article>
           </div>
@@ -503,14 +494,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 {isComingSoon ? "Request verified EOI brief" : "Get cost sheet + visit plan"}
               </a>
               <p className="mt-5 text-xs leading-5 text-white/35">
-                Verified {project.verifiedAt}. Pricing and inventory require
-                live developer confirmation.
+                Catalogue checked {project.verifiedAt}. Pricing, inventory and
+                the selected unit schedule require live written confirmation.
               </p>
-              {project.rera && (
-                <p className="mt-3 break-words text-[10px] leading-5 text-white/35">
-                  RERA: {project.rera}
-                </p>
-              )}
+              <a
+                href="#evidence"
+                className="mt-4 inline-flex text-xs font-semibold text-[#e4c462] underline decoration-[#e4c462]/30 underline-offset-4"
+              >
+                Open the Project Evidence Passport
+              </a>
               <Link
                 href="/home-match"
                 className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full border border-[#c9a227]/45 bg-[#c9a227]/10 px-5 text-sm font-semibold text-[#e4c462] transition hover:bg-[#c9a227] hover:text-[#071a2f]"
