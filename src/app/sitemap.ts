@@ -70,6 +70,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.94,
     },
     {
+      url: `${baseUrl}/true-cost`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.94,
+    },
+    {
       url: `${baseUrl}/book-site-visit`,
       lastModified: new Date(),
       changeFrequency: "monthly",

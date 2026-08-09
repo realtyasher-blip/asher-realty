@@ -107,6 +107,14 @@ const searchItems: SearchItem[] = [
       "buyer advantage buyer passport benefits support booking handover cost sheet",
   },
   {
+    title: "Decode a property cost sheet",
+    description: "Calculate all-in cost, carpet-area economics and open questions",
+    href: "/true-cost",
+    type: "Tool" as const,
+    keywords:
+      "truecost true cost builder quote cost sheet all inclusive carpet rate parking taxes registration emi",
+  },
+  {
     title: "Compare two Bengaluru projects",
     description: "Review location, pricing, possession and buyer fit side by side",
     href: "/compare",

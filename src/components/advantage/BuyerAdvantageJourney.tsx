@@ -74,8 +74,8 @@ const stages = [
       "Tower, phase, RERA and possession checklist",
       "A booking-readiness question pack for the developer",
     ],
-    href: "/tools",
-    action: "Review affordability and costs",
+    href: "/true-cost",
+    action: "Decode my cost sheet",
   },
   {
     id: "ownership",

@@ -158,18 +158,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   <CalendarClock className="mr-2 size-5" />
                   Get cost sheet + visit plan
                 </Link>
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href={`/true-cost?project=${projectSlug(project.name)}`}
                   className={cn(
                     buttonVariants({ size: "lg", variant: "outline" }),
                     "h-14 rounded-full border-white/30 bg-white/5 px-8 text-white hover:bg-white hover:text-[#071a2f]"
                   )}
                 >
-                  <MessageCircle className="mr-2 size-5" />
-                  Check today&apos;s all-in cost
-                </a>
+                  <Calculator className="mr-2 size-5" />
+                  Decode this cost sheet
+                </Link>
               </div>
               <ProjectActions slug={projectSlug(project.name)} name={project.name} />
               <Link

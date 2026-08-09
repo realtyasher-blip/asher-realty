@@ -208,6 +208,30 @@ textarea {
   contain-intrinsic-size: auto 900px;
 }
 
+@media print {
+  body.truecost-printing * {
+    visibility: hidden !important;
+  }
+
+  body.truecost-printing .truecost-print-report,
+  body.truecost-printing .truecost-print-report * {
+    visibility: visible !important;
+  }
+
+  body.truecost-printing .truecost-print-report {
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    width: 100% !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  body.truecost-printing .truecost-print-hide {
+    display: none !important;
+  }
+}
+
 .container-shell {
   width: min(100% - 2rem, 1280px);
   margin-inline: auto;

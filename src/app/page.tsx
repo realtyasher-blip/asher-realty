@@ -5,6 +5,7 @@ import Hero from "@/components/home/Hero";
 import MarketPulse from "@/components/home/MarketPulse";
 import ProjectSpotlight from "@/components/home/ProjectSpotlight";
 import TrustStrip from "@/components/home/TrustStrip";
+import TrueCostPreview from "@/components/home/TrueCostPreview";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
@@ -25,6 +26,7 @@ export default function Home() {
         <ProjectSpotlight />
         <MarketPulse />
         <BuyerAdvantagePreview />
+        <TrueCostPreview />
         <AdvisorConcierge />
       </main>
 

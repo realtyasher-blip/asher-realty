@@ -73,6 +73,19 @@ export default function manifest(): MetadataRoute.Manifest {
           },
         ],
       },
+      {
+        name: "Decode a Cost Sheet",
+        short_name: "TrueCost",
+        description: "Estimate the complete commitment behind a property quote",
+        url: "/true-cost?source=app-shortcut",
+        icons: [
+          {
+            src: "/brand/app-icon-192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+        ],
+      },
     ],
   };
 }

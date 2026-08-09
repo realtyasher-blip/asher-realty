@@ -20,7 +20,7 @@ const navigation = [
   { label: "Home Match", href: "/home-match" },
   { label: "Buy", href: "/projects" },
   { label: "Areas", href: "/locations" },
-  { label: "Market", href: "/intelligence" },
+  { label: "TrueCost", href: "/true-cost" },
   { label: "Buyer Benefits", href: "/buyer-advantage" },
   { label: "Saved Homes", href: "/my-search" },
 ];
