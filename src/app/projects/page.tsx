@@ -3,6 +3,8 @@ import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import ProjectMarketplace from "@/components/projects/ProjectMarketplace";
+import Link from "next/link";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Bengaluru Projects | Search New & Under-Construction Homes",
@@ -43,6 +45,14 @@ export default function ProjectsPage() {
                   </span>
                 ))}
               </div>
+              <Link
+                href="/rera-watch"
+                className="mt-7 inline-flex items-center text-sm font-bold text-[#f0d477] transition hover:text-white"
+              >
+                <ShieldCheck className="mr-2 size-4" />
+                See the latest Bengaluru RERA approvals
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
             </div>
           </div>
         </section>

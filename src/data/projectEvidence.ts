@@ -505,6 +505,195 @@ const mahindraBlossomEvidence = officialReraEvidence({
   udsScope: "Unit-type filed range",
 });
 
+const laurelMapleEvidence: ProjectEvidence = {
+  checkedAt: "12 Aug 2026",
+  reviewLabel: "Karnataka RERA registration and official project disclosure reviewed",
+  registrations: ["PRM/KA/RERA/1250/303/PR/040326/008505"],
+  legalPromoter: "BCV DEVELOPERS PRIVATE LIMITED",
+  officialStatus: "Approved",
+  approvedOn: "4 Mar 2026",
+  officialCompletion: "31 Mar 2030",
+  planApproval: "Request the phase-matched sanctioned plan from the official filing",
+  inventory: "Exact filed inventory schedule requires phase-level extraction",
+  facts: [
+    {
+      label: "RERA phase",
+      value: "PRM/KA/RERA/1250/303/PR/040326/008505",
+      status: "official",
+      source: "Karnataka RERA certificate",
+      scope: "Laurel & Maple at Brigade Orchards",
+      note: "The Brigade brand and BCV Developers legal-promoter identity should both appear in the booking documents.",
+    },
+    {
+      label: "Registered land extent",
+      value: "Not safely extracted in this review",
+      status: "review-pending",
+      source: "Detailed Karnataka RERA filing",
+      scope: "Exact registered phase",
+      note: "Request the filed land schedule and sanctioned phase boundary instead of using the wider Brigade Orchards township extent.",
+    },
+    {
+      label: "RERA carpet / published carpet area",
+      value: "448.54–1,051.21 sq ft",
+      status: "published",
+      source: "Official Brigade Orchards project disclosure",
+      scope: "Published 1, 2 and 3 bed range",
+      note: "Map the exact Laurel or Maple product, type and unit to the RERA schedule before comparison.",
+    },
+    {
+      label: "Undivided share (UDS)",
+      value: "Exact unit-specific value not yet extracted",
+      status: "review-pending",
+      source: "Detailed RERA unit schedule / draft agreement",
+      scope: "Selected unit",
+      note: "Confirm the exact UDS together with the Primus service and common-area obligations.",
+    },
+  ],
+  documents: [
+    {
+      label: "RERA registration certificate",
+      status: "Official link available",
+      note: "Open the regulator-hosted certificate from the evidence actions.",
+    },
+    {
+      label: "Laurel and Maple specification schedules",
+      status: "Published in K-RERA",
+      note: "Request the exact phase-matched specifications because accessibility features differ between products.",
+    },
+    {
+      label: "Approved plan and unit schedule",
+      status: "Request exact copy",
+      note: "Request the sanctioned phase plan and the exact carpet-area / UDS row before booking.",
+    },
+  ],
+};
+
+const centuryBlissEvidence: ProjectEvidence = {
+  checkedAt: "12 Aug 2026",
+  reviewLabel: "Karnataka RERA registration and official Century phase disclosure reviewed",
+  registrations: ["PRM/KA/RERA/1250/301/PR/210426/008595"],
+  legalPromoter: "HEBBAL PROPERTIES PRIVATE LIMITED",
+  officialStatus: "Approved",
+  approvedOn: "21 Apr 2026",
+  officialCompletion: "7 Apr 2031",
+  planApproval: "Request the Phase 6 sanctioned plan from the official filing",
+  inventory: "Exact phase inventory and product mapping require reconciliation",
+  facts: [
+    {
+      label: "RERA phase",
+      value: "PRM/KA/RERA/1250/301/PR/210426/008595",
+      status: "official",
+      source: "Karnataka RERA certificate and official Century page",
+      scope: "Century Eden Phase 6 (Century Bliss)",
+      note: "The official developer page identifies this registration as Century Eden Phase 6 and calls the project Century Bliss.",
+    },
+    {
+      label: "Registered land extent",
+      value: "Not safely extracted in this review",
+      status: "review-pending",
+      source: "Detailed Karnataka RERA filing",
+      scope: "Phase 6 only",
+      note: "Do not use the wider Century Eden extent as the registered extent of Century Bliss.",
+    },
+    {
+      label: "RERA carpet / product schedule",
+      value: "Official catalogue says 2 & 3 bed homes; exact filed range pending",
+      status: "review-pending",
+      source: "Official Century catalogue + detailed filing queue",
+      scope: "Phase 6",
+      note: "The wider Century Eden page still contains plotted-community material. Reconcile the exact Phase 6 product before relying on a home type.",
+    },
+    {
+      label: "Undivided share (UDS)",
+      value: "Exact unit-specific value not yet extracted",
+      status: "review-pending",
+      source: "Detailed RERA unit schedule / draft agreement",
+      scope: "Selected unit",
+      note: "Request the exact unit row and legal schedule before comparing the phase.",
+    },
+  ],
+  documents: [
+    {
+      label: "RERA registration certificate",
+      status: "Official link available",
+      note: "Open the regulator-hosted certificate from the evidence actions.",
+    },
+    {
+      label: "Phase 6 sanctioned plan and product schedule",
+      status: "Request exact copy",
+      note: "Use these documents to resolve the apartment-versus-plotted material visible on the wider project page.",
+    },
+    {
+      label: "Unit carpet area, UDS and Agreement for Sale",
+      status: "Request exact copy",
+      note: "Review the exact unit row and current draft agreement before paying a booking amount.",
+    },
+  ],
+};
+
+const providentEquinox5Evidence: ProjectEvidence = {
+  checkedAt: "12 Aug 2026",
+  reviewLabel: "Karnataka RERA certificate and official Phase 5 launch disclosure reviewed",
+  registrations: ["PRM/KA/RERA/1251/310/PR/170126/008410"],
+  legalPromoter: "PROVIDENT HOUSING LIMITED",
+  officialStatus: "Approved",
+  approvedOn: "17 Jan 2026",
+  officialCompletion: "31 Mar 2030",
+  planApproval: "Request the exact BDA-approved Phase 5 plan from the filing",
+  inventory: "Exact filed inventory schedule requires phase-level extraction",
+  facts: [
+    {
+      label: "RERA phase",
+      value: "PRM/KA/RERA/1251/310/PR/170126/008410",
+      status: "official",
+      source: "Karnataka RERA certificate",
+      scope: "Provident Equinox 5",
+      note: "The official certificate names Provident Equinox 5 and locates it at Venkatapura Village, Kengeri Hobli.",
+    },
+    {
+      label: "Registered land extent",
+      value: "Not safely extracted in this review",
+      status: "review-pending",
+      source: "Detailed Karnataka RERA filing",
+      scope: "Phase 5 only",
+      note: "Do not use a third-party or wider-township land figure until it is reconciled with this registration.",
+    },
+    {
+      label: "RERA carpet / unit schedule",
+      value: "2 & 3 BHK communication; exact filed range pending",
+      status: "review-pending",
+      source: "Official Phase 5 launch disclosure + detailed filing queue",
+      scope: "Phase 5",
+      note: "A reviewed detailed label reportedly says Provident Equinox 1. Resolve that naming mismatch and map the exact unit row.",
+    },
+    {
+      label: "Undivided share (UDS)",
+      value: "Exact unit-specific value not yet extracted",
+      status: "review-pending",
+      source: "Detailed RERA unit schedule / draft agreement",
+      scope: "Selected unit",
+      note: "Request the exact UDS with the sanctioned tower plan and Agreement for Sale.",
+    },
+  ],
+  documents: [
+    {
+      label: "RERA registration certificate",
+      status: "Official link available",
+      note: "The regulator-hosted certificate identifies Provident Equinox 5.",
+    },
+    {
+      label: "Official Phase 5 launch intimation",
+      status: "Official link available",
+      note: "Puravankara disclosed the launch of Phase 5 in the existing Provident Equinox project.",
+    },
+    {
+      label: "Sanctioned plan, unit schedule and Agreement for Sale",
+      status: "Request exact copy",
+      note: "Use the exact documents to resolve the project-name mismatch before booking.",
+    },
+  ],
+};
+
 const detailedEvidenceByProject: Record<string, ProjectEvidence> = {
   "Prestige Southern Star": southernStarEvidence,
   "Assetz Mizu & Ki": mizuKiEvidence,
@@ -525,6 +714,9 @@ const detailedEvidenceByProject: Record<string, ProjectEvidence> = {
   "Century Kindle Phase 1": centuryKindleEvidence,
   "Century Astoria": centuryAstoriaEvidence,
   "Mahindra Blossom": mahindraBlossomEvidence,
+  "Laurel & Maple at Brigade Orchards": laurelMapleEvidence,
+  "Century Bliss": centuryBlissEvidence,
+  "Provident Equinox 5": providentEquinox5Evidence,
 };
 
 export function getProjectEvidence(project: Project): ProjectEvidence {

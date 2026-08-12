@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-label="Century Bliss architectural data cover">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#061426"/><stop offset=".57" stop-color="#232c47"/><stop offset="1" stop-color="#58412f"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#e1ad72" stop-opacity=".33"/><stop offset="1" stop-color="#e1ad72" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse"><path d="M72 0H0V72" fill="none" stroke="#fff" stroke-opacity=".04"/></pattern>
+  </defs>
+  <rect width="1600" height="1200" fill="url(#bg)"/><circle cx="1280" cy="190" r="640" fill="url(#glow)"/><rect width="1600" height="1200" fill="url(#grid)"/>
+  <g fill="none" stroke="#e0b27a" stroke-width="3" opacity=".43">
+    <path d="M700 980h840M835 980V470h185v510M1065 980V330h220v650M1330 980V520h165v460"/>
+    <path d="M875 545h105M875 630h105M875 715h105M1110 415h130M1110 505h130M1110 595h130M1110 685h130M1370 600h85M1370 685h85"/>
+    <path d="M650 980c110-135 230-165 360-86 110 67 210 49 306-70 62-77 138-92 225-45"/>
+    <path d="M755 820c-58-64-52-138 20-220 77 41 102 109 53 187-29 47-57 70-83 70M1450 760c-49-52-44-113 16-181 64 34 85 91 44 155-24 39-47 58-68 58"/>
+  </g>
+  <g fill="#fff" opacity=".055"><rect x="835" y="470" width="185" height="510" rx="4"/><rect x="1065" y="330" width="220" height="650" rx="4"/><rect x="1330" y="520" width="165" height="460" rx="4"/></g>
+  <path d="M120 310h410" stroke="#c9a227" stroke-opacity=".18" stroke-width="2"/><path d="M120 340h300" stroke="#fff" stroke-opacity=".08" stroke-width="2"/>
+</svg>

@@ -64,7 +64,7 @@ export function getProjectBySlug(slug: string) {
 
 const verifiedAt = "31 Jul 2026";
 const launchVerifiedAt = "2 Aug 2026";
-const reraVerifiedAt = "10 Aug 2026";
+const reraVerifiedAt = "12 Aug 2026";
 
 /**
  * Public buyer catalogue assembled from developer-owned pages and disclosures.
@@ -72,6 +72,155 @@ const reraVerifiedAt = "10 Aug 2026";
  * as outbound links. Price and inventory always require current confirmation.
  */
 export const projects: Project[] = [
+  {
+    name: "Laurel & Maple at Brigade Orchards",
+    developer: "Brigade Group",
+    location: "Brigade Orchards, Devanahalli",
+    corridor: "North Bengaluru",
+    configuration: "1, 2 & 3 Bed Homes",
+    propertyType: "Multi-generational residences operated by Primus",
+    unitSizes: "RERA carpet: 449–1,051 sq ft",
+    price: "₹97 lakh onwards*",
+    image: "/projects/rera-new/laurel-maple.svg",
+    gallery: ["/projects/rera-new/laurel-maple.svg"],
+    description:
+      "A multi-generational residential phase within Brigade Orchards, planned for independent family living alongside senior-friendly care, accessibility and shared social spaces.",
+    highlights: [
+      "1, 2 and 3 bed homes",
+      "Official published carpet range of 448.54–1,051.21 sq ft",
+      "Senior-friendly and multi-generational design programme",
+    ],
+    amenities: [
+      "Swimming pool and pool deck",
+      "Healthcare and nurse-station facilities",
+      "Library, coworking and business centre",
+      "Pickleball and central courts",
+      "Gym, salon and massage rooms",
+      "Indoor games and banquet hall",
+    ],
+    nearby: [
+      "Brigade Orchards integrated township",
+      "Devanahalli",
+      "Kempegowda International Airport corridor",
+      "North Bengaluru employment catchment",
+      "Township sports and social infrastructure",
+    ],
+    buyerNotes: [
+      "Compare the Laurel and Maple specification schedules separately; the accessibility and senior-support features are not identical across both products.",
+      "Confirm the current Primus service package, recurring care charges, exact carpet area, UDS and all-inclusive price before booking.",
+    ],
+    launchNote:
+      "Karnataka RERA approved the phase on 4 Mar 2026. Current inventory, Primus service terms and the exact unit schedule still require written confirmation.",
+    mediaNote:
+      "RERA-first data cover shown while independently matched official project photography is being reviewed.",
+    status: "New launch",
+    area: "Brigade Orchards township phase · exact registered extent in evidence pack",
+    possession: "31 Mar 2030",
+    rera: "PRM/KA/RERA/1250/303/PR/040326/008505",
+    reraApprovedOn: "4 Mar 2026",
+    verifiedAt: reraVerifiedAt,
+    sourceUrl:
+      "https://www.brigadeorchards.com/residences/laurel-maple-at-brigade-orchards",
+  },
+  {
+    name: "Century Bliss",
+    developer: "Century Real Estate",
+    location: "Yelahanka–Doddaballapura Main Road",
+    corridor: "North Bengaluru",
+    configuration: "2 & 3 Bed Homes",
+    propertyType: "RERA-registered Phase 6 within Century Eden",
+    unitSizes: "Exact RERA carpet schedule to be unit-matched",
+    price: "Contact for current developer-approved price",
+    image: "/projects/rera-new/century-bliss.svg",
+    gallery: ["/projects/rera-new/century-bliss.svg"],
+    description:
+      "A newly registered Century Eden phase promoted as two- and three-bedroom homes on the Yelahanka–Doddaballapura growth corridor, with access to the wider green community setting.",
+    highlights: [
+      "Officially identified as Century Eden Phase 6",
+      "2 and 3 bed homes in the developer catalogue",
+      "North Bengaluru location near established education and airport corridors",
+    ],
+    amenities: [
+      "16,000 sq ft operational clubhouse in the wider community",
+      "Swimming and children’s pools",
+      "Cricket, tennis, basketball and badminton",
+      "Gym, spa and indoor games",
+      "Amphitheatre and leisure park",
+      "Landscaped community spaces",
+    ],
+    nearby: [
+      "Yelahanka",
+      "Doddaballapura Main Road",
+      "International-school corridor",
+      "Airport Road connectivity",
+      "North Bengaluru employment zones",
+    ],
+    buyerNotes: [
+      "The official Century page identifies Century Bliss as Phase 6 and markets 2 and 3 bed homes, while the wider Century Eden page retains plotted-community material. Map the exact product and unit schedule before comparison.",
+      "Confirm whether every township amenity is included for this phase, plus the exact carpet area, UDS, tower and possession obligation.",
+    ],
+    launchNote:
+      "Karnataka RERA approved Century Bliss on 21 Apr 2026. The phase-to-product mapping must be confirmed against the exact unit schedule before booking.",
+    mediaNote:
+      "RERA-first data cover shown because the current official page mixes wider Century Eden material with the new Century Bliss phase.",
+    status: "New launch",
+    area: "Century Eden Phase 6 · exact registered extent to be unit-matched",
+    possession: "7 Apr 2031",
+    rera: "PRM/KA/RERA/1250/301/PR/210426/008595",
+    reraApprovedOn: "21 Apr 2026",
+    verifiedAt: reraVerifiedAt,
+    sourceUrl: "https://www.centuryrealestate.in/residential/projects/century-eden",
+  },
+  {
+    name: "Provident Equinox 5",
+    developer: "Provident Housing",
+    location: "Venkatapura Village, Mysore Road",
+    corridor: "South Bengaluru",
+    configuration: "2 & 3 BHK Apartments",
+    propertyType: "Phase 5 of the Provident Equinox community",
+    unitSizes: "Exact RERA carpet schedule to be unit-matched",
+    price: "Contact for current developer-approved price",
+    image: "/projects/rera-new/provident-rera.svg",
+    gallery: ["/projects/rera-new/provident-rera.svg"],
+    description:
+      "The fifth registered phase of Provident Equinox at Venkatapura Village on the Mysore Road corridor, positioned for buyers comparing metro-led connectivity and value-oriented family homes.",
+    highlights: [
+      "Official Phase 5 launch disclosed by Puravankara",
+      "2 and 3 BHK homes in the current project communication",
+      "Mysore Road and Kengeri connectivity catchment",
+    ],
+    amenities: [
+      "Clubhouse and community hall",
+      "Swimming pool",
+      "Gym and yoga spaces",
+      "Children’s play areas",
+      "Landscaped seating and recreation",
+      "Security and parking infrastructure",
+    ],
+    nearby: [
+      "Mysore Road corridor",
+      "Kengeri",
+      "Purple Line metro catchment",
+      "NICE Road connectivity",
+      "Global Village Tech Park catchment",
+    ],
+    buyerNotes: [
+      "The official certificate names Provident Equinox 5, while a reviewed detailed filing label reportedly says Provident Equinox 1. Reconcile that naming conflict before mapping a unit or payment schedule.",
+      "Confirm the exact tower, carpet area, UDS, sanctioned plan and whether shared township amenities are complete or phase-linked.",
+    ],
+    launchNote:
+      "Karnataka RERA approved Provident Equinox 5 on 17 Jan 2026. A naming mismatch in the reviewed filing requires phase-level clarification.",
+    mediaNote:
+      "RERA-first data cover shown while official phase-matched photography and the detailed unit schedule are being confirmed.",
+    status: "New launch",
+    area: "Phase 5 · exact registered land extent in evidence pack",
+    possession: "31 Mar 2030",
+    rera: "PRM/KA/RERA/1251/310/PR/170126/008410",
+    reraApprovedOn: "17 Jan 2026",
+    verifiedAt: reraVerifiedAt,
+    sourceUrl:
+      "https://backend.puravankara.com/uploads/Launch_of_Phase_5_Project_Provident_Equinox_19184679cb.pdf",
+  },
   {
     name: "Assetz Mizu & Ki",
     developer: "Assetz Property Group",

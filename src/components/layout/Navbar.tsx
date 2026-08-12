@@ -20,9 +20,9 @@ const navigation = [
   { label: "Home Match", href: "/home-match" },
   { label: "Buy", href: "/projects" },
   { label: "Areas", href: "/locations" },
+  { label: "RERA Watch", href: "/rera-watch" },
   { label: "TrueCost", href: "/true-cost" },
   { label: "Buyer Benefits", href: "/buyer-advantage" },
-  { label: "Saved Homes", href: "/my-search" },
 ];
 
 const advisorUrl = `https://wa.me/919019697170?text=${encodeURIComponent(

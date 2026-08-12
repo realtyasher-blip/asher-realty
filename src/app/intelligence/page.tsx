@@ -10,6 +10,7 @@ import {
 
 import DecisionIntelligence from "@/components/home/DecisionIntelligence";
 import MarketIntelligence from "@/components/home/MarketIntelligence";
+import ReraWatch from "@/components/intelligence/ReraWatch";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
@@ -87,6 +88,8 @@ export default function IntelligencePage() {
         </section>
 
         <DecisionIntelligence compact />
+
+        <ReraWatch compact />
 
         <section className="bg-[#f5f6f8] py-24 sm:py-28">
           <div className="container-shell">

@@ -118,6 +118,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.92,
     },
     {
+      url: `${baseUrl}/rera-watch`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.93,
+    },
+    {
       url: `${baseUrl}/guides`,
       lastModified: new Date(),
       changeFrequency: "weekly",

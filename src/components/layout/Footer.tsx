@@ -16,6 +16,7 @@ const quickLinks = [
   { label: "TrueCost Room", href: "/true-cost" },
   { label: "Locations", href: "/locations" },
   { label: "Intelligence", href: "/intelligence" },
+  { label: "RERA Watch", href: "/rera-watch" },
   { label: "Buyer Guides", href: "/guides" },
   { label: "Book Site Visit", href: "/book-site-visit" },
   { label: "Compare", href: "/compare" },

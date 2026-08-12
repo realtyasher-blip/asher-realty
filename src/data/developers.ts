@@ -152,6 +152,18 @@ export const developerProfiles: DeveloperProfile[] = [
     sourceUrl: "https://www.puravankara.com/about-us",
   },
   {
+    name: "Provident Housing",
+    established: "2008",
+    headquarters: "Bengaluru",
+    summary:
+      "The value-housing subsidiary of Puravankara, focused on practical, community-led homes across major Indian cities.",
+    knownFor: ["Value-oriented homes", "Large communities", "Puravankara group platform"],
+    buyerLens:
+      "Relevant for buyers balancing price, connectivity and community amenities. Always map the exact Provident phase because large townships can have several registrations and separate delivery schedules.",
+    verify: ["Exact phase and tower", "RERA carpet area and UDS", "Shared-amenity delivery"],
+    sourceUrl: "https://www.providenthousing.com/about-us/",
+  },
+  {
     name: "Sattva Group",
     established: "Three-decade legacy",
     headquarters: "Bengaluru",
