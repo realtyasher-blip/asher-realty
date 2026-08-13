@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Asher Realty — Bengaluru Property App",
     short_name: "Asher Realty",
     description:
-      "Match, compare and save premium Bengaluru properties, then plan guided site visits with Asher Realty.",
+      "Buy, rent, sell or rent out Bengaluru property with one managed Asher Realty journey.",
     start_url: "/?source=app",
     scope: "/",
     display: "standalone",
@@ -35,10 +35,10 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       {
-        name: "Find My Home",
-        short_name: "Home Match",
-        description: "Build a personalised Bengaluru project shortlist",
-        url: "/home-match?source=app-shortcut",
+        name: "Buy a Property",
+        short_name: "Buy",
+        description: "Explore Bengaluru new-launch properties",
+        url: "/projects?source=app-shortcut",
         icons: [
           {
             src: "/brand/app-icon-192.png",
@@ -48,10 +48,10 @@ export default function manifest(): MetadataRoute.Manifest {
         ],
       },
       {
-        name: "Saved Properties",
-        short_name: "Saved",
-        description: "Open your saved property shortlist",
-        url: "/projects?saved=1&source=app-shortcut",
+        name: "Find a Rental",
+        short_name: "Rent",
+        description: "Start a managed Bengaluru rental search",
+        url: "/rent?source=app-shortcut",
         icons: [
           {
             src: "/brand/app-icon-192.png",
@@ -61,10 +61,10 @@ export default function manifest(): MetadataRoute.Manifest {
         ],
       },
       {
-        name: "Book Site Visit",
-        short_name: "Book Visit",
-        description: "Schedule a guided project visit",
-        url: "/book-site-visit?source=app-shortcut",
+        name: "Post a Property",
+        short_name: "Post",
+        description: "Submit a property privately for rent or resale review",
+        url: "/post-property?source=app-shortcut",
         icons: [
           {
             src: "/brand/app-icon-192.png",
@@ -74,10 +74,10 @@ export default function manifest(): MetadataRoute.Manifest {
         ],
       },
       {
-        name: "Decode a Cost Sheet",
-        short_name: "TrueCost",
-        description: "Estimate the complete commitment behind a property quote",
-        url: "/true-cost?source=app-shortcut",
+        name: "Property Services",
+        short_name: "Services",
+        description: "Explore end-to-end Bengaluru property support",
+        url: "/services?source=app-shortcut",
         icons: [
           {
             src: "/brand/app-icon-192.png",

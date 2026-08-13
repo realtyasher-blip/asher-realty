@@ -46,6 +46,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
+      url: `${baseUrl}/rent`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.94,
+    },
+    {
+      url: `${baseUrl}/resale`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.94,
+    },
+    {
+      url: `${baseUrl}/post-property`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/services`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.88,
+    },
+    {
       url: `${baseUrl}/builders`,
       lastModified: new Date(),
       changeFrequency: "monthly",

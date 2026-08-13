@@ -27,7 +27,7 @@ type SearchItem = {
   title: string;
   description: string;
   href: string;
-  type: "Project" | "Builder" | "Location" | "Guide" | "Tool";
+  type: "Project" | "Builder" | "Location" | "Guide" | "Journey" | "Tool";
   image?: string;
   keywords: string;
 };
@@ -92,6 +92,34 @@ const searchItems: SearchItem[] = [
       .toLowerCase(),
   })),
   {
+    title: "Find a Bengaluru rental",
+    description: "Start with locality, budget, move-in date and daily commute",
+    href: "/rent",
+    type: "Journey" as const,
+    keywords: "rent rental tenant lease apartment house bengaluru bangalore deposit",
+  },
+  {
+    title: "Explore resale homes",
+    description: "Create a ready-home brief with document and total-cost checks",
+    href: "/resale",
+    type: "Journey" as const,
+    keywords: "resale ready home apartment buy owner property bengaluru bangalore",
+  },
+  {
+    title: "Post a property",
+    description: "Privately submit a Bengaluru home for rent or resale review",
+    href: "/post-property",
+    type: "Journey" as const,
+    keywords: "post list sell property rent out landlord owner resale listing",
+  },
+  {
+    title: "End-to-end property services",
+    description: "Loans, documents, inspection, moving, interiors and owner support",
+    href: "/services",
+    type: "Journey" as const,
+    keywords: "services loan legal documents inspection interiors movers management valuation",
+  },
+  {
     title: "Open the Buyer Decision Lab",
     description: "Rank projects by personal fit, visible cost and data confidence",
     href: "/decision-lab",
@@ -142,6 +170,7 @@ const typeIcons = {
   Builder: BadgeCheck,
   Location: MapPin,
   Guide: BookOpen,
+  Journey: Sparkles,
   Tool: Calculator,
 };
 
@@ -195,6 +224,7 @@ export default function UniversalSearch() {
     const term = query.trim().toLowerCase();
     if (!term) {
       return [
+        ...searchItems.filter((item) => item.type === "Journey").slice(0, 4),
         ...searchItems.filter(
           (item) =>
             item.type === "Project" &&
@@ -202,8 +232,7 @@ export default function UniversalSearch() {
               (project) =>
                 project.name === item.title && project.featured
             )
-        ).slice(0, 4),
-        ...searchItems.filter((item) => item.type === "Tool").slice(0, 3),
+        ).slice(0, 3),
       ];
     }
 
@@ -242,7 +271,7 @@ export default function UniversalSearch() {
               ref={inputRef}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search projects, builders, locations or buyer questions"
+              placeholder="Search projects, rentals, resale, services or areas"
               className="h-12 min-w-0 flex-1 bg-transparent text-sm font-medium text-[#071a2f] outline-none placeholder:text-slate-400 sm:text-base"
             />
             <button
@@ -322,7 +351,7 @@ export default function UniversalSearch() {
         <div className="flex flex-col gap-3 border-t border-slate-200 bg-[#071a2f] px-5 py-4 text-white sm:flex-row sm:items-center sm:justify-between">
           <span className="flex items-center gap-2 text-xs text-white/55">
             <Sparkles className="size-4 text-[#e4c462]" />
-            Search across the entire curated Bengaluru catalogue
+            Search across Asher&apos;s Bengaluru property journeys
           </span>
           <div className="flex gap-4 text-xs font-bold">
             <Link href="/compare" onClick={closeSearch} className="inline-flex items-center text-white/70 hover:text-white">

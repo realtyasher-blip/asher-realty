@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   applicationName: "Asher Realty",
   manifest: "/manifest.webmanifest",
   title: {
-    default: "Asher Realty | AI Home Match for Bengaluru Buyers",
+    default: "Asher Realty | Buy, Rent, Sell & Manage Bengaluru Property",
     template: "%s | Asher Realty",
   },
   description:
-    "Match, compare and visit premium Bengaluru properties with explainable recommendations, dated project facts and personalised guidance from Asher Realty.",
+    "Buy, rent, sell or rent out Bengaluru property with guided search, owner submissions, project intelligence and end-to-end support from Asher Realty.",
   keywords: [
     "Asher Realty",
     "Bengaluru real estate",
@@ -42,10 +42,14 @@ export const metadata: Metadata = {
     "Bangalore property comparison",
     "Bengaluru property advisor",
     "AI property search Bangalore",
+    "rent property Bangalore",
+    "resale property Bangalore",
+    "sell property Bangalore",
+    "rent out property Bangalore",
   ],
   openGraph: {
-    title: "Asher Realty | Your Life First. Then the Property.",
-    description: "Build an explainable Bengaluru shortlist, compare the strongest homes and visit with confidence.",
+    title: "Asher Realty | Everything Property. One Bengaluru Desk.",
+    description: "Buy, rent, sell or rent out with a clear, managed Bengaluru property journey.",
     url: "https://asherrealty.in",
     siteName: "Asher Realty",
     locale: "en_IN",
@@ -61,8 +65,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Asher Realty | Your Life First. Then the Property.",
-    description: "Build an explainable Bengaluru shortlist, compare the strongest homes and visit with confidence.",
+    title: "Asher Realty | Everything Property. One Bengaluru Desk.",
+    description: "Buy, rent, sell or rent out with a clear, managed Bengaluru property journey.",
     images: ["/og-v2.png"],
   },
   icons: {
@@ -162,6 +166,26 @@ export default function RootLayout({
                 });
               } else if (href.startsWith('/my-search')) {
                 gtag('event', 'buyer_workspace_opened', {
+                  cta_label: label,
+                  page_path: window.location.pathname
+                });
+              } else if (href.startsWith('/post-property')) {
+                gtag('event', 'property_submission_flow_opened', {
+                  cta_label: label,
+                  page_path: window.location.pathname
+                });
+              } else if (href.startsWith('/rent')) {
+                gtag('event', 'rental_journey_opened', {
+                  cta_label: label,
+                  page_path: window.location.pathname
+                });
+              } else if (href.startsWith('/resale')) {
+                gtag('event', 'resale_journey_opened', {
+                  cta_label: label,
+                  page_path: window.location.pathname
+                });
+              } else if (href.startsWith('/services')) {
+                gtag('event', 'property_services_opened', {
                   cta_label: label,
                   page_path: window.location.pathname
                 });

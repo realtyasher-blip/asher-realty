@@ -17,12 +17,11 @@ import {
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { label: "Home Match", href: "/home-match" },
   { label: "Buy", href: "/projects" },
-  { label: "Areas", href: "/locations" },
-  { label: "RERA Watch", href: "/rera-watch" },
-  { label: "TrueCost", href: "/true-cost" },
-  { label: "Buyer Benefits", href: "/buyer-advantage" },
+  { label: "Rent", href: "/rent" },
+  { label: "Resale", href: "/resale" },
+  { label: "Post Property", href: "/post-property" },
+  { label: "Services", href: "/services" },
 ];
 
 const advisorUrl = `https://wa.me/919019697170?text=${encodeURIComponent(
@@ -77,12 +76,11 @@ export default function Navbar() {
               <Search className="size-4" />
             </button>
             <Link
-              href="/crm"
-              aria-label="Open Asher Realty staff CRM"
+              href="/post-property"
+              aria-label="Post a property for rent or resale review"
               className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 px-4 text-[11px] font-semibold text-white/65 transition hover:border-[#c9a227]/40 hover:bg-white/[0.06] hover:text-[#f0d477]"
             >
-              <Lock className="mr-2 size-3.5 text-[#e4c462]" />
-              CRM Login
+              Post a Property
             </Link>
             <a
               href={advisorUrl}
@@ -142,6 +140,10 @@ export default function Navbar() {
                       {item.label}
                     </Link>
                   ))}
+
+                  <Link href="/home-match" className="rounded-2xl px-4 py-3 text-base text-white/60 transition hover:bg-white/[0.06] hover:text-[#e4c462]">AI Home Match</Link>
+                  <Link href="/rera-watch" className="rounded-2xl px-4 py-3 text-base text-white/60 transition hover:bg-white/[0.06] hover:text-[#e4c462]">RERA Watch</Link>
+                  <Link href="/true-cost" className="rounded-2xl px-4 py-3 text-base text-white/60 transition hover:bg-white/[0.06] hover:text-[#e4c462]">Total Cost Calculator</Link>
 
                   <Link
                     href="/crm"

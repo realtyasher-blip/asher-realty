@@ -1,0 +1,34 @@
+export const propertyIntents = ["Sell", "Rent out"] as const;
+export type PropertyIntent = (typeof propertyIntents)[number];
+
+export type PropertySubmissionInput = {
+  intent: PropertyIntent;
+  ownerRole: "Owner" | "Power of attorney holder" | "Authorised representative";
+  propertyType: string;
+  projectName: string;
+  locality: string;
+  pincode: string;
+  configuration: string;
+  bathrooms: string;
+  areaValue: string;
+  areaBasis: string;
+  furnishing: string;
+  floor: string;
+  totalFloors: string;
+  parking: string;
+  propertyAge: string;
+  expectedPrice: string;
+  monthlyRent: string;
+  maintenance: string;
+  deposit: string;
+  availableFrom: string;
+  occupancy: string;
+  description: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  contactPreference: string;
+  authorityDeclaration: boolean;
+  accuracyDeclaration: boolean;
+  contactConsent: boolean;
+};

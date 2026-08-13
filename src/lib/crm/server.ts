@@ -4,6 +4,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 import type { Lead, LeadInput, LeadStatus } from "@/lib/crm/types";
 import { mergeCallingProfile, parseCallingProfile } from "@/lib/crm/calling";
+import type { PropertySubmissionInput } from "@/lib/listings/types";
 
 const SESSION_COOKIE = "asher_crm_session";
 const SESSION_SECONDS = 60 * 60 * 12;
@@ -74,6 +75,58 @@ export async function createLead(input: LeadInput) {
       notes: mergeCallingProfile("", profile),
     }),
   });
+  return rows[0];
+}
+
+export async function createPropertySubmissionLead(
+  input: PropertySubmissionInput
+) {
+  const commercial =
+    input.intent === "Sell"
+      ? `Expected price: ${input.expectedPrice}`
+      : `Monthly rent: ${input.monthlyRent}; deposit: ${input.deposit || "Not shared"}; maintenance: ${input.maintenance || "Not shared"}`;
+  const summary = [
+    "PUBLIC PROPERTY SUBMISSION — PENDING MANUAL REVIEW",
+    `Intent: ${input.intent}`,
+    `Submitted by: ${input.ownerRole}`,
+    `Property: ${input.propertyType}; ${input.configuration}`,
+    `Project/building: ${input.projectName || "Not shared"}`,
+    `Locality: ${input.locality}${input.pincode ? ` - ${input.pincode}` : ""}`,
+    `Area: ${input.areaValue} sq ft (${input.areaBasis})`,
+    `Bathrooms: ${input.bathrooms || "Not shared"}`,
+    `Floor: ${input.floor || "Not shared"} of ${input.totalFloors || "Not shared"}`,
+    `Furnishing: ${input.furnishing || "Not shared"}`,
+    `Parking: ${input.parking || "Not shared"}`,
+    `Property age: ${input.propertyAge || "Not shared"}`,
+    commercial,
+    `Available from: ${input.availableFrom || "To discuss"}`,
+    `Occupancy: ${input.occupancy || "Not shared"}`,
+    `Preferred contact: ${input.contactPreference}`,
+    `Owner description: ${input.description || "Not shared"}`,
+    "Declarations: authority to advertise, information accuracy and enquiry-contact permission accepted.",
+    "Do not publish owner contact, exact address or property facts until manual verification is complete.",
+  ].join("\n");
+
+  const rows = await supabaseRequest<Lead[]>("leads", {
+    method: "POST",
+    headers: { Prefer: "return=representation" },
+    body: JSON.stringify({
+      name: input.name,
+      phone: input.phone,
+      email: input.email,
+      source: "owner_property_submission",
+      project: input.projectName || `${input.propertyType} in ${input.locality}`,
+      budget:
+        input.intent === "Sell" ? input.expectedPrice : input.monthlyRent,
+      location: `${input.locality}${input.pincode ? ` - ${input.pincode}` : ""}`,
+      configuration: input.configuration,
+      purpose: input.intent === "Sell" ? "Owner resale" : "Owner rental",
+      timeline: input.availableFrom || "To discuss",
+      status: "New",
+      notes: summary,
+    }),
+  });
+
   return rows[0];
 }
 

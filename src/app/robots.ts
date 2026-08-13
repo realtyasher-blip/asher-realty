@@ -5,6 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/crm", "/api/"],
     },
     sitemap: "https://asherrealty.in/sitemap.xml",
     host: "https://asherrealty.in",

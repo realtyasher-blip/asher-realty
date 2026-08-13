@@ -4,6 +4,13 @@ function text(value: unknown, max = 160) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+const publicLeadSources = new Set([
+  "property_consultation",
+  "site_visit_booking",
+  "rental_requirement",
+  "resale_requirement",
+]);
+
 export function parseLeadInput(value: unknown): LeadInput | null {
   if (!value || typeof value !== "object") return null;
   const data = value as Record<string, unknown>;
@@ -13,12 +20,16 @@ export function parseLeadInput(value: unknown): LeadInput | null {
   const phone = text(data.phone, 20);
   const digits = phone.replace(/\D/g, "");
   if (name.length < 2 || digits.length < 8 || digits.length > 15) return null;
+  const requestedSource = text(data.source, 60);
+  const source = publicLeadSources.has(requestedSource)
+    ? requestedSource
+    : "website";
 
   return {
     name,
     phone,
     email: text(data.email, 120) || null,
-    source: text(data.source, 60) || "website",
+    source,
     project: text(data.project, 160) || null,
     budget: text(data.budget, 80) || null,
     location: text(data.location, 120) || null,

@@ -6,7 +6,10 @@ import Link from "next/link";
 import {
   ArrowRight,
   BedDouble,
+  Building2,
+  Home,
   IndianRupee,
+  KeyRound,
   MapPin,
   MessageCircle,
   Search,
@@ -65,22 +68,29 @@ export default function Hero() {
         <div className="w-full max-w-5xl">
           <div className="hero-reveal inline-flex items-center gap-2 rounded-full border border-[#e4c462]/25 bg-[#c9a227]/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#f0d477] backdrop-blur-xl">
             <ShieldCheck className="size-4" />
-            Bengaluru property discovery · built around the buyer
+            Buy · rent · sell · rent out · Bengaluru
           </div>
 
           <h1 className="hero-reveal hero-delay-1 mt-7 max-w-4xl text-[3.25rem] font-medium leading-[0.96] tracking-[-0.04em] sm:text-7xl lg:text-[5.5rem]">
-            Don&apos;t just browse homes.
+            Everything property.
             <span className="mt-2 block bg-gradient-to-r from-[#fff3c4] via-[#e4c462] to-[#b98e17] bg-clip-text text-transparent">
-              Discover how you want to live.
+              One Bengaluru desk.
             </span>
           </h1>
 
           <p className="hero-reveal hero-delay-2 mt-7 max-w-2xl text-base leading-8 text-white/68 sm:text-lg">
-            Match homes to your work, budget and daily life. Then explore the
-            stories, trade-offs and questions that make a property worth visiting.
+            Find a home, rent one, sell, rent out or coordinate the next step.
+            Start with your need and move through one clear, managed journey.
           </p>
 
-          <div className="hero-reveal hero-delay-3 mt-9 max-w-5xl rounded-[1.75rem] border border-white/14 bg-[#041421]/78 p-3 shadow-[0_25px_90px_rgba(0,0,0,.3)] backdrop-blur-2xl">
+          <div className="hero-reveal hero-delay-3 mt-7 flex flex-wrap gap-2">
+            <Link href="/projects" className="inline-flex h-11 items-center rounded-full bg-white px-4 text-xs font-bold text-[#071a2f]"><Search className="mr-2 size-4 text-[#9a7410]" />Buy</Link>
+            <Link href="/rent" className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/[.06] px-4 text-xs font-bold text-white backdrop-blur"><KeyRound className="mr-2 size-4 text-[#e4c462]" />Rent</Link>
+            <Link href="/post-property?intent=sell" className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/[.06] px-4 text-xs font-bold text-white backdrop-blur"><Building2 className="mr-2 size-4 text-[#e4c462]" />Sell</Link>
+            <Link href="/post-property?intent=rent" className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/[.06] px-4 text-xs font-bold text-white backdrop-blur"><Home className="mr-2 size-4 text-[#e4c462]" />Rent out</Link>
+          </div>
+
+          <div className="hero-reveal hero-delay-4 mt-5 max-w-5xl rounded-[1.75rem] border border-white/14 bg-[#041421]/78 p-3 shadow-[0_25px_90px_rgba(0,0,0,.3)] backdrop-blur-2xl">
             <div className="grid gap-2 lg:grid-cols-[1.25fr_.8fr_.9fr_auto]">
               <label className="flex min-h-16 items-center gap-3 rounded-2xl bg-white/[0.07] px-4 transition focus-within:bg-white/[0.11]">
                 <MapPin className="size-5 shrink-0 text-[#e4c462]" />
