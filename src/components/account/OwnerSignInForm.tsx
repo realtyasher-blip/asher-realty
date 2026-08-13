@@ -53,19 +53,20 @@ export default function OwnerSignInForm() {
           Check your email
         </h2>
         <p className="mt-3 text-sm leading-7 text-emerald-950/65">
-          We sent a secure sign-in link to <strong>{email}</strong>. Open it in
-          this browser to enter My Asher.
+          We sent a secure sign-in link to <strong>{email}</strong>. Open the
+          newest link once in this same browser and on this same device.
         </p>
         <p className="mt-4 text-xs leading-6 text-emerald-950/55">
-          The link may take a minute to arrive. Check Spam or Promotions if you
-          do not see it.
+          If your email app opens links in another browser, copy the full link
+          and paste it into this browser. The link may take a minute to arrive;
+          also check Spam or Promotions.
         </p>
         <button
           type="button"
           onClick={() => setState("idle")}
           className="mt-6 text-xs font-bold text-emerald-800 underline underline-offset-4"
         >
-          Use a different email
+          Request a fresh link
         </button>
       </div>
     );

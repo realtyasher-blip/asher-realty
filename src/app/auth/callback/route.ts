@@ -1,6 +1,9 @@
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
-import { createClient, publicSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  createRouteClient,
+  publicSupabaseConfigured,
+} from "@/lib/supabase/server";
 
 function safeNext(value: string | null) {
   if (
@@ -13,26 +16,38 @@ function safeNext(value: string | null) {
   return value;
 }
 
-export async function GET(request: Request) {
-  const requestUrl = new URL(request.url);
+function noStoreRedirect(url: URL) {
+  const response = NextResponse.redirect(url);
+  response.headers.set(
+    "Cache-Control",
+    "private, no-cache, no-store, must-revalidate, max-age=0"
+  );
+  response.headers.set("Expires", "0");
+  response.headers.set("Pragma", "no-cache");
+  return response;
+}
+
+export async function GET(request: NextRequest) {
+  const requestUrl = request.nextUrl;
   const code = requestUrl.searchParams.get("code");
   const next = safeNext(requestUrl.searchParams.get("next"));
 
   if (!publicSupabaseConfigured()) {
-    return NextResponse.redirect(
+    return noStoreRedirect(
       new URL("/account/sign-in?error=setup", requestUrl.origin)
     );
   }
 
   if (code) {
-    const supabase = await createClient();
+    const successResponse = noStoreRedirect(new URL(next, requestUrl.origin));
+    const supabase = createRouteClient(request, successResponse);
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(new URL(next, requestUrl.origin));
+      return successResponse;
     }
   }
 
-  return NextResponse.redirect(
+  return noStoreRedirect(
     new URL("/account/sign-in?error=auth", requestUrl.origin)
   );
 }

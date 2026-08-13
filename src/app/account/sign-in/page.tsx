@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  AlertCircle,
   ArrowLeft,
   Camera,
   EyeOff,
@@ -36,7 +37,31 @@ const benefits = [
   },
 ] as const;
 
-export default function OwnerSignInPage() {
+const authErrors = {
+  setup:
+    "Secure sign-in is temporarily being configured. Please try again shortly.",
+  invalid:
+    "This sign-in link is incomplete. Please request a fresh secure link below.",
+  expired:
+    "This secure link is invalid, expired or has already been used. Please request a fresh link below.",
+  auth:
+    "That link could not complete sign-in. It may have opened in a different browser or device, expired, or already been used. Request a fresh link below, then open it in this same browser.",
+} as const;
+
+type AuthError = keyof typeof authErrors;
+
+function safeAuthError(value: string | string[] | undefined) {
+  const error = Array.isArray(value) ? value[0] : value;
+  return error && error in authErrors ? authErrors[error as AuthError] : null;
+}
+
+export default async function OwnerSignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string | string[] }>;
+}) {
+  const message = safeAuthError((await searchParams).error);
+
   return (
     <main className="min-h-screen bg-[#041421] text-white">
       <div className="premium-grid fixed inset-0 opacity-25" />
@@ -92,6 +117,15 @@ export default function OwnerSignInPage() {
               Enter your email and we will send a one-time secure link. New
               clients get a profile automatically after signing in.
             </p>
+            {message && (
+              <div
+                role="alert"
+                className="mt-5 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-6 text-amber-950"
+              >
+                <AlertCircle className="mt-0.5 size-4 shrink-0 text-amber-700" />
+                <span>{message}</span>
+              </div>
+            )}
             <div className="mt-7">
               <OwnerSignInForm />
             </div>
