@@ -14,7 +14,6 @@ import {
   IndianRupee,
   MapPin,
   MapPinned,
-  MessageCircle,
   Route,
   ShieldCheck,
   Sparkles,

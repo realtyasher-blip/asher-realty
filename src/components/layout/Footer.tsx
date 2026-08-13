@@ -13,6 +13,8 @@ const exploreLinks = [
 ];
 
 const supportLinks = [
+  { label: "My Asher Account", href: "/account" },
+  { label: "Manage My Properties", href: "/account" },
   { label: "Post Property FREE", href: "/post-property" },
   { label: "Owner Readiness Checklist", href: "/owner-checklist" },
   { label: "How We Review", href: "/how-we-verify" },

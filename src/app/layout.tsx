@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Cormorant_Garamond, Montserrat } from "next/font/google";
 
 import MobileAppNav from "@/components/app/MobileAppNav";
 import PwaRegistration from "@/components/app/PwaRegistration";
@@ -9,18 +8,6 @@ import UniversalSearch from "@/components/app/UniversalSearch";
 import PropertyCopilot from "@/components/ai/PropertyCopilot";
 
 import "./globals.css";
-
-const headingFont = Cormorant_Garamond({
-  subsets: ["latin"],
-  variable: "--font-heading",
-  weight: ["400", "500", "600", "700"],
-});
-
-const bodyFont = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-body",
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://asherrealty.in"),
@@ -102,9 +89,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${headingFont.variable} ${bodyFont.variable} antialiased`}
-      >
+      <body className="antialiased">
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-M7ZLLKKFBZ"
           strategy="lazyOnload"

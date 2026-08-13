@@ -35,8 +35,8 @@ const reviewSteps = [
   },
   {
     icon: Camera,
-    title: "Private media collection",
-    text: "Photos and video are requested privately after the first review—not through this public form.",
+    title: "Secure owner photo uploads",
+    text: "Create a free My Asher account to add, arrange and manage property photos privately.",
   },
   {
     icon: ShieldCheck,
@@ -74,8 +74,8 @@ export default async function PostPropertyPage({
               </h1>
               <p className="mt-6 max-w-xl text-sm leading-8 text-white/62 sm:text-base">
                 Share the essentials without uploading identity or title documents.
-                An Asher owner advisor will verify the property, agree on next
-                steps and request media privately before any listing is considered.
+                For a richer managed listing, create a free My Asher profile to add
+                property photos, choose contact privacy and track the review.
               </p>
 
               <div className="mt-6 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-5">
@@ -108,6 +108,13 @@ export default async function PostPropertyPage({
                 <MessageCircle className="mr-2 size-4 text-[#e4c462]" />
                 Prefer advisor-assisted posting?
               </a>
+              <Link
+                href="/account"
+                className="ml-0 mt-3 inline-flex h-12 items-center rounded-full bg-[#c9a227] px-5 text-xs font-bold text-[#071a2f] transition hover:bg-[#e4c462] sm:ml-3"
+              >
+                Create profile &amp; add photos
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
             </div>
 
             <PropertySubmissionForm initialIntent={initialIntent} />

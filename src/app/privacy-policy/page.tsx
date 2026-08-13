@@ -21,7 +21,11 @@ const sections = [
   },
   {
     title: "Photos and documents",
-    text: "The initial public form does not request identity or title documents. If later verification requires photos, video or documents, Asher Realty will explain what is needed, why it is needed and the approved private method for sharing it. Do not send Aadhaar, PAN or original title records through an open website form or unsolicited message.",
+    text: "Signed-in owners may upload property photos to private storage for review. We use them to prepare and review a listing; they are not public until the property and media are approved. Images may be resized and metadata such as device location removed. Never upload Aadhaar, PAN, title deeds, agreements, bank statements, contact screenshots or photos you do not have permission to use.",
+  },
+  {
+    title: "Client accounts and contact visibility",
+    text: "A My Asher account stores your profile, property drafts, photos and review status. Your account email is used for secure sign-in. Public name, email and phone visibility are separate choices, are off by default and can be changed later. Asher-managed enquiries remain the recommended default.",
   },
   {
     title: "Sharing with service providers",

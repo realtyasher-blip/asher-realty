@@ -12,6 +12,8 @@
   --border-soft: #e8eaed;
   --ink-muted: #667180;
   --radius-premium: 1.75rem;
+  --font-heading: Georgia, "Times New Roman", serif;
+  --font-body: Montserrat, "Segoe UI", Arial, sans-serif;
 }
 
 * {
@@ -26,7 +28,7 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-body);
   text-rendering: optimizeLegibility;
   padding-bottom: env(safe-area-inset-bottom);
   -webkit-font-smoothing: antialiased;
@@ -38,7 +40,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-heading), serif;
+  font-family: var(--font-heading);
 }
 
 button,

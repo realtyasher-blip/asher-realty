@@ -101,8 +101,8 @@ Please tell me what identity confirmation is needed. I will not send Aadhaar or 
               <p className="mt-3 text-xs leading-6 text-white/60">
                 Aadhaar, PAN, OTPs, card details, UPI PINs, banking passwords,
                 unredacted title deeds, Khata, tax receipts or loan statements.
-                Asher Realty&apos;s public property form does not request document
-                uploads.
+                The My Asher uploader accepts property photos only—never identity,
+                banking, agreement or title documents.
               </p>
             </div>
           </div>

@@ -9,10 +9,8 @@ import {
   Check,
   CircleAlert,
   GitCompareArrows,
-  IndianRupee,
   MessageCircle,
   ShieldCheck,
-  Sparkles,
   X,
 } from "lucide-react";
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Lock, Menu, MessageCircle, Search } from "lucide-react";
+import { Lock, Menu, MessageCircle, Search, UserRound } from "lucide-react";
 
 import { OPEN_SEARCH_EVENT } from "@/components/app/UniversalSearch";
 import BrandLogo from "@/components/brand/BrandLogo";
@@ -81,6 +81,14 @@ export default function Navbar() {
             >
               Post Property FREE
             </Link>
+            <Link
+              href="/account"
+              aria-label="Open My Asher client account"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 px-4 text-[11px] font-semibold text-white/65 transition hover:border-[#c9a227]/40 hover:bg-white/[0.06] hover:text-[#f0d477]"
+            >
+              <UserRound className="mr-2 size-4 text-[#e4c462]" />
+              My Asher
+            </Link>
             <a
               href={advisorUrl}
               target="_blank"
@@ -145,6 +153,14 @@ export default function Navbar() {
                     className="mt-2 rounded-2xl border border-[#c9a227]/30 bg-[#c9a227]/10 px-4 py-3 text-lg font-semibold text-[#f0d477] transition hover:bg-[#c9a227]/15"
                   >
                     Post Property FREE
+                  </Link>
+
+                  <Link
+                    href="/account"
+                    className="mt-2 flex h-12 w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-4 text-sm font-semibold text-white/75 transition hover:border-[#c9a227]/40 hover:text-white"
+                  >
+                    <UserRound className="size-5 text-[#e4c462]" />
+                    My Asher account
                   </Link>
 
                   <Link href="/home-match" className="rounded-2xl px-4 py-3 text-base text-white/60 transition hover:bg-white/[0.06] hover:text-[#e4c462]">AI Home Match</Link>

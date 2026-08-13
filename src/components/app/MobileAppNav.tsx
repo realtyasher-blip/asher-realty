@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Heart, MessageCircle, PlusCircle, Search } from "lucide-react";
+import { Compass, Heart, PlusCircle, Search, UserRound } from "lucide-react";
 
 import { OPEN_SEARCH_EVENT } from "@/components/app/UniversalSearch";
 import {
@@ -17,10 +17,6 @@ const emptyWorkspace: BuyerWorkspaceSnapshot = {
   comparison: [],
   recent: [],
 };
-
-const advisorUrl = `https://wa.me/919019697170?text=${encodeURIComponent(
-  "Hi Asher Realty, I would like help with a Bengaluru property requirement."
-)}`;
 
 function itemClass(active = false) {
   return `flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-semibold transition ${
@@ -57,6 +53,7 @@ export default function MobileAppNav() {
 
   const postActive = pathname.startsWith("/post-property");
   const savedActive = pathname.startsWith("/my-search");
+  const accountActive = pathname.startsWith("/account");
 
   return (
     <nav
@@ -96,10 +93,10 @@ export default function MobileAppNav() {
           Shortlist
         </Link>
 
-        <a href={advisorUrl} target="_blank" rel="noopener noreferrer" className={itemClass()}>
-          <span className={iconClass()}><MessageCircle className="size-[19px]" /></span>
-          Advisor
-        </a>
+        <Link href="/account" aria-current={accountActive ? "page" : undefined} className={itemClass(accountActive)}>
+          <span className={iconClass(accountActive)}><UserRound className="size-[19px]" /></span>
+          My Asher
+        </Link>
       </div>
     </nav>
   );

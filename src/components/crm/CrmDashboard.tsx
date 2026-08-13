@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Clock3,
   Download,
+  FileCheck2,
   LogOut,
   MapPin,
   MessageCircle,
@@ -349,6 +350,12 @@ export default function CrmDashboard({
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <a
+              href="/crm/properties"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-5 text-xs font-bold text-emerald-900 transition hover:bg-emerald-100"
+            >
+              <FileCheck2 className="mr-2 size-4" /> Property Reviews
+            </a>
             <a
               href="/crm/calling"
               className="inline-flex h-11 items-center justify-center rounded-full border border-[#c9a227]/30 bg-[#fff9e5] px-5 text-xs font-bold text-[#071a2f] transition hover:bg-[#c9a227]"
