@@ -39,4 +39,5 @@ export type LeadInput = Omit<
   "id" | "created_at" | "updated_at" | "status" | "follow_up_at" | "notes"
 > & {
   ai_call_consent?: boolean;
+  public_context?: string;
 };

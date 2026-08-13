@@ -107,10 +107,31 @@ const searchItems: SearchItem[] = [
   },
   {
     title: "Post a property",
-    description: "Privately submit a Bengaluru home for rent or resale review",
+    description: "Submit free for private rent or resale review",
     href: "/post-property",
     type: "Journey" as const,
-    keywords: "post list sell property rent out landlord owner resale listing",
+    keywords: "post free list sell property rent out landlord owner resale listing",
+  },
+  {
+    title: "Owner readiness checklist",
+    description: "Prepare property facts and media safely before free submission",
+    href: "/owner-checklist",
+    type: "Tool" as const,
+    keywords: "owner checklist post free photos documents safety ready",
+  },
+  {
+    title: "How Asher reviews property information",
+    description: "Understand contact, authority, facts, availability, media and documents",
+    href: "/how-we-verify",
+    type: "Journey" as const,
+    keywords: "verify review trust authority documents availability media property facts",
+  },
+  {
+    title: "Property safety centre",
+    description: "Avoid fraud, protect documents and report incorrect information",
+    href: "/safety",
+    type: "Journey" as const,
+    keywords: "safety fraud report incorrect information privacy aadhaar pan otp",
   },
   {
     title: "End-to-end property services",

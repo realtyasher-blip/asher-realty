@@ -20,7 +20,6 @@ const navigation = [
   { label: "Buy", href: "/projects" },
   { label: "Rent", href: "/rent" },
   { label: "Resale", href: "/resale" },
-  { label: "Post Property", href: "/post-property" },
   { label: "Services", href: "/services" },
 ];
 
@@ -80,7 +79,7 @@ export default function Navbar() {
               aria-label="Post a property for rent or resale review"
               className="inline-flex h-11 items-center justify-center rounded-full border border-white/10 px-4 text-[11px] font-semibold text-white/65 transition hover:border-[#c9a227]/40 hover:bg-white/[0.06] hover:text-[#f0d477]"
             >
-              Post a Property
+              Post Property FREE
             </Link>
             <a
               href={advisorUrl}
@@ -140,6 +139,13 @@ export default function Navbar() {
                       {item.label}
                     </Link>
                   ))}
+
+                  <Link
+                    href="/post-property"
+                    className="mt-2 rounded-2xl border border-[#c9a227]/30 bg-[#c9a227]/10 px-4 py-3 text-lg font-semibold text-[#f0d477] transition hover:bg-[#c9a227]/15"
+                  >
+                    Post Property FREE
+                  </Link>
 
                   <Link href="/home-match" className="rounded-2xl px-4 py-3 text-base text-white/60 transition hover:bg-white/[0.06] hover:text-[#e4c462]">AI Home Match</Link>
                   <Link href="/rera-watch" className="rounded-2xl px-4 py-3 text-base text-white/60 transition hover:bg-white/[0.06] hover:text-[#e4c462]">RERA Watch</Link>

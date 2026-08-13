@@ -84,13 +84,29 @@ export default function Hero() {
           </p>
 
           <div className="hero-reveal hero-delay-3 mt-7 flex flex-wrap gap-2">
-            <Link href="/projects" className="inline-flex h-11 items-center rounded-full bg-white px-4 text-xs font-bold text-[#071a2f]"><Search className="mr-2 size-4 text-[#9a7410]" />Buy</Link>
+            <Link href="/projects" aria-current="page" className="inline-flex h-11 items-center rounded-full bg-white px-4 text-xs font-bold text-[#071a2f] ring-2 ring-[#e4c462]/35"><Search className="mr-2 size-4 text-[#9a7410]" />Buy homes</Link>
             <Link href="/rent" className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/[.06] px-4 text-xs font-bold text-white backdrop-blur"><KeyRound className="mr-2 size-4 text-[#e4c462]" />Rent</Link>
             <Link href="/post-property?intent=sell" className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/[.06] px-4 text-xs font-bold text-white backdrop-blur"><Building2 className="mr-2 size-4 text-[#e4c462]" />Sell</Link>
             <Link href="/post-property?intent=rent" className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/[.06] px-4 text-xs font-bold text-white backdrop-blur"><Home className="mr-2 size-4 text-[#e4c462]" />Rent out</Link>
           </div>
 
+          <Link
+            href="/post-property"
+            className="hero-reveal hero-delay-3 mt-4 flex max-w-5xl flex-col justify-between gap-3 rounded-2xl border border-[#e4c462]/25 bg-[#c9a227]/12 px-5 py-4 backdrop-blur-xl transition hover:border-[#e4c462]/50 hover:bg-[#c9a227]/16 sm:flex-row sm:items-center"
+          >
+            <span>
+              <span className="block text-sm font-extrabold text-[#fff1b1]">Own a property? Submit it free for private review.</span>
+              <span className="mt-1 block text-[11px] leading-5 text-white/55">No obligation · Nothing published automatically · Optional paid services are explained before you choose them</span>
+            </span>
+            <span className="inline-flex shrink-0 items-center text-xs font-bold text-[#f0d477]">
+              Post Property FREE <ArrowRight className="ml-2 size-4" />
+            </span>
+          </Link>
+
           <div className="hero-reveal hero-delay-4 mt-5 max-w-5xl rounded-[1.75rem] border border-white/14 bg-[#041421]/78 p-3 shadow-[0_25px_90px_rgba(0,0,0,.3)] backdrop-blur-2xl">
+            <p className="px-3 pb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#e4c462]">
+              Search new homes to buy
+            </p>
             <div className="grid gap-2 lg:grid-cols-[1.25fr_.8fr_.9fr_auto]">
               <label className="flex min-h-16 items-center gap-3 rounded-2xl bg-white/[0.07] px-4 transition focus-within:bg-white/[0.11]">
                 <MapPin className="size-5 shrink-0 text-[#e4c462]" />
@@ -188,7 +204,7 @@ export default function Hero() {
               className="inline-flex w-fit items-center text-xs font-bold text-white transition hover:text-[#e4c462]"
             >
               <MessageCircle className="mr-2 size-4 text-[#e4c462]" />
-              Ask a buyer advisor
+              Ask a property advisor
               <ArrowRight className="ml-2 size-4" />
             </a>
             <Link

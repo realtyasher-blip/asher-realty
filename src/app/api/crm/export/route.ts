@@ -9,6 +9,11 @@ import {
 } from "@/lib/crm/server";
 import type { Lead } from "@/lib/crm/types";
 import { callingSummary, stripCallingData } from "@/lib/crm/calling";
+import { propertySubmissionReference } from "@/lib/listings/reference";
+import {
+  propertySubmissionIntake,
+  stripPropertySubmissionIntake,
+} from "@/lib/listings/intake";
 
 export const runtime = "nodejs";
 
@@ -104,6 +109,7 @@ function createZip(entries: ZipEntry[]) {
 
 function xml(value: unknown) {
   return String(value ?? "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/gu, "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -129,6 +135,7 @@ function inlineCell(value: unknown, reference: string, style = 0) {
 function workbookRows(leads: Lead[]) {
   const headers = [
     "Created",
+    "Reference",
     "Name",
     "Phone",
     "Email",
@@ -165,7 +172,8 @@ function workbookRows(leads: Lead[]) {
     "Exotel Call SID",
     "OpenAI Call ID",
     "Provider Recording URL",
-    "Notes",
+    "Owner Intake",
+    "Staff Notes",
   ];
 
   const rows = leads.map((lead) => {
@@ -173,6 +181,9 @@ function workbookRows(leads: Lead[]) {
     const providerCall = profile.providerCalls.at(-1);
     return [
       lead.created_at,
+      lead.source === "owner_property_submission"
+        ? propertySubmissionReference(lead.id)
+        : "",
       lead.name,
       lead.phone,
       lead.email,
@@ -209,7 +220,8 @@ function workbookRows(leads: Lead[]) {
       providerCall?.callSid,
       providerCall?.openaiCallId,
       providerCall?.recordingUrl,
-      stripCallingData(lead.notes),
+      propertySubmissionIntake(lead.notes),
+      stripPropertySubmissionIntake(stripCallingData(lead.notes)),
     ];
   });
 
@@ -299,7 +311,7 @@ function createWorkbook(leads: Lead[]) {
     <col min="5" max="38" width="22" customWidth="1"/>
   </cols>
   <sheetData>${rows}</sheetData>
-  <autoFilter ref="A1:AL${Math.max(1, leads.length + 1)}"/>
+  <autoFilter ref="A1:AN${Math.max(1, leads.length + 1)}"/>
 </worksheet>`,
     },
   ];

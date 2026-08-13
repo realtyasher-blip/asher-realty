@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
+  ArrowRight,
   BadgeCheck,
   Camera,
+  ClipboardCheck,
   FileCheck2,
   LockKeyhole,
   MessageCircle,
@@ -14,15 +17,15 @@ import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 
 export const metadata: Metadata = {
-  title: "Post a Property for Rent or Resale in Bengaluru",
+  title: "Post Property Free for Rent or Resale in Bengaluru",
   description:
-    "Privately submit a Bengaluru property for resale or rent-out assistance. Asher Realty reviews owner authority, property facts and commercial terms before any publication.",
+    "Submit a Bengaluru property free for private resale or rent-out review. Nothing is published automatically and optional paid services are disclosed before you choose them.",
 };
 
 const reviewSteps = [
   {
     icon: BadgeCheck,
-    title: "Owner authority check",
+    title: "Owner / authority review",
     text: "We first confirm who is offering the property and their authority to do so.",
   },
   {
@@ -63,17 +66,24 @@ export default async function PostPropertyPage({
             <div className="xl:sticky xl:top-28">
               <span className="inline-flex items-center gap-2 rounded-full border border-[#c9a227]/25 bg-[#c9a227]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#f0d477]">
                 <LockKeyhole className="size-4" />
-                Private property intake
+                Free private property intake
               </span>
               <h1 className="mt-6 text-6xl font-medium leading-[.96] sm:text-7xl">
-                Sell or rent out,
-                <span className="block text-[#e4c462]">with a managed review.</span>
+                Post your property.
+                <span className="block text-[#e4c462]">Start free and stay in control.</span>
               </h1>
               <p className="mt-6 max-w-xl text-sm leading-8 text-white/62 sm:text-base">
                 Share the essentials without uploading identity or title documents.
                 An Asher owner advisor will verify the property, agree on next
                 steps and request media privately before any listing is considered.
               </p>
+
+              <div className="mt-6 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-5">
+                <p className="text-sm font-extrabold text-emerald-100">Free to submit · Free initial review · No obligation</p>
+                <p className="mt-2 text-[11px] leading-5 text-white/55">
+                  No payment is collected on this form. Any optional brokerage, photography, legal review, property management or paid promotion is explained and approved before it begins.
+                </p>
+              </div>
 
               <div className="mt-9 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                 {reviewSteps.map(({ icon: Icon, title, text }) => (
@@ -105,11 +115,24 @@ export default async function PostPropertyPage({
         </section>
 
         <section className="py-14 sm:py-18">
-          <div className="container-shell rounded-[1.75rem] border border-slate-200 bg-white p-6 text-sm leading-7 text-slate-600 sm:p-8">
-            <p className="font-bold text-[#071a2f]">Important before you submit</p>
-            <p className="mt-2">
-              This is a private request for assistance—not an instant public advertisement or guaranteed valuation. Do not enter an exact flat number or upload Aadhaar, PAN, sale deeds, Khata, tax receipts or other sensitive documents through the public form. Any brokerage, photography, legal-review or marketing charges will be disclosed before a paid service begins.
-            </p>
+          <div className="container-shell grid gap-5 lg:grid-cols-[1.2fr_.8fr]">
+            <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 text-sm leading-7 text-slate-600 sm:p-8">
+              <p className="font-bold text-[#071a2f]">Important before you submit</p>
+              <p className="mt-2">
+                This is a private request for assistance—not an instant public advertisement or guaranteed valuation. Do not enter an exact flat number or upload Aadhaar, PAN, sale deeds, Khata, tax receipts or other sensitive documents through the public form. Any brokerage, photography, legal-review or marketing charges will be disclosed before a paid service begins.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/how-we-verify" className="inline-flex h-11 items-center rounded-full border border-slate-200 px-5 text-xs font-bold text-[#071a2f] transition hover:border-[#c9a227]">How review works<ArrowRight className="ml-2 size-4" /></Link>
+                <Link href="/safety" className="inline-flex h-11 items-center rounded-full border border-slate-200 px-5 text-xs font-bold text-[#071a2f] transition hover:border-[#c9a227]">Property safety</Link>
+              </div>
+            </div>
+            <Link href="/owner-checklist" className="group rounded-[1.75rem] bg-[#071a2f] p-7 text-white transition hover:-translate-y-1 hover:shadow-xl sm:p-8">
+              <ClipboardCheck className="size-7 text-[#e4c462]" />
+              <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#e4c462]">Free owner tool</p>
+              <h2 className="mt-2 text-3xl font-medium">Prepare before you post.</h2>
+              <p className="mt-3 text-xs leading-6 text-white/55">Use the private readiness checklist to collect the right facts and avoid sharing sensitive information.</p>
+              <span className="mt-6 inline-flex items-center text-xs font-bold text-[#f0d477]">Open checklist<ArrowRight className="ml-2 size-4 transition group-hover:translate-x-1" /></span>
+            </Link>
           </div>
         </section>
       </main>

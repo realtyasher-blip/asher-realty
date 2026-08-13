@@ -64,6 +64,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/owner-checklist`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.82,
+    },
+    {
+      url: `${baseUrl}/how-we-verify`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.76,
+    },
+    {
+      url: `${baseUrl}/safety`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.72,
+    },
+    {
       url: `${baseUrl}/services`,
       lastModified: new Date(),
       changeFrequency: "monthly",

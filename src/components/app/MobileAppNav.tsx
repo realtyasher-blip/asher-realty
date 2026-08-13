@@ -81,7 +81,7 @@ export default function MobileAppNav() {
 
         <Link href="/post-property" aria-current={postActive ? "page" : undefined} className={itemClass(postActive)}>
           <span className={iconClass(postActive)}><PlusCircle className="size-[19px]" /></span>
-          Post
+          Post Free
         </Link>
 
         <Link href="/my-search" aria-current={savedActive ? "page" : undefined} className={itemClass(savedActive)}>
@@ -93,7 +93,7 @@ export default function MobileAppNav() {
               </span>
             )}
           </span>
-          Saved
+          Shortlist
         </Link>
 
         <a href={advisorUrl} target="_blank" rel="noopener noreferrer" className={itemClass()}>

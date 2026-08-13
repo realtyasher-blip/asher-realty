@@ -4,6 +4,7 @@ import CuriosityStudio from "@/components/home/CuriosityStudio";
 import Hero from "@/components/home/Hero";
 import MarketPulse from "@/components/home/MarketPulse";
 import PublicJourney from "@/components/home/PublicJourney";
+import PublicUtilityHub from "@/components/home/PublicUtilityHub";
 import ProjectSpotlight from "@/components/home/ProjectSpotlight";
 import TrustStrip from "@/components/home/TrustStrip";
 import TrueCostPreview from "@/components/home/TrueCostPreview";
@@ -22,8 +23,9 @@ export default function Home() {
 
       <main>
         <Hero />
-        <TrustStrip />
         <PublicJourney />
+        <PublicUtilityHub />
+        <TrustStrip />
         <CuriosityStudio />
         <ProjectSpotlight />
         <MarketPulse />

@@ -4,6 +4,8 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 import type { Lead, LeadInput, LeadStatus } from "@/lib/crm/types";
 import { mergeCallingProfile, parseCallingProfile } from "@/lib/crm/calling";
+import { sanitizePublicMultiline } from "@/lib/listings/safety";
+import { mergePropertySubmissionIntake } from "@/lib/listings/intake";
 import type { PropertySubmissionInput } from "@/lib/listings/types";
 
 const SESSION_COOKIE = "asher_crm_session";
@@ -59,7 +61,7 @@ async function supabaseRequest<T>(
 }
 
 export async function createLead(input: LeadInput) {
-  const { ai_call_consent, ...leadInput } = input;
+  const { ai_call_consent, public_context, ...leadInput } = input;
   const profile = parseCallingProfile("");
   if (ai_call_consent) {
     profile.consentStatus = "Inbound enquiry permission";
@@ -72,7 +74,10 @@ export async function createLead(input: LeadInput) {
     body: JSON.stringify({
       ...leadInput,
       status: "New",
-      notes: mergeCallingProfile("", profile),
+      notes: mergeCallingProfile(
+        sanitizePublicMultiline(public_context || "", 1_500),
+        profile
+      ),
     }),
   });
   return rows[0];
@@ -103,7 +108,7 @@ export async function createPropertySubmissionLead(
     `Occupancy: ${input.occupancy || "Not shared"}`,
     `Preferred contact: ${input.contactPreference}`,
     `Owner description: ${input.description || "Not shared"}`,
-    "Declarations: authority to advertise, information accuracy and enquiry-contact permission accepted.",
+    "Declarations: authority to submit this property for private review, information accuracy and property-specific contact permission accepted. Publication permission has not been granted.",
     "Do not publish owner contact, exact address or property facts until manual verification is complete.",
   ].join("\n");
 
@@ -123,7 +128,13 @@ export async function createPropertySubmissionLead(
       purpose: input.intent === "Sell" ? "Owner resale" : "Owner rental",
       timeline: input.availableFrom || "To discuss",
       status: "New",
-      notes: summary,
+      notes: mergeCallingProfile(
+        mergePropertySubmissionIntake(
+          "",
+          sanitizePublicMultiline(summary, 5_000)
+        ),
+        parseCallingProfile("")
+      ),
     }),
   });
 

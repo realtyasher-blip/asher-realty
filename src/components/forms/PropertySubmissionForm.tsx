@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -80,6 +80,46 @@ const initialForm: SubmissionForm = {
 };
 
 const steps = ["Your intent", "Property", "Commercials", "Contact & review"];
+const DRAFT_KEY = "asher:owner-property-draft:v1";
+
+type PropertyDraft = Omit<
+  SubmissionForm,
+  | "name"
+  | "phone"
+  | "email"
+  | "description"
+  | "authorityDeclaration"
+  | "accuracyDeclaration"
+  | "contactConsent"
+  | "website"
+>;
+
+function safeDraft(form: SubmissionForm): PropertyDraft {
+  return {
+    intent: form.intent,
+    ownerRole: form.ownerRole,
+    propertyType: form.propertyType,
+    projectName: form.projectName,
+    locality: form.locality,
+    pincode: form.pincode,
+    configuration: form.configuration,
+    bathrooms: form.bathrooms,
+    areaValue: form.areaValue,
+    areaBasis: form.areaBasis,
+    furnishing: form.furnishing,
+    floor: form.floor,
+    totalFloors: form.totalFloors,
+    parking: form.parking,
+    propertyAge: form.propertyAge,
+    expectedPrice: form.expectedPrice,
+    monthlyRent: form.monthlyRent,
+    maintenance: form.maintenance,
+    deposit: form.deposit,
+    availableFrom: form.availableFrom,
+    occupancy: form.occupancy,
+    contactPreference: form.contactPreference,
+  };
+}
 
 export default function PropertySubmissionForm({
   initialIntent = "",
@@ -92,8 +132,48 @@ export default function PropertySubmissionForm({
   });
   const [step, setStep] = useState(0);
   const [message, setMessage] = useState("");
+  const [reference, setReference] = useState("");
+  const [draftReady, setDraftReady] = useState(false);
+  const [draftRecovered, setDraftRecovered] = useState(false);
   const [state, setState] =
     useState<"idle" | "saving" | "saved" | "fallback">("idle");
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        const stored = window.localStorage.getItem(DRAFT_KEY);
+        if (stored) {
+          const draft = JSON.parse(stored) as Partial<PropertyDraft>;
+          setForm((current) => ({
+            ...current,
+            ...draft,
+            intent: initialIntent || draft.intent || current.intent,
+          }));
+          setDraftRecovered(true);
+        }
+      } catch {
+        window.localStorage.removeItem(DRAFT_KEY);
+      } finally {
+        setDraftReady(true);
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [initialIntent]);
+
+  useEffect(() => {
+    if (!draftReady || state !== "idle") return;
+    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(safeDraft(form)));
+  }, [draftReady, form, state]);
+
+  function resetForm() {
+    window.localStorage.removeItem(DRAFT_KEY);
+    setForm({ ...initialForm, intent: initialIntent });
+    setStep(0);
+    setState("idle");
+    setReference("");
+    setDraftRecovered(false);
+    setMessage("");
+  }
 
   function update<K extends keyof SubmissionForm>(
     name: K,
@@ -133,6 +213,7 @@ export default function PropertySubmissionForm({
   const whatsappUrl = `https://wa.me/919019697170?text=${encodeURIComponent(
     `Hi Asher Realty, I would like help ${form.intent === "Sell" ? "selling" : "renting out"} my property.
 
+Reference: ${reference || "New owner submission"}
 Name: ${form.name}
 Phone: ${form.phone}
 Property: ${form.configuration} ${form.propertyType}
@@ -167,12 +248,27 @@ ${form.intent === "Sell" ? `Expected price: ${form.expectedPrice}` : `Monthly re
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      setState(response.ok ? "saved" : "fallback");
+      const result = (await response.json().catch(() => ({}))) as {
+        reference?: string;
+        error?: string;
+      };
       if (response.ok) {
+        setReference(result.reference || "");
+        window.localStorage.removeItem(DRAFT_KEY);
+        setState("saved");
         trackEvent("property_submission_completed", {
           listing_intent: form.intent,
           property_type: form.propertyType,
         });
+      } else if (response.status >= 500) {
+        setState("fallback");
+      } else {
+        setState("idle");
+        setStep(0);
+        setMessage(
+          result.error ||
+            "We could not accept those details yet. Please review the form and try again."
+        );
       }
     } catch {
       setState("fallback");
@@ -181,9 +277,9 @@ ${form.intent === "Sell" ? `Expected price: ${form.expectedPrice}` : `Monthly re
 
   if (state === "saved" || state === "fallback") {
     return (
-      <div className="rounded-[2rem] border border-slate-200 bg-white p-7 text-center shadow-[0_25px_80px_rgba(7,26,47,.12)] sm:p-10">
-        <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
-          <CheckCircle2 className="size-8" />
+      <div aria-live="polite" className="rounded-[2rem] border border-slate-200 bg-white p-7 text-center shadow-[0_25px_80px_rgba(7,26,47,.12)] sm:p-10">
+        <span className={`mx-auto flex size-16 items-center justify-center rounded-full ${state === "saved" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
+          {state === "saved" ? <CheckCircle2 className="size-8" /> : <MessageCircle className="size-8" />}
         </span>
         <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.18em] text-[#a47b10]">
           Private owner intake
@@ -196,6 +292,32 @@ ${form.intent === "Sell" ? `Expected price: ${form.expectedPrice}` : `Monthly re
             ? "An Asher Realty advisor will verify your authority, property facts, expected commercial terms and availability before discussing photos or publication. Nothing is published automatically."
             : "The secure submission service is temporarily unavailable. Send the prepared summary to the Asher owner desk so the verification can begin."}
         </p>
+        {state === "saved" && reference && (
+          <div className="mx-auto mt-6 max-w-sm rounded-2xl border border-[#c9a227]/25 bg-[#fff9e8] p-5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#9a7410]">Your private reference</p>
+            <p className="mt-2 font-mono text-xl font-extrabold tracking-[0.08em] text-[#071a2f]">{reference}</p>
+            <button
+              type="button"
+              onClick={() => navigator.clipboard.writeText(reference)}
+              className="mt-3 text-xs font-bold text-[#9a7410] underline underline-offset-4"
+            >
+              Copy reference
+            </button>
+          </div>
+        )}
+        {state === "saved" && (
+          <div className="mx-auto mt-6 grid max-w-xl gap-3 text-left sm:grid-cols-3">
+            {["We review the brief", "An advisor confirms facts", "You approve any next step"].map((item, index) => (
+              <div key={item} className="rounded-xl bg-[#f7f8fa] p-4 text-[11px] leading-5 text-slate-600">
+                <span className="font-extrabold text-[#a47b10]">0{index + 1}</span>
+                <p className="mt-1 font-semibold text-[#071a2f]">{item}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        <p className="mx-auto mt-5 max-w-xl text-xs leading-6 text-slate-500">
+          Submission and initial review are free. Nothing is published automatically. Optional paid services are explained before you choose them.
+        </p>
         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
           <a
             href={whatsappUrl}
@@ -204,15 +326,16 @@ ${form.intent === "Sell" ? `Expected price: ${form.expectedPrice}` : `Monthly re
             className="inline-flex h-13 items-center justify-center rounded-full bg-[#25D366] px-7 text-sm font-bold text-white"
           >
             <MessageCircle className="mr-2 size-5" />
-            Continue on WhatsApp
+            {state === "saved" ? "Send photos when advised" : "Continue on WhatsApp"}
           </a>
+          {state === "saved" && (
+            <button type="button" onClick={() => window.print()} className="inline-flex h-13 items-center justify-center rounded-full border border-slate-200 px-7 text-sm font-bold text-[#071a2f]">
+              Print / save receipt
+            </button>
+          )}
           <button
             type="button"
-            onClick={() => {
-              setForm({ ...initialForm, intent: initialIntent });
-              setStep(0);
-              setState("idle");
-            }}
+            onClick={resetForm}
             className="inline-flex h-13 items-center justify-center rounded-full border border-slate-200 px-7 text-sm font-bold text-[#071a2f]"
           >
             Submit another property
@@ -231,6 +354,12 @@ ${form.intent === "Sell" ? `Expected price: ${form.expectedPrice}` : `Monthly re
       className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_25px_90px_rgba(7,26,47,.12)]"
     >
       <div className="border-b border-slate-100 bg-[#f7f8fa] px-5 py-5 sm:px-8">
+        <div className="mb-4 flex flex-col justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-[11px] text-emerald-900 sm:flex-row sm:items-center">
+          <span><strong>Free to submit.</strong> Non-sensitive property details are saved on this device while you complete the form.</span>
+          {draftRecovered && (
+            <button type="button" onClick={resetForm} className="shrink-0 font-bold underline underline-offset-4">Clear saved details</button>
+          )}
+        </div>
         <div className="flex items-center justify-between gap-3">
           {steps.map((label, index) => (
             <div key={label} className="flex min-w-0 flex-1 items-center gap-2">
@@ -445,7 +574,8 @@ ${form.intent === "Sell" ? `Expected price: ${form.expectedPrice}` : `Monthly re
               </label>
               <label className="sm:col-span-2">
                 <span className="text-sm font-semibold text-[#071a2f]">Anything useful about the home?</span>
-                <textarea rows={5} value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Views, sunlight, upgrades, pet policy, move-in timing or other facts an advisor should know…" className="mt-2 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] p-4 text-sm text-[#071a2f] outline-none transition placeholder:text-slate-400 focus:border-[#c9a227] focus:bg-white" />
+                <textarea maxLength={1200} rows={5} value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Views, sunlight, upgrades, pet policy, move-in timing or other facts an advisor should know…" className="mt-2 w-full rounded-xl border border-slate-200 bg-[#f7f8fa] p-4 text-sm text-[#071a2f] outline-none transition placeholder:text-slate-400 focus:border-[#c9a227] focus:bg-white" />
+                <span className="mt-1 block text-right text-[10px] text-slate-400">{form.description.length}/1200</span>
               </label>
             </div>
             <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-xs leading-6 text-amber-900">
@@ -528,7 +658,7 @@ ${form.intent === "Sell" ? `Expected price: ${form.expectedPrice}` : `Monthly re
           ) : (
             <button disabled={state === "saving"} type="submit" className="inline-flex h-12 items-center rounded-full bg-[#c9a227] px-6 text-sm font-bold text-[#071a2f] disabled:opacity-60">
               <ShieldCheck className="mr-2 size-4" />
-              {state === "saving" ? "Sending for review…" : "Submit privately for review"}
+               {state === "saving" ? "Sending for review…" : "Submit FREE for review"}
             </button>
           )}
         </div>

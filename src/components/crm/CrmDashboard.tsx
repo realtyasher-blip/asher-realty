@@ -26,6 +26,12 @@ import {
   parseCallingProfile,
   stripCallingData,
 } from "@/lib/crm/calling";
+import { propertySubmissionReference } from "@/lib/listings/reference";
+import {
+  mergePropertySubmissionIntake,
+  propertySubmissionIntake,
+  stripPropertySubmissionIntake,
+} from "@/lib/listings/intake";
 
 const completedStatuses: LeadStatus[] = ["Booked", "Not interested"];
 
@@ -67,17 +73,45 @@ function formatDate(value?: string | null) {
 }
 
 function sourceLabel(source: string) {
-  return source
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const labels: Record<string, string> = {
+    owner_property_submission: "Owner property",
+    rental_requirement: "Tenant search",
+    resale_requirement: "Resale buyer",
+    property_consultation: "Buyer consultation",
+    site_visit_booking: "Site visit",
+    excel_contact_import: "Imported contact",
+  };
+  return labels[source] || source.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function cleanPhone(phone: string) {
-  return phone.replace(/\D/g, "").slice(-10);
+function whatsappPhone(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 10) return `91${digits}`;
+  return digits;
 }
 
 function csvCell(value: unknown) {
-  return `"${String(value ?? "").replaceAll('"', '""')}"`;
+  const raw = String(value ?? "");
+  const safe = /^[=+\-@]/u.test(raw.trimStart()) ? `'${raw}` : raw;
+  return `"${safe.replaceAll('"', '""')}"`;
+}
+
+function isOwnerLead(lead: Lead) {
+  return lead.source === "owner_property_submission";
+}
+
+function statusLabel(lead: Lead) {
+  if (!isOwnerLead(lead)) return lead.status;
+  const labels: Partial<Record<LeadStatus, string>> = {
+    New: "Awaiting owner review",
+    Contacted: "Owner contacted",
+    Qualified: "Property facts reviewed",
+    "Site visit scheduled": "Viewing scheduled",
+    "Site visit completed": "Viewing completed",
+    Booked: "Closed",
+    "Not interested": "Rejected / withdrawn",
+  };
+  return labels[lead.status] || lead.status;
 }
 
 type CrmDashboardProps = {
@@ -95,6 +129,7 @@ export default function CrmDashboard({
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All");
+  const [sourceFilter, setSourceFilter] = useState("All people");
   const [selected, setSelected] = useState<Lead | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -161,6 +196,7 @@ export default function CrmDashboard({
         !term ||
         [
           lead.name,
+          lead.id,
           lead.phone,
           lead.project,
           lead.location,
@@ -171,9 +207,16 @@ export default function CrmDashboard({
           .join(" ")
           .toLowerCase()
           .includes(term);
-      return matchesFilter && matchesQuery;
+      const matchesSource =
+        sourceFilter === "All people" ||
+        (sourceFilter === "Owners" && lead.source === "owner_property_submission") ||
+        (sourceFilter === "Tenants" && lead.source === "rental_requirement") ||
+        (sourceFilter === "Resale buyers" && lead.source === "resale_requirement") ||
+        (sourceFilter === "Buyers" && ["property_consultation", "site_visit_booking", "website"].includes(lead.source)) ||
+        (sourceFilter === "Imported" && lead.source === "excel_contact_import");
+      return matchesFilter && matchesQuery && matchesSource;
     });
-  }, [filter, leads, now, query]);
+  }, [filter, leads, now, query, sourceFilter]);
 
   const stats = {
     total: leads.length,
@@ -465,7 +508,7 @@ export default function CrmDashboard({
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_.75fr]">
           <section className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white">
-            <div className="grid gap-3 border-b border-slate-100 p-4 sm:grid-cols-[1fr_220px]">
+            <div className="grid gap-3 border-b border-slate-100 p-4 sm:grid-cols-[1fr_190px_190px]">
               <label className="relative">
                 <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -485,6 +528,19 @@ export default function CrmDashboard({
                 {leadStatuses.map((status) => (
                   <option key={status}>{status}</option>
                 ))}
+              </select>
+              <select
+                value={sourceFilter}
+                onChange={(event) => setSourceFilter(event.target.value)}
+                aria-label="Filter by lead type"
+                className="h-11 rounded-xl border border-slate-200 bg-[#f7f8fa] px-4 text-sm outline-none"
+              >
+                <option>All people</option>
+                <option>Owners</option>
+                <option>Tenants</option>
+                <option>Resale buyers</option>
+                <option>Buyers</option>
+                <option>Imported</option>
               </select>
             </div>
 
@@ -517,6 +573,11 @@ export default function CrmDashboard({
                       <span className="mt-1 block text-xs text-slate-400">
                         {lead.phone} · {sourceLabel(lead.source)}
                       </span>
+                      {isOwnerLead(lead) && (
+                        <span className="mt-2 inline-flex rounded-full bg-[#fff3c4] px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-[.08em] text-[#8a6710]">
+                          Review required · {propertySubmissionReference(lead.id)}
+                        </span>
+                      )}
                     </span>
                     <span>
                       <span className="block text-sm font-semibold">
@@ -531,7 +592,7 @@ export default function CrmDashboard({
                       <span
                         className={`inline-flex rounded-full px-3 py-1.5 text-[10px] font-bold ${statusStyles[lead.status]}`}
                       >
-                        {lead.status}
+                        {statusLabel(lead)}
                       </span>
                       <span className="mt-2 block text-[10px] text-slate-400">
                         {formatDate(lead.created_at)}
@@ -560,11 +621,16 @@ export default function CrmDashboard({
                     <p className="mt-1 text-xs text-slate-400">
                       Added {formatDate(selected.created_at)}
                     </p>
+                    {isOwnerLead(selected) && (
+                      <p className="mt-2 font-mono text-xs font-bold text-[#9a7410]">
+                        {propertySubmissionReference(selected.id)}
+                      </p>
+                    )}
                   </div>
                   <span
                     className={`rounded-full px-3 py-1.5 text-[10px] font-bold ${statusStyles[selected.status]}`}
                   >
-                    {selected.status}
+                    {statusLabel(selected)}
                   </span>
                 </div>
 
@@ -576,8 +642,10 @@ export default function CrmDashboard({
                     <Phone className="mr-2 size-4" /> Call
                   </a>
                   <a
-                    href={`https://wa.me/91${cleanPhone(selected.phone)}?text=${encodeURIComponent(
-                      `Hi ${selected.name}, this is Asher Realty regarding your property enquiry${selected.project ? ` for ${selected.project}` : ""}.`
+                    href={`https://wa.me/${whatsappPhone(selected.phone)}?text=${encodeURIComponent(
+                      isOwnerLead(selected)
+                        ? `Hi ${selected.name}, this is Asher Realty regarding your ${selected.purpose === "Owner rental" ? "rental" : "resale"} property submission${selected.project ? ` for ${selected.project}` : ""}. Reference: ${propertySubmissionReference(selected.id)}.`
+                        : `Hi ${selected.name}, this is Asher Realty regarding your property enquiry${selected.project ? ` for ${selected.project}` : ""}.`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -606,6 +674,15 @@ export default function CrmDashboard({
                     </div>
                   ))}
                 </dl>
+
+                {isOwnerLead(selected) && propertySubmissionIntake(selected.notes) && (
+                  <section className="mt-5 rounded-2xl border border-[#c9a227]/25 bg-[#fff9e8] p-4">
+                    <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-[#9a7410]">Read-only owner intake</p>
+                    <pre className="mt-3 whitespace-pre-wrap font-sans text-[11px] leading-6 text-slate-600">
+                      {propertySubmissionIntake(selected.notes)}
+                    </pre>
+                  </section>
+                )}
 
                 <label className="mt-6 block text-xs font-bold">
                   Sales stage
@@ -644,12 +721,15 @@ export default function CrmDashboard({
                   Conversation notes
                   <textarea
                     rows={5}
-                    value={stripCallingData(selected.notes)}
+                    value={stripPropertySubmissionIntake(stripCallingData(selected.notes))}
                     onChange={(event) =>
                       setSelected({
                         ...selected,
                         notes: mergeCallingProfile(
-                          event.target.value,
+                          mergePropertySubmissionIntake(
+                            event.target.value,
+                            propertySubmissionIntake(selected.notes)
+                          ),
                           parseCallingProfile(selected.notes)
                         ),
                       })

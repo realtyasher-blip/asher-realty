@@ -86,11 +86,11 @@ export default function PublicMarketLanding({ mode }: { mode: Mode }) {
               <p className="mt-2 text-xs leading-6 text-white/50">Nothing is published automatically, and sensitive documents are not collected in the public form.</p>
             </div>
             <Link href={`/post-property?intent=${rental ? "rent" : "sell"}`} className="inline-flex h-12 shrink-0 items-center rounded-full bg-[#c9a227] px-6 text-sm font-bold text-[#071a2f]">
-              Post my property<ArrowRight className="ml-2 size-4" />
+              Post Property FREE<ArrowRight className="ml-2 size-4" />
             </Link>
           </div>
           <p className="mt-5 text-center text-[11px] leading-5 text-slate-400">
-            Public rental and resale inventory is added only after manual review. Availability and transaction readiness still require confirmation.
+            We currently provide assisted matching. Public listings appear only after owner and property review. Availability and transaction readiness still require confirmation.
           </p>
         </div>
       </section>

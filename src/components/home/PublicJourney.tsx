@@ -36,7 +36,7 @@ const journeys = [
     title: "Sell my property",
     text: "Start a private resale review with fact checks, positioning and buyer-enquiry support.",
     href: "/post-property?intent=sell",
-    cta: "Start resale review",
+    cta: "Post property FREE",
     tone: "bg-[#f5e8ca] text-[#071a2f]",
     iconTone: "bg-[#071a2f] text-[#e4c462]",
   },
@@ -46,7 +46,7 @@ const journeys = [
     title: "Rent out my property",
     text: "Submit the home privately for owner verification and tenant-search assistance.",
     href: "/post-property?intent=rent",
-    cta: "Start rental review",
+    cta: "Post property FREE",
     tone: "bg-[#e8ebf5] text-[#071a2f]",
     iconTone: "bg-[#071a2f] text-[#e4c462]",
   },
@@ -76,7 +76,7 @@ export default function PublicJourney() {
               <span className="block text-[#9a7410]">to do today?</span>
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">
-              Start with your real need—not the platform&apos;s inventory. Asher Realty now supports buyers, tenants, sellers and landlords through one managed journey.
+              Start with your real need—not the platform&apos;s inventory. Asher Realty supports buyers, tenants, sellers and landlords through one managed journey. Owner submission and initial review are free.
             </p>
           </div>
           <Link
@@ -119,7 +119,7 @@ export default function PublicJourney() {
               <span className="flex size-12 items-center justify-center rounded-2xl bg-[#c9a227] text-[#071a2f]">
                 <ShieldCheck className="size-5" />
               </span>
-              <h3 className="mt-6 text-4xl font-medium">One advisor. One property file.</h3>
+              <h3 className="mt-6 text-4xl font-medium">One advisor. One clear requirement brief.</h3>
               <p className="mt-4 text-xs leading-6 text-white/55">
                 Information is collected once, checked for the specific purpose and carried through the next steps with clear human ownership.
               </p>

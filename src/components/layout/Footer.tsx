@@ -6,14 +6,16 @@ import BrandLogo from "@/components/brand/BrandLogo";
 const exploreLinks = [
   { label: "Buy New Projects", href: "/projects" },
   { label: "Find a Rental", href: "/rent" },
-  { label: "Explore Resale", href: "/resale" },
+  { label: "Find a Resale Home", href: "/resale" },
   { label: "Bengaluru Areas", href: "/locations" },
   { label: "Builders", href: "/builders" },
   { label: "Property Guides", href: "/guides" },
 ];
 
 const supportLinks = [
-  { label: "Post a Property", href: "/post-property" },
+  { label: "Post Property FREE", href: "/post-property" },
+  { label: "Owner Readiness Checklist", href: "/owner-checklist" },
+  { label: "How We Review", href: "/how-we-verify" },
   { label: "End-to-End Services", href: "/services" },
   { label: "AI Home Match", href: "/home-match" },
   { label: "Total Cost Calculator", href: "/true-cost" },
@@ -95,6 +97,7 @@ export default function Footer() {
               <p>© {year} Asher Realty. All rights reserved.</p>
               <Link href="/privacy-policy" className="transition hover:text-[#e4c462]">Privacy Policy</Link>
               <Link href="/disclaimer" className="transition hover:text-[#e4c462]">Disclaimer</Link>
+              <Link href="/safety" className="transition hover:text-[#e4c462]">Safety</Link>
             </div>
             <p className="max-w-3xl">
               Asher Realty provides independent property information, advisory
